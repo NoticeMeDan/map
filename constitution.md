@@ -3,11 +3,11 @@
 ## Medlemmer og MBTI
 | Name | Email | Tel | MBTI |
 |--|--|--|--|
-| Person A  | a@itu.dk  | 10101010 | ENFB |
-| Person B  | b@itu.dk  | 10101010 | ENFB |
-| Person C  | c@itu.dk  | 10101010 | ENFB |
-| Person D  | d@itu.dk  | 10101010 | ENFB |
-| Person E  | e@itu.dk  | 10101010 | ENFB |
+| Person A | a@itu.dk | 10101010 | ENFB |
+| Person B | b@itu.dk | 10101010 | ENFB |
+| Person C | c@itu.dk | 10101010 | ENFB |
+| Person D | d@itu.dk | 10101010 | ENFB |
+| Person E | e@itu.dk | 10101010 | ENFB |
 
 ## Organisering
 
