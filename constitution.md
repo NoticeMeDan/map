@@ -1,13 +1,13 @@
 # Group Constitution
 
 ## Medlemmer og MBTI
-| Name | Email | Tel | MBTI |
-|--|--|--|--|
-| Elias Jørgensen | ejoe@itu.dk | 301098 | ISTJ |
-| Magnus Arnild | mips@itu.dk | 090594 | INTP |
+| Name             | Email       | Tel    | MBTI |
+| ---------------- |:-----------:| :-----:| :--- |
+| Elias Jørgensen  | ejoe@itu.dk | 301098 | ISTJ |
+| Magnus Arnild    | mips@itu.dk | 090594 | INTP |
 | Mathias Egekvist | maeg@itu.dk | 090995 | ENTP |
-| Emil Bartholdy | emba@itu.dk | 270193 | ENFP |
-| Simon Høiberg | shoe@itu.dk | 030288 | ENTJ |
+| Emil Bartholdy   | emba@itu.dk | 270193 | ENFP |
+| Simon Høiberg    | shoe@itu.dk | 030288 | ENTJ |
 
 ## Organisering
 
