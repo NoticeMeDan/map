@@ -1,7 +1,7 @@
 # Group Constitution
 
 ## Medlemmer og MBTI
-| Name             | Email       | Tel    | MBTI |
+| Name             | Email       | DoB    | MBTI |
 | ---------------- |:-----------:| :-----:| :--- |
 | Elias Jørgensen  | ejoe@itu.dk | 301098 | ISTJ |
 | Magnus Arnild    | mips@itu.dk | 090594 | INTP |
