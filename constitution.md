@@ -27,6 +27,13 @@ Extreme programming / pair programming indføres på eksperimentbasis efter beho
 
 Vi regner med at bruge mindst 15-20 timer om ugen pr. person på projektarbejde.
 
+### Roller
+- Elias: System-manager
+- Magnus: Idé- / konceptudvikler
+- Mathias: Ordstyrer / scrum-master
+- Emil: Kontaktskaber / HR
+- Simon: Project Manager
+
 ### Mødetidspunkter
 
 Tirsdag: 9.00 - 16.00
