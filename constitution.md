@@ -20,6 +20,11 @@ Vi forventer at alle arbejder effektivt og målrettet med agendaen for dagen.
 Vi er alle indforstået med en afslappet social tone, og er i udgangspunktet fleksible med hvordan pauser, urelateret snak m.m. kombineres med arbejde.
 Alle er enige om, at der til enhver tid kan 'råbes på arbejdsro', for at gruppens fokus rettes mod arbejdet. 
 
+I forbindelse med eventuelle konflikter og konflikthåndtering vil vi benytte:
+Olsen & Pedersens grundmodel for konfliktløsning.
+
+Extreme programming / pair programming indføres på eksperimentbasis efter behov og lyst, men er ikke noget vi har en fast aftale om.
+
 Vi regner med at bruge mindst 15-20 timer om ugen pr. person på projektarbejde.
 
 ### Mødetidspunkter
@@ -40,5 +45,5 @@ Kommunkation foregår primært via Slack.
 * Værktøjer
  - CI (Travis)
  - SonarQube
- - Vavr & Kombok
+ - Vavr & Project Lombok
  - Code Review
