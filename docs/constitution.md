@@ -38,9 +38,9 @@ Vi regner med at bruge mindst 15-20 timer om ugen pr. person på projektarbejde.
 
 * Tirsdag: 9.00 - 16.00
 * Torsdag: 9.00 - 16:00
-* Magnus og Mathias har særlige forhold under disse mødetyder;
+- Magnus og Mathias har særlige forhold under disse mødetyder;
 Magnus går kl. 13.00 hver tirsdag og Mathias er der mere on and off.
-* Alle er indforstået med ovenstående.
+- Alle er indforstået med ovenstående.
 
 ### Dokumentation og værktøjer
 * Dokumentation og kommunikation
