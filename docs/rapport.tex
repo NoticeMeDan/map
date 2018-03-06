@@ -1,0 +1,162 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{amsmath,amsthm}
+\usepackage{libertine}
+\usepackage[scaled=0.83]{beramono}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\addtolength{\textwidth}{1.5cm}
+\addtolength{\hoffset}{-0.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.5ex plus 1ex minus 1ex}
+
+\usepackage{listings}
+\lstset{
+   language=java,
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   frame=single,
+   extendedchars=false,
+   inputencoding=utf8,
+   captionpos=b
+}
+
+
+\title{First-Year Project BFST2018\\Template Final Report\\ITU Copenhagen}
+\author{Martin Aumüller\\\tt{maau@itu.dk}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Comments on the Template} 
+This template provides participants of the first year project with 
+an idea of how their final report might look like. Please note that the structure 
+mentioned here is only a suggestion. 
+
+\textbf{Of course, you can write your final report in Danish as well. Provide a front-page as described in the project description!}
+
+\section{Introduction} This document reports on the
+``visualiziation and routing in Denmark'' project that we developed during the first year project at the IT University of Copenhagen.
+In Section~\ref{sec:background} we will provide some background information, talk about details of the dataset and state the requirements of our software product. Next, we will discuss our user interface in Section~\ref{sec:ui}, and reflect on the algorithms that we ended up using in our product in Section~\ref{sec:algorithms}.
+
+In the next sections, we go a bit more into the details of our software. A high-level technical description with accompanying UML diagrams is provided in Section~\ref{sec:technical}. This section is followed by our testing considerations, both from a dynamic and static perspective, in Section~\ref{sec:testing}. We give a quick manual on how to use our software in Section~\ref{sec:manual}.  
+
+Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on our project (Section~\ref{sec:reflection}). In the appendixes, we provide some details with regard to the project work. This includes our group constution, our development diary, and an overview of the changelog between our releases during the semester. 
+
+\section{Background}\label{sec:background}
+
+\section{Graphical User Interface}\label{sec:ui}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=.35\textheight]{ui.png}
+    \caption{A screenshot of the user interface.}
+    \label{fig:ui}
+\end{figure}
+
+Figure~\ref{fig:ui} shows our user interface when running the program on the latest OSM dataset for Denmark. We divided our user interface in the following sections: ... . We chose this approach because ....  
+
+\section{Algorithmic Considerations}\label{sec:algorithms}
+
+\section{Technical Description}\label{sec:technical}
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{uml.png}
+    \caption{Overview of our Architecture. (Can be created automatically from within IntelliJ!)}
+    \label{fig:uml}
+\end{figure}
+
+Figure~\ref{fig:uml} gives a broad overview over our software product in terms of a UML diagram. From this diagram we see that the architecture of our product is split up into ... .
+
+\section{Testing Considerations}\label{sec:testing}
+
+\begin{figure}[t!]
+    \begin{lstlisting}
+    @Test
+    public void testStreetCityInput() {
+        String input = "Rued Langgaards Vej 7, 2500 Valby";
+        Address a = Address.parse(input);
+        assertEquals("Rued Langgaards Vej", a.street());
+        assertEquals("7", a.house());
+        assertEquals("2500", a.postcode());
+        assertEquals("Valby", a.city());
+    }
+    \end{lstlisting}
+    \caption{Unit test for the Address parser.}
+    \label{fig:unittest}
+\end{figure}
+
+We used both unit testing and system testing to find errors in our implementations. One unit test we are particularly proud of is depicted in Figure~\ref{fig:unittest}. 
+
+\section{User Manual}\label{sec:manual}
+
+\section{Conclusion}\label{sec:conclusion}
+
+\section{Reflection}\label{sec:reflection}
+
+\appendix
+
+\section{Group Constitution}
+
+\subsection{Medlemmer og MBTI}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l c c l}
+        \textbf{Navn} & \textbf{Mail} & \textbf{Telefon} & \textbf{MBTI} \\ \hline
+        Person A & \texttt{a@itu.dk} & 10101010 & ENFB--Champion \\ 
+        Person B & \texttt{b@itu.dk} & 10101010 & INFJ--Counselor \\ 
+        Person C & \texttt{c@itu.dk} & 10101010 & ENFJ--Teacher \\ 
+        Person D & \texttt{d@itu.dk} & 10101010 & ESTP--Promoter \\ 
+        Person E & \texttt{e@itu.dk} & 10101010 & INTJ--Mastermind \\ 
+    \end{tabular}
+\end{table}
+
+\subsection{Organisering}
+
+\paragraph{Planlægning af arbejdet}
+Vi mødes som udgangspunkt 3 dage om ugen, for at arbejde sammen. Her aftaler vi og uddelegerer arbejde, der evt. skal laves hjemme.
+Dagene hvor vi mødes starter med et møde, og fortsætter derefter med dagens arbejde.
+Vi forventer af hinanden at vi arbejder i de aftalte tidsrum, og så vidt muligt holder det sociale adskilt derfra. Pauser styres individuelt.
+Vi regner med at bruge mindst 20 timer om ugen pr. person på projektarbejde.
+
+\paragraph{Mødetidspunkter} 
+
+\begin{itemize}
+    \item Mandag: 10:00--16:00
+    \item Tirsdag: 10:00--16:00
+    \item Onsdag: selvstændigt arbejde
+    \item Torsdag: selvstændigt arbejde
+    \item Fredag: 10:00--16:00
+    \item Lørdag: selvstændigt arbejde (hold weekend!) 
+    \item Søndag: selvstændigt arbejde (hold weekend!)
+\end{itemize}
+
+\paragraph{Dokumentation og værktøjer}
+Vi ønsker at arbejde på at dokumentere alt løbende i processen. Dette vil vi gøre via:
+\begin{itemize}
+    \item Individuel logbog: Vi nedskriver de beslutninger og overvejelser ned som man støder på i sit individuelle arbejde.
+    \item Referat til hvert møde: Dette referat skal dokumentere hvad vi har talt om, hvor vi står i processen, hvor vi skal hen og de aftaler og beslutninger vi har lavet.
+\end{itemize}
+
+\section{Development Diary}
+
+\section{Change-log of Releases}
+
+\end{document}
