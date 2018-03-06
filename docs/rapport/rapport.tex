@@ -36,17 +36,74 @@
 
 
 \title{First-Year Project BFST2018\\Template Final Report\\ITU Copenhagen}
-\author{Martin Aumüller\\\tt{maau@itu.dk}}
+\author{Mathias Egekvist \tt{maeg@itu.dk}\\
+Elias Z. Jørgnsen \tt{maeg@itu.dk}\\
+Simon Høiberg \tt{maeg@itu.dk} \\
+Magnus Arnild \tt{maeg@itu.dk} \\
+Emil Bartholdy \tt{maeg@itu.dk}}
 \date{\today}
 
 \begin{document}
 
 \maketitle
 
-\section*{Comments on the Template} 
-This template provides participants of the first year project with 
-an idea of how their final report might look like. Please note that the structure 
-mentioned here is only a suggestion. 
+\section{Introduction}
+
+\subsection{Requirements}
+
+We have added some more easily understandable requirements to work from which are rooted in the given requirements.
+\begin{enumerate}
+  \item Let user upload a map they want to use (OSM format)
+  \item Let user save POIs (Point of Interest) with a chosen name
+  \item Intuitive way of panning and zooming the map
+  \item Let user be able to press on the map and add a visible marker on the location
+  \item User is able to get route suggestions with bike, car and walking to and from POIs or arbitrary locations.
+  \item Give the user suggestions while typing and after search to give available locations
+  \item Possibility of getting written description for navigation between to points
+  \item Make it possible for user to change to colorblind mode
+  \item The program must run swift enough so the user doesn't get impatient
+  \item User is able to handle zoom easily and get a visible on how much is currently zoomed
+
+
+\end{enumerate}
+
+\subsection{Noun/verb}
+The user has a map which they use for finding points of interest and planning routes between different points on the map. Usually the user wants to focus on a specific section of the map, and the map is folded to show that area. The map shows various geographical features such as buildings, different types of roads, coastlines etc. These features are displayed with names. The user can see the relative scale on the map such that the user can estimate length of the planned routes. The map is separated into quadrants split by latitude and longitude. A small mini map in the corner is used to orient the user about how the focused area fits into a larger area (e.g. a country). When the user hovers over the map, it displays the nearest address.
+
+\begin{table*}[ht]
+\caption{Noun and verbs}
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Noun & verb\\
+\hline
+User & Has\\
+Map & Use\\
+Route of interest & Finding\\
+Point & Planning\\
+Section & Want\\
+Area & Focus\\
+Geographical features & Show\\
+Building & Display\\
+Road & Can\\
+Name & See\\
+Scale & Estimate\\
+Length & Separated\\
+Quadrant & Orient\\
+Latitude & Fit\\
+Longitude & Hover\\
+Address & \\
+
+
+\hline
+\end{tabular}
+\end{table*}
+
+
+\section*{Comments on the Template}
+This template provides participants of the first year project with
+an idea of how their final report might look like. Please note that the structure
+mentioned here is only a suggestion.
 
 \textbf{Of course, you can write your final report in Danish as well. Provide a front-page as described in the project description!}
 
@@ -54,9 +111,9 @@ mentioned here is only a suggestion.
 ``visualiziation and routing in Denmark'' project that we developed during the first year project at the IT University of Copenhagen.
 In Section~\ref{sec:background} we will provide some background information, talk about details of the dataset and state the requirements of our software product. Next, we will discuss our user interface in Section~\ref{sec:ui}, and reflect on the algorithms that we ended up using in our product in Section~\ref{sec:algorithms}.
 
-In the next sections, we go a bit more into the details of our software. A high-level technical description with accompanying UML diagrams is provided in Section~\ref{sec:technical}. This section is followed by our testing considerations, both from a dynamic and static perspective, in Section~\ref{sec:testing}. We give a quick manual on how to use our software in Section~\ref{sec:manual}.  
+In the next sections, we go a bit more into the details of our software. A high-level technical description with accompanying UML diagrams is provided in Section~\ref{sec:technical}. This section is followed by our testing considerations, both from a dynamic and static perspective, in Section~\ref{sec:testing}. We give a quick manual on how to use our software in Section~\ref{sec:manual}.
 
-Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on our project (Section~\ref{sec:reflection}). In the appendixes, we provide some details with regard to the project work. This includes our group constution, our development diary, and an overview of the changelog between our releases during the semester. 
+Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on our project (Section~\ref{sec:reflection}). In the appendixes, we provide some details with regard to the project work. This includes our group constution, our development diary, and an overview of the changelog between our releases during the semester.
 
 \section{Background}\label{sec:background}
 
@@ -69,7 +126,7 @@ Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on o
     \label{fig:ui}
 \end{figure}
 
-Figure~\ref{fig:ui} shows our user interface when running the program on the latest OSM dataset for Denmark. We divided our user interface in the following sections: ... . We chose this approach because ....  
+Figure~\ref{fig:ui} shows our user interface when running the program on the latest OSM dataset for Denmark. We divided our user interface in the following sections: ... . We chose this approach because ....
 
 \section{Algorithmic Considerations}\label{sec:algorithms}
 
@@ -102,7 +159,7 @@ Figure~\ref{fig:uml} gives a broad overview over our software product in terms o
     \label{fig:unittest}
 \end{figure}
 
-We used both unit testing and system testing to find errors in our implementations. One unit test we are particularly proud of is depicted in Figure~\ref{fig:unittest}. 
+We used both unit testing and system testing to find errors in our implementations. One unit test we are particularly proud of is depicted in Figure~\ref{fig:unittest}.
 
 \section{User Manual}\label{sec:manual}
 
@@ -120,11 +177,11 @@ We used both unit testing and system testing to find errors in our implementatio
     \centering
     \begin{tabular}{l c c l}
         \textbf{Navn} & \textbf{Mail} & \textbf{Telefon} & \textbf{MBTI} \\ \hline
-        Person A & \texttt{a@itu.dk} & 10101010 & ENFB--Champion \\ 
-        Person B & \texttt{b@itu.dk} & 10101010 & INFJ--Counselor \\ 
-        Person C & \texttt{c@itu.dk} & 10101010 & ENFJ--Teacher \\ 
-        Person D & \texttt{d@itu.dk} & 10101010 & ESTP--Promoter \\ 
-        Person E & \texttt{e@itu.dk} & 10101010 & INTJ--Mastermind \\ 
+        Person A & \texttt{a@itu.dk} & 10101010 & ENFB--Champion \\
+        Person B & \texttt{b@itu.dk} & 10101010 & INFJ--Counselor \\
+        Person C & \texttt{c@itu.dk} & 10101010 & ENFJ--Teacher \\
+        Person D & \texttt{d@itu.dk} & 10101010 & ESTP--Promoter \\
+        Person E & \texttt{e@itu.dk} & 10101010 & INTJ--Mastermind \\
     \end{tabular}
 \end{table}
 
@@ -136,7 +193,7 @@ Dagene hvor vi mødes starter med et møde, og fortsætter derefter med dagens a
 Vi forventer af hinanden at vi arbejder i de aftalte tidsrum, og så vidt muligt holder det sociale adskilt derfra. Pauser styres individuelt.
 Vi regner med at bruge mindst 20 timer om ugen pr. person på projektarbejde.
 
-\paragraph{Mødetidspunkter} 
+\paragraph{Mødetidspunkter}
 
 \begin{itemize}
     \item Mandag: 10:00--16:00
@@ -144,7 +201,7 @@ Vi regner med at bruge mindst 20 timer om ugen pr. person på projektarbejde.
     \item Onsdag: selvstændigt arbejde
     \item Torsdag: selvstændigt arbejde
     \item Fredag: 10:00--16:00
-    \item Lørdag: selvstændigt arbejde (hold weekend!) 
+    \item Lørdag: selvstændigt arbejde (hold weekend!)
     \item Søndag: selvstændigt arbejde (hold weekend!)
 \end{itemize}
 
