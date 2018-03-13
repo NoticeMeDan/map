@@ -1,4 +1,4 @@
-package com.noticemedan.map;
+package com.noticemedan.map.view;
 
 public class App {
     public static void main(String[] args) {
