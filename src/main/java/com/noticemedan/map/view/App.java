@@ -13,8 +13,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         PaneView paneView = PaneView.getInstance();
-        MouseController mouseController = new MouseController();
-        mouseController.addMouseListeners();
+
+        MouseController mouseController = MouseController.getInstance();
+        mouseController.addPanFunctionality();
+
         primaryStage.setTitle("SimpleMap");
         primaryStage.setScene(new Scene(paneView.getRootPane()));
         primaryStage.sizeToScene();

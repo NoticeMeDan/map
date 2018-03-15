@@ -6,43 +6,63 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class MouseController {
+    private static MouseController instance;
+    private CoordinatePoint mousePressed, draggedDistance, oldLocation, newLocalation;
     private PaneView paneView = PaneView.getInstance();
-    Pane rootPane = paneView.getRootPane();
+    private Pane rootPane = paneView.getRootPane();
 
-    MousePoint mousePressed, mouseDragged, mouseRelease;
-    MousePoint newLocalationCoordinates;
+    private MouseController() {}
 
-    public void addMouseListeners() {
-        newLocalationCoordinates = new MousePoint(0,0);
-        mouseRelease = new MousePoint(0,0);
+    public static MouseController getInstance() {
+        if (instance == null) instance = new MouseController();
+        return instance;
+    }
+
+    public void addPanFunctionality() {
+        oldLocation = new CoordinatePoint(0,0);
+        mousePressed = new CoordinatePoint(0,0);
+        draggedDistance = new CoordinatePoint(0,0);
+        newLocalation = new CoordinatePoint(0,0);
+
+        setMousePressedEvent();
+        setMouseDragEvent();
+        setMouseReleasedEvent();
+    }
+
+    public void addZoomFunctionality() {
+        // ZoomingFunctionality
+    }
+
+
+    private void setMousePressedEvent() {
         rootPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event ->  {
-            mousePressed = new MousePoint(event.getSceneX(), event.getSceneY());
-        });
-
-        rootPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (mouseDragged == null) mouseDragged = new MousePoint(event.getSceneX(), event.getSceneY());
-            else {
-                mouseDragged.setX(event.getSceneX() - mousePressed.getX());
-                mouseDragged.setY(event.getSceneY() - mousePressed.getY());
-            }
-            double newPaneLocationX = mouseDragged.getX() + mouseRelease.getX();
-            double newPaneLocationY = mouseDragged.getY() + mouseRelease.getY();
-
-            newLocalationCoordinates.setX(newPaneLocationX);
-            newLocalationCoordinates.setY(newPaneLocationY);
-
-            rootPane.relocate(newPaneLocationX, newPaneLocationY);
-        });
-
-        rootPane.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
-            mouseRelease.setX(newLocalationCoordinates.getX());
-            mouseRelease.setY(newLocalationCoordinates.getY());
+            mousePressed.setX(event.getSceneX());
+            mousePressed.setY(event.getSceneY());
+            draggedDistance.setX(event.getSceneX());
+            draggedDistance.setY(event.getSceneY());
         });
     }
 
-    private class MousePoint {
+    private void setMouseDragEvent() {
+        rootPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            draggedDistance.setX(event.getSceneX() - mousePressed.getX());
+            draggedDistance.setY(event.getSceneY() - mousePressed.getY());
+            newLocalation.setX(draggedDistance.getX() + oldLocation.getX());
+            newLocalation.setY(draggedDistance.getY() + oldLocation.getY());
+            rootPane.relocate(newLocalation.getX(), newLocalation.getY());
+        });
+    }
+
+    private void setMouseReleasedEvent() {
+        rootPane.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
+            oldLocation.setX(newLocalation.getX());
+            oldLocation.setY(newLocalation.getY());
+        });
+    }
+
+    private class CoordinatePoint {
         @Getter @Setter double x, y;
-        MousePoint(double x, double y) {
+        CoordinatePoint(double x, double y) {
             this.x = x;
             this.y = y;
         }
