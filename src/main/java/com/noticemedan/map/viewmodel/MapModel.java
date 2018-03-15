@@ -1,6 +1,5 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.data.BufferedFileReader;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
