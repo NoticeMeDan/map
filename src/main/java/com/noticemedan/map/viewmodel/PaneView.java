@@ -10,7 +10,7 @@ public class PaneView {
     @Getter private Pane root;
 
     public PaneView() {
-        this.mapModel = new MapModel("lines8.txt");
+        this.mapModel = new MapModel("lines20k.txt");
         this.root = new Pane();
         drawPaths();
     }

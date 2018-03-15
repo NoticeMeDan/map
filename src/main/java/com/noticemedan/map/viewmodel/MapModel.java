@@ -30,18 +30,9 @@ public class MapModel implements Iterable<Path> {
             for (String line = b.readLine(); line != null; line = b.readLine() ) {
                 String[] tokens = line.split(" ");
                 if (tokens[0].equals("LINE")) {
-                    double x1 = Double.parseDouble(tokens[1]);
-                    double y1 = Double.parseDouble(tokens[2]);
-                    double x2 = Double.parseDouble(tokens[3]);
-                    double y2 = Double.parseDouble(tokens[4]);
-                    Path path = new Path();
-                    MoveTo moveTo = new MoveTo();
-                    LineTo lineTo = new LineTo();
-                    moveTo.setX(x1); moveTo.setY(y1);
-                    lineTo.setX(x2); lineTo.setY(y2);
-                    path.getElements().add(moveTo);
-                    path.getElements().add(lineTo);
-                    paths.add(path);
+                    double[] coordinates = new double[4];
+                    for (int i = 0; i < 4; i++) coordinates[i] = Double.parseDouble(tokens[i+1]);
+                    paths.add(createPathShape(coordinates));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -49,6 +40,17 @@ public class MapModel implements Iterable<Path> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Path createPathShape(double[] coordinates) {
+        Path path = new Path();
+        MoveTo moveTo = new MoveTo();
+        LineTo lineTo = new LineTo();
+        moveTo.setX(coordinates[0]); moveTo.setY(coordinates[1]);
+        lineTo.setX(coordinates[2]); lineTo.setY(coordinates[3]);
+        path.getElements().add(moveTo);
+        path.getElements().add(lineTo);
+        return path;
     }
 
     @Override
