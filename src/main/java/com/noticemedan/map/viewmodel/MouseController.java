@@ -42,8 +42,8 @@ public class MouseController {
                     scaleDown.setPivotY(event.getSceneY());
 
                     if(event.getDeltaY()<0){
-                        rootPane.getTransforms().addAll(scaleUp);
-                    } else rootPane.getTransforms().addAll(scaleDown);
+                        rootPane.getTransforms().addAll(scaleDown);½
+                    } else rootPane.getTransforms().addAll(scaleUp);
                 }
         );
 
