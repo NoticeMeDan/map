@@ -16,7 +16,7 @@ public class App extends Application {
 
         MouseController mouseController = MouseController.getInstance();
         mouseController.addPanFunctionality();
-
+        mouseController.addZoomFunctionality();
         primaryStage.setTitle("SimpleMap");
         primaryStage.setScene(new Scene(paneView.getRootPane()));
         primaryStage.sizeToScene();
