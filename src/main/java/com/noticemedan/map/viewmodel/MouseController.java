@@ -32,21 +32,27 @@ public class MouseController {
     }
 
     public void addZoomFunctionality() {
-        Scale scaleUp = new Scale(1.1, 1.1);
-        Scale scaleDown = new Scale(0.9,0.9);
-
         rootPane.addEventFilter(ScrollEvent.SCROLL, event -> {
-                    scaleUp.setPivotX(event.getSceneX());
-                    scaleUp.setPivotY(event.getSceneY());
-                    scaleDown.setPivotX(event.getSceneX());
-                    scaleDown.setPivotY(event.getSceneY());
-
-                    if(event.getDeltaY()<0){
-                        rootPane.getTransforms().addAll(scaleDown);
-                    } else rootPane.getTransforms().addAll(scaleUp);
-                }
+                CoordinatePoint mousePosition = new CoordinatePoint(event.getSceneX(),event.getSceneY());
+                if(event.getDeltaY()>0){
+                    zoomIn(mousePosition);
+                } else zoomOut(mousePosition);
+            }
         );
+    }
 
+    private void zoomIn(CoordinatePoint mousePosition) {
+        Scale scaleUp = new Scale(1.1,1.1);
+        scaleUp.setPivotX(mousePosition.getX());
+        scaleUp.setPivotY(mousePosition.getY());
+        rootPane.getTransforms().addAll(scaleUp);
+    }
+
+    private void zoomOut(CoordinatePoint mousePosition) {
+        Scale scaleDown = new Scale(0.9,0.9);
+        scaleDown.setPivotX(mousePosition.getX());
+        scaleDown.setPivotY(mousePosition.getY());
+        rootPane.getTransforms().addAll(scaleDown);
     }
 
 
