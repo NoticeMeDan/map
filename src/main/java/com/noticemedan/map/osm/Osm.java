@@ -1,13 +1,12 @@
 package com.noticemedan.map.osm;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-@JsonIgnoreProperties({"version", "generator", "copyright", "attribution", "license"})
-public class Osm {
+public class Osm implements Serializable {
 	private Bounds bounds;
 	private List<Node> nodes;
 	private List<Way> ways;

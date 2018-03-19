@@ -1,33 +1,33 @@
 package com.noticemedan.map.io;
 
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.noticemedan.map.osm.Osm;
-import lombok.Cleanup;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.exolab.castor.xml.XMLContext;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.*;
 
-
 public class XMLMapData implements MapDataIOReader {
-	private static String inputStreamToString(InputStream is) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		String line;
-		@Cleanup BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-		while ((line = br.readLine()) != null) {
-			sb.append(line);
-		}
-		return sb.toString();
-	}
-
 	@Override
-	public Osm deserialize(File file) throws XMLStreamException, IOException {
-		JacksonXmlModule module = new JacksonXmlModule();
-		module.setDefaultUseWrapper(false);
-		XmlMapper xmlMapper = new XmlMapper(module);
-		String xml = inputStreamToString(new FileInputStream(file));
-		Osm value = xmlMapper.readValue(xml, Osm.class);
-		return value;
+	public Osm deserialize(File file) throws IOException, MappingException, MarshalException, ValidationException {
+		// Load mapping
+		Mapping mapping = new Mapping();
+		mapping.loadMapping(String.valueOf(ClassLoader.getSystemResource("OsmMapping.xml")));
+
+		// Init and configure XMLContext
+		XMLContext context = new XMLContext();
+		context.addMapping(mapping);
+
+		FileReader reader = new FileReader(file);
+
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		unmarshaller.setIgnoreExtraAttributes(true);
+		unmarshaller.setClass(Osm.class);
+
+		Osm rootNode = (Osm) unmarshaller.unmarshal(reader);
+		return rootNode;
 	}
 }
