@@ -1,6 +1,6 @@
-package com.noticemedan.map.io;
+package com.noticemedan.map.data.io;
 
-import com.noticemedan.map.osm.Osm;
+import com.noticemedan.map.data.osm.Osm;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
