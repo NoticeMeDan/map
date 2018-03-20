@@ -3,7 +3,9 @@ package com.noticemedan.map.viewmodel;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Path;
+import javafx.scene.transform.Scale;
 import lombok.Getter;
+import lombok.Setter;
 
 public class PaneView extends ImageView {
 
@@ -21,6 +23,10 @@ public class PaneView extends ImageView {
     public static PaneView getInstance() {
         if (instance == null) instance = new PaneView();
         return instance;
+    }
+
+    public void scalePane(Scale scale) {
+
     }
 
     private void drawPaths() {
