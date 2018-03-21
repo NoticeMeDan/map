@@ -31,6 +31,9 @@ target/
 # Latex build files
 *.aux
 *.fdb_latexmk
-*.fls 
+*.fls
 *.out
 *.pdf
+
+# OSM stuff
+denmark-latest.osm

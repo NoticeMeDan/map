@@ -1,17 +1,21 @@
 package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.data.osm.Osm;
+import io.vavr.control.Try;
+import lombok.extern.slf4j.Slf4j;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.*;
 
+@Slf4j
 public class XMLMapData implements MapDataIOReader {
 	@Override
-	public Osm deserialize(File file) throws Exception {
+	public Osm deserialize(File file) {
 		Serializer serializer = new Persister();
 
-		Osm rootNode = serializer.read(Osm.class, file);
-		return rootNode;
+		return Try.of(() -> serializer.read(Osm.class, file))
+				.onFailure(x -> log.error("Error while deserializing OSM", x))
+				.getOrElse(new Osm());
 	}
 }

@@ -8,13 +8,9 @@ import java.io.File;
 public class App {
     public static void main(String[] args) {
 		XMLMapData xmlMapper = new XMLMapData();
-		try {
-			File file = new File(String.valueOf(App.class.getResource("/smaller.osm")).split(":")[1]);
-			//File file = new File("/Users/elias/Projects/Code/School/map/denmark-latest.osm");
-			file.exists();
-			Osm rootNode = xmlMapper.deserialize(file);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//File file = new File(String.valueOf(App.class.getResource("/smaller.oss")).split(":")[1]);
+		File file = new File("/home/elias/Projects/Code/map/denmark-latest.os");
+		Osm rootNode = xmlMapper.deserialize(file);
+		System.out.println("# of Nodes: " + rootNode.getNodes().size());
 	}
 }
