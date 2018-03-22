@@ -1,7 +1,24 @@
 package com.noticemedan.map.view;
 
-public class App {
+import com.noticemedan.map.viewmodel.MouseController;
+import com.noticemedan.map.viewmodel.CustomPane;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class App extends Application {
     public static void main(String[] args) {
-        System.out.println("Hi mom!");
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        CustomPane root = new CustomPane();
+        MouseController controller = new MouseController();
+        controller.addZoomAbility(root);
+        primaryStage.setTitle("Map");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.sizeToScene();
+        primaryStage.show();
     }
 }
