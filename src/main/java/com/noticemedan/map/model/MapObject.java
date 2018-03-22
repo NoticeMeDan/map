@@ -1,4 +1,16 @@
 package com.noticemedan.map.model;
 
-public class MapObject {
+import javafx.scene.shape.Path;
+
+public class MapObject implements MapObjectInterface {
+
+	@Override
+	public OSMType getOSMType() {
+		return null;
+	}
+
+	@Override
+	public Path getPath() {
+		return null;
+	}
 }

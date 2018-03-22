@@ -1,6 +1,7 @@
 package com.noticemedan.map.data.osm;
 
 import lombok.Data;
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
@@ -10,6 +11,8 @@ import java.util.List;
 @Data
 @Root(strict = false)
 public class Relation implements Serializable {
+	@Attribute long id;
+
 	@ElementList(inline = true, entry = "member", required = false)
 	private List<Member> members;
 
