@@ -4,12 +4,11 @@ import lombok.Data;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Root(strict = false)
-public class Relation implements Serializable {
+public class Relation {
 	@ElementList(inline = true, entry = "member", required = false)
 	private List<Member> members;
 
