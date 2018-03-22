@@ -11,10 +11,10 @@ import java.io.*;
 @Slf4j
 public class XMLMapData implements MapDataIOReader {
 	@Override
-	public Osm deserialize(File file) {
+	public Osm deserialize(InputStream inputStream) {
 		Serializer serializer = new Persister();
 
-		return Try.of(() -> serializer.read(Osm.class, file))
+		return Try.of(() -> serializer.read(Osm.class, inputStream))
 				.onFailure(x -> log.error("Error while deserializing OSM", x))
 				.getOrElse(new Osm());
 	}

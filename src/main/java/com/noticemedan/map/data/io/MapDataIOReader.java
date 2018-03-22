@@ -3,7 +3,8 @@ package com.noticemedan.map.data.io;
 import com.noticemedan.map.data.osm.Osm;
 
 import java.io.File;
+import java.io.InputStream;
 
 public interface MapDataIOReader {
-	Osm deserialize(File file) throws Exception;
+	Osm deserialize(InputStream inputStream);
 }
