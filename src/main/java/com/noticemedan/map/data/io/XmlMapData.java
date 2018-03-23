@@ -7,11 +7,11 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.*;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 @Slf4j
-public class XmlMapData implements MapDataIOReader, Callable<Osm> {
-	private InputStream osmData;
+public class XmlMapData implements MapDataIOReader, Supplier<Osm> {
+	private final InputStream osmData;
 
 	public XmlMapData(InputStream osmData) {
 		this.osmData = osmData;
@@ -27,7 +27,7 @@ public class XmlMapData implements MapDataIOReader, Callable<Osm> {
 	}
 
 	@Override
-	public Osm call() {
+	public Osm get() {
 		return this.deserialize(this.osmData);
 	}
 }
