@@ -1,7 +1,8 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.model.MapObject;
-import com.noticemedan.map.model.MapObjectBuilderInterface;
+
+import com.noticemedan.map.model.DemoObject;
+import com.noticemedan.map.model.DemoObjectBuilder;
 import com.noticemedan.map.model.OSMType;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -14,24 +15,26 @@ import java.util.Map;
 public class MapCanvas {
 
     @Getter private Canvas canvas;
-    private MapObjectBuilderInterface mapObjectBuilderInterface;
-    private Map<OSMType,List<MapObject>> mapObjects;
+    private DemoObjectBuilder mapObjectBuilderInterface;
+    private Map<OSMType,List<DemoObject>> mapObjects;
     private GraphicsContext pen;
 
     public MapCanvas(){
         super();
 		this.canvas = new Canvas(50,50);
 		this.pen = canvas.getGraphicsContext2D();
+		this.mapObjectBuilderInterface = new DemoObjectBuilder();
+		this.mapObjects = mapObjectBuilderInterface.getMapObjectsByType();
         drawCanvas();
     }
 
     private void drawCanvas() {
-        /*setPenAttributes(0.5,Color.WHITE);
+        setPenAttributes(5,Color.WHITE);
         drawObjects(mapObjects.get(OSMType.ROAD));
 
-        setPenAttributes(1.0,Color.ORANGE);
-        drawObjects(mapObjects.get(OSMType.HIGHWAYS));
-
+        setPenAttributes(10.0,Color.ORANGE);
+        drawObjects(mapObjects.get(OSMType.HIGHWAY));
+		/*
         setPenAttributes(0.2,Color.LIGHTGRAY);
         drawObjects(mapObjects.get(OSMType.BUILDINGS));
 
@@ -40,9 +43,9 @@ public class MapCanvas {
 
 		setPenAttributes(0.2,Color.BLUE);
 		drawObjects(mapObjects.get(OSMType.WATER));
-
+		*/
 		setPenAttributes(0.2,Color.YELLOW);
-		drawObjects(mapObjects.get(OSMType.SAND));*/
+		drawObjects(mapObjects.get(OSMType.SAND));
     }
 
     private void setPenAttributes(double lineWidth, Color color){
@@ -51,8 +54,8 @@ public class MapCanvas {
     	pen.setFill(color);
 	}
 
-	private void drawObjects(List<MapObject> objects){
-    	for(MapObject object : objects){
+	private void drawObjects(List<DemoObject> objects){
+    	for(DemoObject object : objects){
     		List<Point2D> points = object.getPoints();
     		drawPath(points);
 			if ((isClosed(object))) {
@@ -73,7 +76,7 @@ public class MapCanvas {
 		}
 	}
 
-	private boolean isClosed(MapObject object) {
+	private boolean isClosed(DemoObject object) {
 		return object.getOSMType() != OSMType.ROAD && (object.getOSMType() != OSMType.HIGHWAY);
 	}
 
