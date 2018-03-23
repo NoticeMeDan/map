@@ -1,16 +1,22 @@
 package com.noticemedan.map.model;
 
-import javafx.scene.shape.Path;
+import javafx.geometry.Point2D;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 public class MapObject implements MapObjectInterface {
+	@Getter @Setter private OSMType osmType;
+	@Getter @Setter private List<Point2D> points;
 
 	@Override
 	public OSMType getOSMType() {
-		return null;
+		return osmType;
 	}
 
 	@Override
-	public Path getPath() {
-		return null;
+	public List<Point2D> getPoints() {
+		return points;
 	}
 }
