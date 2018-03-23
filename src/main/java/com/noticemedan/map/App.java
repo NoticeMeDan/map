@@ -1,7 +1,6 @@
 package com.noticemedan.map;
 
 import com.noticemedan.map.data.io.XmlMapData;
-import com.noticemedan.map.data.osm.Osm;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 
