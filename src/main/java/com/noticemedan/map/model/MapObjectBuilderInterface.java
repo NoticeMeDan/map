@@ -1,7 +1,8 @@
 package com.noticemedan.map.model;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MapObjectBuilderInterface {
-    List<MapObject> getMapObjects();
+	Map<OSMType, List<MapObject>> getMapObjectsByType();
 }
