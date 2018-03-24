@@ -1,8 +1,8 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.App;
 import com.noticemedan.map.data.io.XMLMapData;
 import com.noticemedan.map.data.osm.*;
+import com.noticemedan.map.view.App;
 import io.vavr.control.Try;
 import javafx.geometry.Point2D;
 import lombok.extern.slf4j.Slf4j;
@@ -138,6 +138,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		List<Point2D> point2DList = new LinkedList<>();
 		way.getNodeRefs().forEach(nr -> {
 			Node node = nodeMap.get(nr.getRef());
+			//log.info("{" + scaleLon(node.getLon()) + ", " + scaleLat(node.getLat()));
 			Point2D point = new Point2D(scaleLon(node.getLon()), scaleLat(node.getLat()));
 			point2DList.add(point);
 		});
@@ -149,7 +150,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 	}
 
 	private double scaleLat(double lat) {
-		return (-lat * yFactor) - topLeftLat;
+		return -((-lat * yFactor) - topLeftLat);
 	}
 
 	private OSMType getOSMType(Tag t) {
