@@ -6,20 +6,24 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import lombok.Getter;
 
+import java.awt.*;
+
 public class CustomPane extends ScrollPane {
     private Group paneViewContent;
     @Getter private Group canvasContent;
     private MapCanvas mapCanvas;
 
-    public CustomPane() {
+    public CustomPane(Dimension dim) {
         super();
-        initializeFields();
+        initializeFields(dim);
         applyContent();
         adjustPaneProperties();
+        setWidth(dim.getWidth());
+        setHeight(dim.getHeight());
     }
 
-    private void initializeFields(){
-        this.mapCanvas = new MapCanvas();
+    private void initializeFields(Dimension dim){
+        this.mapCanvas = new MapCanvas(dim);
         this.paneViewContent = new Group();
         this.canvasContent = new Group();
     }

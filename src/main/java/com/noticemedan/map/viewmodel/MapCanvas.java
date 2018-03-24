@@ -9,11 +9,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class MapCanvas {
 
     @Getter private Canvas canvas;
@@ -21,17 +23,17 @@ public class MapCanvas {
     private Map<OSMType,List<MapObject>> mapObjects;
     private GraphicsContext pen;
 
-    public MapCanvas(){
+    public MapCanvas(Dimension dim) {
         super();
 		this.canvas = new Canvas(50,50);
 		this.pen = canvas.getGraphicsContext2D();
-		this.mapObjectBuilder = MapObjectBuilder.getInstance(new Dimension(800, 800));
+		this.mapObjectBuilder = MapObjectBuilder.getInstance(new Dimension(1600, 1600));
 		this.mapObjectBuilder.writeOut();
 		this.mapObjects = mapObjectBuilder.getMapObjectsByType();
-        drawCanvas();
+        drawCanvas(dim);
     }
 
-    private void drawCanvas() {
+    private void drawCanvas(Dimension dim) {
         setPenAttributes(5,Color.LIGHTGRAY);
         if (mapContainsKey(OSMType.ROAD))
         	drawObjects(mapObjects.get(OSMType.ROAD));
