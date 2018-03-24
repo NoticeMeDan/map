@@ -138,7 +138,6 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		List<Point2D> point2DList = new LinkedList<>();
 		way.getNodeRefs().forEach(nr -> {
 			Node node = nodeMap.get(nr.getRef());
-			//log.info("{" + scaleLon(node.getLon()) + ", " + scaleLat(node.getLat()));
 			Point2D point = new Point2D(scaleLon(node.getLon()), scaleLat(node.getLat()));
 			point2DList.add(point);
 		});
@@ -154,6 +153,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 	}
 
 	private OSMType getOSMType(Tag t) {
+		log.info(t.getK() + " : " + t.getV());
 		OSMType osmType = OSMType.UNKNOWN;
 		switch (t.getK()) {
 			case "building":
@@ -172,6 +172,29 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 						break;
 					case "sand":
 						osmType = OSMType.SAND;
+						break;
+					case "tree_row":
+						osmType = OSMType.TREE_ROW;
+						break;
+					case "heath":
+						osmType = OSMType.HEATH;
+						break;
+					case "coastline":
+						osmType = OSMType.COASTLINE;
+						break;
+				}
+				break;
+			case "leisure":
+				switch (t.getV()) {
+					case "playground":
+						osmType = OSMType.PLAYGROUND;
+						break;
+					case "garden":
+						osmType = OSMType.GARDEN;
+						break;
+					case "park":
+						osmType = OSMType.PARK;
+						break;
 				}
 				break;
 			case "highway":
@@ -199,6 +222,9 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		printSizeOfMapObjectList(OSMType.GRASSLAND);
 		printSizeOfMapObjectList(OSMType.SAND);
 		printSizeOfMapObjectList(OSMType.BUILDING);
+		printSizeOfMapObjectList(OSMType.COASTLINE);
+		printSizeOfMapObjectList(OSMType.TREE_ROW);
+		printSizeOfMapObjectList(OSMType.HEATH);
 		printSizeOfMapObjectList(OSMType.UNKNOWN);
 	}
 

@@ -31,11 +31,11 @@ public class CustomPane extends ScrollPane {
     }
 
     private void adjustPaneProperties(){
-    	this.setStyle("-fx-background-color: WHITE");
+    	this.setStyle("-fx-background-color: blue");
         this.setPrefHeight(560);
         this.setPrefWidth(700);
-        //this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        //this.setVbarPolicy(ScrollBarPolicy.NEVER);
+        this.setHbarPolicy(ScrollBarPolicy.NEVER);
+        this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setPannable(true);
     }
 

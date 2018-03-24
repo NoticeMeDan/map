@@ -14,8 +14,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-import static javafx.scene.paint.Color.color;
-
 public class MapCanvas {
 
     @Getter private Canvas canvas;
@@ -34,7 +32,7 @@ public class MapCanvas {
     }
 
     private void drawCanvas() {
-        setPenAttributes(5,Color.WHITE);
+        setPenAttributes(5,Color.LIGHTGRAY);
         if (mapContainsKey(OSMType.ROAD))
         	drawObjects(mapObjects.get(OSMType.ROAD));
 
@@ -42,7 +40,7 @@ public class MapCanvas {
         if (mapContainsKey(OSMType.HIGHWAY))
         	drawObjects(mapObjects.get(OSMType.HIGHWAY));
 
-        setPenAttributes(0.2,Color.LIGHTGRAY);
+        setPenAttributes(0.2,Color.GRAY);
         if (mapContainsKey(OSMType.BUILDING))
         	drawObjects(mapObjects.get(OSMType.BUILDING));
 
@@ -58,9 +56,33 @@ public class MapCanvas {
 		if (mapContainsKey(OSMType.SAND))
 			drawObjects(mapObjects.get(OSMType.SAND));
 
-		setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
+		setPenAttributes(0.2,Color.GREEN);
+		if (mapContainsKey(OSMType.TREE_ROW))
+			drawObjects(mapObjects.get(OSMType.TREE_ROW));
+
+		setPenAttributes(0.2,Color.GREEN);
+		if (mapContainsKey(OSMType.HEATH))
+			drawObjects(mapObjects.get(OSMType.HEATH));
+
+		setPenAttributes(0.2,Color.GREEN);
+		if (mapContainsKey(OSMType.PLAYGROUND))
+			drawObjects(mapObjects.get(OSMType.PLAYGROUND));
+
+		setPenAttributes(0.2,Color.GREEN);
+		if (mapContainsKey(OSMType.GARDEN))
+			drawObjects(mapObjects.get(OSMType.GARDEN));
+
+		setPenAttributes(0.2,Color.GREEN);
+		if (mapContainsKey(OSMType.PARK))
+			drawObjects(mapObjects.get(OSMType.PARK));
+
+		/*setPenAttributes(0.5, Color.RED);
+		if (mapContainsKey(OSMType.COASTLINE))
+			drawObjects(mapObjects.get(OSMType.COASTLINE));*/
+
+		/* setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
 		if (mapContainsKey(OSMType.UNKNOWN))
-			drawObjects(mapObjects.get(OSMType.UNKNOWN));
+			drawObjects(mapObjects.get(OSMType.UNKNOWN)); */
     }
 
     private boolean mapContainsKey(OSMType key) {
@@ -96,7 +118,7 @@ public class MapCanvas {
 	}
 
 	private boolean isClosed(MapObject object) {
-		return object.getOSMType() != OSMType.ROAD && (object.getOSMType() != OSMType.HIGHWAY);
+		return object.getOSMType() != OSMType.ROAD && (object.getOSMType() != OSMType.HIGHWAY && (object.getOSMType() != OSMType.COASTLINE));
 	}
 
 	private void putOnCanvas(Point2D point){
