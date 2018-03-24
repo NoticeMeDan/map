@@ -34,8 +34,8 @@ public class CustomPane extends ScrollPane {
     	this.setStyle("-fx-background-color: WHITE");
         this.setPrefHeight(560);
         this.setPrefWidth(700);
-        this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        this.setVbarPolicy(ScrollBarPolicy.NEVER);
+        //this.setHbarPolicy(ScrollBarPolicy.NEVER);
+        //this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setPannable(true);
     }
 
