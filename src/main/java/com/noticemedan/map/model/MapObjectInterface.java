@@ -1,8 +1,10 @@
 package com.noticemedan.map.model;
 
-import javafx.scene.shape.Path;
+import javafx.geometry.Point2D;
+
+import java.util.List;
 
 public interface MapObjectInterface {
     OSMType getOSMType();
-    Path getPath();
+    List<Point2D> getPoints();
 }
