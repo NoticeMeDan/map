@@ -152,7 +152,6 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		return (-lat * yFactor) - topLeftLat;
 	}
 
-
 	private OSMType getOSMType(Tag t) {
 		OSMType osmType = OSMType.UNKNOWN;
 		switch (t.getK()) {
@@ -181,6 +180,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		return osmType;
 	}
 
+	// For  testing purposes
 	private void printSizeOfMapObjectList(OSMType type) {
 		if (mapObjectEnumMap.containsKey(type))
 			log.info(type + ": " + mapObjectEnumMap.get(type).size());
@@ -189,6 +189,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		}
 	}
 
+	// For  testing purposes
 	public void writeOut() {
 		printSizeOfMapObjectList(OSMType.ROAD);
 		printSizeOfMapObjectList(OSMType.HIGHWAY);
@@ -204,6 +205,5 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 	public Map<OSMType, List<MapObject>> getMapObjectsByType() {
 		return mapObjectEnumMap;
 	}
-
 
 }
