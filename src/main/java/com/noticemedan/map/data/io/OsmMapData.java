@@ -11,11 +11,13 @@ import java.util.function.Supplier;
 
 @Slf4j
 public class OsmMapData implements MapDataIOReader, Supplier<Osm> {
-	private final InputStream osmData;
+	private InputStream osmData;
 
 	public OsmMapData(InputStream osmData) {
 		this.osmData = osmData;
 	}
+
+	public OsmMapData() {}
 
 	@Override
 	public Osm deserialize(InputStream inputStream) {

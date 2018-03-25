@@ -8,6 +8,7 @@ import javafx.geometry.Point2D;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.io.BufferedInputStream;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,15 +37,8 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
 		this.dim = dim;
 
-		ZipInputStream inputStream = new ZipInputStream(App.class.getResourceAsStream("/small.osm.zip"));
-		Try.of(inputStream::getNextEntry)
-				.onFailure(x -> log.error("Error while getting entry in zip file", x))
-				.getOrNull();
-
-		OsmMapData osmMapData = new OsmMapData(inputStream);
-		CompletableFuture.supplyAsync(osmMapData, Executors.newSingleThreadExecutor())
-				.thenAccept(rootNode -> log.info("# of Nodes: " + rootNode.getNodes().size()));
-
+		BufferedInputStream inputStream = new BufferedInputStream(App.class.getResourceAsStream("/small.osm"));
+		OsmMapData osmMapData = new OsmMapData();
 		Osm rootNode = osmMapData.deserialize(inputStream);
 
 		initializeCollections(rootNode);
