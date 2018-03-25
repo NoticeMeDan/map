@@ -1,12 +1,11 @@
 package com.noticemedan.map.view;
 
-import com.noticemedan.map.viewmodel.MouseController;
-import com.noticemedan.map.viewmodel.CustomPane;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.awt.*;
 
 public class App extends Application {
     public static void main(String[] args) {
@@ -15,11 +14,14 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        CustomPane root = new CustomPane(new Dimension(900, 450));
-        MouseController controller = new MouseController();
-        controller.addZoomAbility(root);
-        primaryStage.setTitle("Map");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/media/icon.png")));
+		primaryStage.setTitle("Mappr");
+		primaryStage.setWidth(1100);
+		primaryStage.setHeight(650);
+		primaryStage.setScene(new Scene(root));
+		primaryStage.setResizable(false);
+
+		primaryStage.show();
     }
 }

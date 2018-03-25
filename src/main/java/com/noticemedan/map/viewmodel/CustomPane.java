@@ -17,7 +17,7 @@ public class CustomPane extends ScrollPane {
         super();
         initializeFields(dim);
         applyContent();
-        adjustPaneProperties();
+        adjustPaneProperties(dim);
         setWidth(dim.getWidth());
         setHeight(dim.getHeight());
     }
@@ -34,10 +34,10 @@ public class CustomPane extends ScrollPane {
         this.setContent(paneViewContent);
     }
 
-    private void adjustPaneProperties(){
-    	this.setStyle("-fx-background-color: blue");
-        this.setPrefHeight(560);
-        this.setPrefWidth(700);
+    private void adjustPaneProperties(Dimension dim){
+    	this.setStyle("-fx-background: blue");
+		this.setPrefWidth(1100);
+		this.setPrefHeight(650);
         this.setHbarPolicy(ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setPannable(true);

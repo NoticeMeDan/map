@@ -2,16 +2,21 @@ package com.noticemedan.map.viewmodel;
 
 
 import com.noticemedan.map.model.MapObject;
-import com.noticemedan.map.model.MapObjectBuilder;
+import com.noticemedan.map.model.MapObjectCreater;
 import com.noticemedan.map.model.OSMType;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Shape;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,21 +24,30 @@ import java.util.Map;
 public class MapCanvas {
 
     @Getter private Canvas canvas;
-    private MapObjectBuilder mapObjectBuilder;
+    private MapObjectCreater mapObjectCreater;
     private Map<OSMType,List<MapObject>> mapObjects;
     private GraphicsContext pen;
+    private Dimension dim;
 
     public MapCanvas(Dimension dim) {
         super();
-		this.canvas = new Canvas(50,50);
+		this.canvas = new Canvas(50, 50);
 		this.pen = canvas.getGraphicsContext2D();
-		this.mapObjectBuilder = MapObjectBuilder.getInstance(new Dimension(1600, 1600));
-		this.mapObjectBuilder.writeOut();
-		this.mapObjects = mapObjectBuilder.getMapObjectsByType();
+		this.mapObjectCreater = MapObjectCreater.getInstance(dim);
+		this.mapObjectCreater.writeOut();
+		this.mapObjects = mapObjectCreater.getMapObjectsByType();
         drawCanvas(dim);
     }
 
     private void drawCanvas(Dimension dim) {
+		/* setPenAttributes(20, Color.ORANGE);
+		if (mapContainsKey(OSMType.COASTLINE))
+			drawObjects(mapObjects.get(OSMType.COASTLINE));*/
+
+		/* setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
+		if (mapContainsKey(OSMType.UNKNOWN))
+			drawObjects(mapObjects.get(OSMType.UNKNOWN)); */
+
         setPenAttributes(5,Color.LIGHTGRAY);
         if (mapContainsKey(OSMType.ROAD))
         	drawObjects(mapObjects.get(OSMType.ROAD));
@@ -77,14 +91,6 @@ public class MapCanvas {
 		setPenAttributes(0.2,Color.GREEN);
 		if (mapContainsKey(OSMType.PARK))
 			drawObjects(mapObjects.get(OSMType.PARK));
-
-		/*setPenAttributes(0.5, Color.RED);
-		if (mapContainsKey(OSMType.COASTLINE))
-			drawObjects(mapObjects.get(OSMType.COASTLINE));*/
-
-		/* setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
-		if (mapContainsKey(OSMType.UNKNOWN))
-			drawObjects(mapObjects.get(OSMType.UNKNOWN)); */
     }
 
     private boolean mapContainsKey(OSMType key) {
@@ -120,7 +126,7 @@ public class MapCanvas {
 	}
 
 	private boolean isClosed(MapObject object) {
-		return object.getOSMType() != OSMType.ROAD && (object.getOSMType() != OSMType.HIGHWAY && (object.getOSMType() != OSMType.COASTLINE));
+		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY /*&& (object.getOsmType() != OSMType.COASTLINE)*/);
 	}
 
 	private void putOnCanvas(Point2D point){

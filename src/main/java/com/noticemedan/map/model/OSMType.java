@@ -1,5 +1,4 @@
 package com.noticemedan.map.model;
-
 public enum OSMType {
 	ROAD,
 	HIGHWAY,
@@ -14,5 +13,5 @@ public enum OSMType {
 	PLAYGROUND,
 	GARDEN,
 	PARK,
-	UNKNOWN
+	UNKNOWN;
 }
