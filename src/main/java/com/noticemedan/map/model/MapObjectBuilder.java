@@ -37,7 +37,7 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
 		this.dim = dim;
 
-		BufferedInputStream inputStream = new BufferedInputStream(App.class.getResourceAsStream("/small.osm"));
+		BufferedInputStream inputStream = new BufferedInputStream(App.class.getResourceAsStream("/smaller.osm"));
 		OsmMapData osmMapData = new OsmMapData();
 		Osm rootNode = osmMapData.deserialize(inputStream);
 
