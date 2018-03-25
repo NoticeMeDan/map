@@ -56,15 +56,15 @@ public class MapCanvas {
         if (mapContainsKey(OSMType.HIGHWAY))
         	drawObjects(mapObjects.get(OSMType.HIGHWAY));
 
-        setPenAttributes(0.2,Color.GRAY);
+        setPenAttributes(0.2,Color.rgb(125, 125,125));
         if (mapContainsKey(OSMType.BUILDING))
         	drawObjects(mapObjects.get(OSMType.BUILDING));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(12,158,89));
 		if (mapContainsKey(OSMType.GRASSLAND))
 			drawObjects(mapObjects.get(OSMType.GRASSLAND));
 
-		setPenAttributes(0.2,Color.BLUE);
+		setPenAttributes(0.2, Color.rgb(40,84,210));
 		if (mapContainsKey(OSMType.WATER))
 			drawObjects(mapObjects.get(OSMType.WATER));
 
@@ -72,23 +72,23 @@ public class MapCanvas {
 		if (mapContainsKey(OSMType.SAND))
 			drawObjects(mapObjects.get(OSMType.SAND));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(12,158,89));
 		if (mapContainsKey(OSMType.TREE_ROW))
 			drawObjects(mapObjects.get(OSMType.TREE_ROW));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(73,150,128));
 		if (mapContainsKey(OSMType.HEATH))
 			drawObjects(mapObjects.get(OSMType.HEATH));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(88,232,93));
 		if (mapContainsKey(OSMType.PLAYGROUND))
 			drawObjects(mapObjects.get(OSMType.PLAYGROUND));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(14,184,118));
 		if (mapContainsKey(OSMType.GARDEN))
 			drawObjects(mapObjects.get(OSMType.GARDEN));
 
-		setPenAttributes(0.2,Color.GREEN);
+		setPenAttributes(0.2,Color.rgb(14,184,118));
 		if (mapContainsKey(OSMType.PARK))
 			drawObjects(mapObjects.get(OSMType.PARK));
     }

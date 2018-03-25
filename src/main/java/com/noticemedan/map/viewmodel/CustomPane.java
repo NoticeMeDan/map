@@ -35,7 +35,7 @@ public class CustomPane extends ScrollPane {
     }
 
     private void adjustPaneProperties(Dimension dim){
-    	this.setStyle("-fx-background: blue");
+    	this.setStyle("-fx-background: #2349B5");
 		this.setPrefWidth(1100);
 		this.setPrefHeight(650);
         this.setHbarPolicy(ScrollBarPolicy.NEVER);

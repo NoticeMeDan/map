@@ -1,14 +1,11 @@
 package com.noticemedan.map.model;
 
 import com.noticemedan.map.data.OsmParser;
-import com.noticemedan.map.data.io.OsmMapData;
 import com.noticemedan.map.data.osm.*;
-import com.noticemedan.map.view.App;
 import javafx.geometry.Point2D;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.io.BufferedInputStream;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;

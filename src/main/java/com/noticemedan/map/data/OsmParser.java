@@ -2,7 +2,7 @@ package com.noticemedan.map.data;
 
 import com.noticemedan.map.data.io.OsmMapData;
 import com.noticemedan.map.data.osm.Osm;
-import com.noticemedan.map.view.App;
+import com.noticemedan.map.App;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
