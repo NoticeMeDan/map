@@ -20,7 +20,6 @@ public class App extends Application {
         controller.addZoomAbility(root);
         primaryStage.setTitle("Map");
         primaryStage.setScene(new Scene(root));
-        root.setStyle("-fx-background-color: blue");
         primaryStage.show();
     }
 }

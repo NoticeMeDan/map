@@ -1,6 +1,6 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.data.io.XMLMapData;
+import com.noticemedan.map.data.io.OsmMapData;
 import com.noticemedan.map.data.osm.*;
 import com.noticemedan.map.view.App;
 import io.vavr.control.Try;
@@ -12,6 +12,8 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
@@ -34,14 +36,16 @@ public class MapObjectBuilder implements MapObjectBuilderInterface {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
 		this.dim = dim;
 
-		XMLMapData xmlMapper = new XMLMapData();
-
 		ZipInputStream inputStream = new ZipInputStream(App.class.getResourceAsStream("/small.osm.zip"));
 		Try.of(inputStream::getNextEntry)
 				.onFailure(x -> log.error("Error while getting entry in zip file", x))
 				.getOrNull();
 
-		Osm rootNode = xmlMapper.deserialize(inputStream);
+		OsmMapData osmMapData = new OsmMapData(inputStream);
+		CompletableFuture.supplyAsync(osmMapData, Executors.newSingleThreadExecutor())
+				.thenAccept(rootNode -> log.info("# of Nodes: " + rootNode.getNodes().size()));
+
+		Osm rootNode = osmMapData.deserialize(inputStream);
 
 		initializeCollections(rootNode);
 		initializeBoundsAndMapConstants();
