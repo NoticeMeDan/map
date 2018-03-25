@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Uses OsmParser to read from Osm class and create associated MapObjects
+ * @author Simon / Silind
+ */
+
 @Slf4j
 public class MapObjectCreater implements MapObjectCreaterInterface {
 	private static MapObjectCreater instance;
@@ -21,10 +26,12 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	private static Map<Long, Relation> relationMap;
 	private static List<Way> wayList;
 	private static List<Relation> relationList;
+	private double xFactor;
+	private double yFactor;
+	private double topLeftLon;
+	private double topLeftLat;
 	private EnumMap<OSMType, List<MapObject>> mapObjectEnumMap;
-	private double xFactor, yFactor;
-	private double topLeftLon, topLeftLat;
-	private static Dimension dim;
+	private Dimension dim;
 
 	private MapObjectCreater(Dimension dim) {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
@@ -52,11 +59,9 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 
 	private void initializeBoundsAndMapConstants() {
 		double minLon = bounds.getMinlon();
-		double minLat = bounds.getMinlat();
+		double minLat = -bounds.getMinlat();
 		double maxLon = bounds.getMaxlon();
-		double maxLat = bounds.getMaxlat();
-		minLat = -minLat;
-		maxLat = -maxLat;
+		double maxLat = -bounds.getMaxlat();
 		xFactor = dim.getWidth() / (maxLon - minLon);
 		yFactor = dim.getHeight() / (maxLat - minLat);
 		topLeftLon = minLon * xFactor;
@@ -172,7 +177,10 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		return OSMType.UNKNOWN;
 	}
 
-	// For  testing purposes
+	/**
+	 * For testing purposes
+	 * Prints the amount of MapOjects associated to a given OSMType
+	 */
 	private void printSizeOfMapObjectList(OSMType type) {
 		if (mapObjectEnumMap.containsKey(type))
 			log.info(type + ": " + mapObjectEnumMap.get(type).size());
@@ -181,7 +189,10 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		}
 	}
 
-	// For  testing purposes
+	/**
+	 * For testing purposes
+	 * Alter this method as needed
+	 */
 	public void writeOut() {
 		printSizeOfMapObjectList(OSMType.ROAD);
 		printSizeOfMapObjectList(OSMType.HIGHWAY);

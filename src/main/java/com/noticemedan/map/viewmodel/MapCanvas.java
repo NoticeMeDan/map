@@ -27,19 +27,17 @@ public class MapCanvas {
     private MapObjectCreater mapObjectCreater;
     private Map<OSMType,List<MapObject>> mapObjects;
     private GraphicsContext pen;
-    private Dimension dim;
 
     public MapCanvas(Dimension dim) {
         super();
 		this.canvas = new Canvas(50, 50);
 		this.pen = canvas.getGraphicsContext2D();
 		this.mapObjectCreater = MapObjectCreater.getInstance(dim);
-		this.mapObjectCreater.writeOut();
 		this.mapObjects = mapObjectCreater.getMapObjectsByType();
-        drawCanvas(dim);
+        drawCanvas();
     }
 
-    private void drawCanvas(Dimension dim) {
+    private void drawCanvas() {
 		/* setPenAttributes(20, Color.ORANGE);
 		if (mapContainsKey(OSMType.COASTLINE))
 			drawObjects(mapObjects.get(OSMType.COASTLINE));*/
@@ -129,7 +127,7 @@ public class MapCanvas {
 		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY /*&& (object.getOsmType() != OSMType.COASTLINE)*/);
 	}
 
-	private void putOnCanvas(Point2D point){
+	private void putOnCanvas(Point2D point) {
 		if(point.getX()>canvas.getWidth()) resizeCanvasWidth(point.getX());
 		if(point.getY()>canvas.getHeight()) resizeCanvasHeight(point.getY());
 	}

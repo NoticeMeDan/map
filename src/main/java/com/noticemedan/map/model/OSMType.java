@@ -13,5 +13,5 @@ public enum OSMType {
 	PLAYGROUND,
 	GARDEN,
 	PARK,
-	UNKNOWN;
+	UNKNOWN
 }
