@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Root(strict = false)
-public class Relation implements Serializable {
+public class Relation {
 	@Attribute long id;
 
 	@ElementList(inline = true, entry = "member", required = false)

@@ -75,7 +75,7 @@
                         <manifest>
                             <mainClass>com.noticemedan.map.App</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>/</classpathPrefix>
+                            <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
@@ -89,7 +89,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

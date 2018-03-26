@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 
 import java.awt.*;
 
-
 public class MainViewController {
 	//Content Pane
 	@FXML Button routeButton;
@@ -35,7 +34,6 @@ public class MainViewController {
 	@FXML TextField searchStartPointAddressField;
 	@FXML TextField searchEndPointAddressField;
 	@FXML ListView routeSearchResultsListView;
-
 
 	public void initialize() {
 		insertMapCanvasIntoPane();
@@ -71,7 +69,6 @@ public class MainViewController {
 
 		searchStartPointAddressField.setOnMouseClicked(event -> routeSearchResultsListView.getItems().clear());
 		searchEndPointAddressField.setOnMouseClicked(event -> routeSearchResultsListView.getItems().clear());
-
 	}
 
 	private void openSearchPane() {
