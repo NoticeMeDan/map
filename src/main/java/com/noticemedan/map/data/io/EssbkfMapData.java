@@ -2,9 +2,7 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.data.osm.Osm;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
