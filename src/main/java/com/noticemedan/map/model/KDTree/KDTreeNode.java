@@ -17,6 +17,6 @@ public @Data class KDTreeNode {
 	public KDTreeNode(KDTreePoint[] points) {
 		this.points = points;
 	}
-
-	public KDTreeNode() { } // TODO: How do you avoid this?
+	// TODO: How do you avoid this?
+	public KDTreeNode() { }
 }
