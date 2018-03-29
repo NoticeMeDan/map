@@ -4,13 +4,14 @@ import lombok.Data;
 
 public @Data
 class KDTreePoint implements Comparable<KDTreePoint> {
-	double x;
-	double y;
-	boolean sortX = true;
+	private double x;
+	private double y;
+	private boolean sortX;
 
 	public KDTreePoint(double x, double y) {
 		this.x = x;
 		this.y = y;
+		this.sortX = true;
 	}
 
 	public int compareTo(KDTreePoint that) {
@@ -26,4 +27,7 @@ class KDTreePoint implements Comparable<KDTreePoint> {
 		//TODO This will never run right?
 		return 0;
 	}
+
+	//TODO Delete!!! But lombok does not generate this getter for me...
+	public boolean getSortX() { return sortX; }
 }
