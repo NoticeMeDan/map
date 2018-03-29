@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 
 public class OsmParserTest {
@@ -43,7 +46,17 @@ public class OsmParserTest {
 	public void testParseOsmSync() {
 		OsmMapData osmMapData = new OsmMapData();
 		Osm testNode = osmMapData.deserialize(this.osmStream);
-		assertNotNull(testNode);
+		assertNotEquals(testNode, new Osm());
 		assertEquals(testNode, this.osmNode);
+	}
+
+	@Test(dependsOnMethods = "testParseOsmSync")
+	public void testParseOsmAsync() {
+		OsmMapData osmMapData = new OsmMapData(osmStream);
+		CompletableFuture.supplyAsync(osmMapData, Executors.newSingleThreadExecutor())
+				.thenAccept(testNode -> {
+					assertNotEquals(testNode, new Osm());
+					assertEquals(testNode, this.osmNode);
+				});
 	}
 }
