@@ -2,6 +2,7 @@ package com.noticemedan.map.model.KDTree;
 
 import lombok.*;
 
+@NoArgsConstructor
 public @Data class KDTreeNode {
 	double splitValue;
 	KDTreeNode leftChild;
@@ -17,6 +18,4 @@ public @Data class KDTreeNode {
 	public KDTreeNode(KDTreePoint[] points) {
 		this.points = points;
 	}
-	// TODO: How do you avoid this?
-	public KDTreeNode() { }
 }
