@@ -6,7 +6,7 @@ public class Utility {
 	}
 
 	/**
-	 * TODO: Would like it to abstract it to Object class but I get Object cannot be casted to KDTreeNode when I do so.
+	 * TODO: Would like it to abstract it to Object class but I get Object cannot be casted to Node when I do so.
 	 *
 	 * @param       objects
 	 * @return      New array with first half of objects from input array median inclusive.
@@ -22,11 +22,14 @@ public class Utility {
 		if (N == 2) return new KDTreePoint[] {objects[0]};
 
 		KDTreePoint[] firstHalf = new KDTreePoint[K];
+		for(int i = 0; i < K; i++) {
+			firstHalf[i] = objects[i];
+		}
 		return firstHalf;
 	}
 
 	/**
-	 * TODO: Make it treat generic objects instead of only KDTreeNode objects
+	 * TODO: Make it treat generic objects instead of only Node objects
 	 *
 	 * @param       objects
 	 * @return      New array with second half of objects from input array median exclusive.
@@ -46,6 +49,11 @@ public class Utility {
 		if (!Utility.isEven(N))     M = N-N/2;
 
 		KDTreePoint[] secondHalf = new KDTreePoint[N-M];
+		int j = M;
+		for (int i = 0; i < N-M; i++) {
+			secondHalf[i] = objects[j];
+			j++;
+		}
 		return secondHalf;
 	}
 }
