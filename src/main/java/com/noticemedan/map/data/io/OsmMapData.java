@@ -2,6 +2,7 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.data.osm.Osm;
 import io.vavr.control.Try;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -10,14 +11,13 @@ import java.io.*;
 import java.util.function.Supplier;
 
 @Slf4j
+@NoArgsConstructor
 public class OsmMapData implements MapDataIOReader, Supplier<Osm> {
 	private InputStream osmData;
 
 	public OsmMapData(InputStream osmData) {
 		this.osmData = osmData;
 	}
-
-	public OsmMapData() {}
 
 	@Override
 	public Osm deserialize(InputStream inputStream) {
