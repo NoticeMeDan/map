@@ -6,20 +6,24 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import lombok.Getter;
 
+import java.awt.*;
+
 public class CustomPane extends ScrollPane {
     private Group paneViewContent;
     @Getter private Group canvasContent;
     private MapCanvas mapCanvas;
 
-    public CustomPane() {
+    public CustomPane(Dimension dim) {
         super();
-        initializeFields();
+        initializeFields(dim);
         applyContent();
-        adjustPaneProperties();
+        adjustPaneProperties(dim);
+        setWidth(dim.getWidth());
+        setHeight(dim.getHeight());
     }
 
-    private void initializeFields(){
-        this.mapCanvas = new MapCanvas();
+    private void initializeFields(Dimension dim){
+        this.mapCanvas = new MapCanvas(dim);
         this.paneViewContent = new Group();
         this.canvasContent = new Group();
     }
@@ -30,12 +34,12 @@ public class CustomPane extends ScrollPane {
         this.setContent(paneViewContent);
     }
 
-    private void adjustPaneProperties(){
-    	this.setStyle("-fx-background-color: WHITE");
-        this.setPrefHeight(560);
-        this.setPrefWidth(700);
-        //this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        //this.setVbarPolicy(ScrollBarPolicy.NEVER);
+    private void adjustPaneProperties(Dimension dim){
+    	this.setStyle("-fx-background: #2349B5");
+		this.setPrefWidth(1100);
+		this.setPrefHeight(650);
+        this.setHbarPolicy(ScrollBarPolicy.NEVER);
+        this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setPannable(true);
     }
 

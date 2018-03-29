@@ -1,25 +1,27 @@
 package com.noticemedan.map;
 
-import com.noticemedan.map.data.io.XmlMapData;
-import io.vavr.control.Try;
-import lombok.extern.slf4j.Slf4j;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.zip.ZipInputStream;
-
-@Slf4j
-public class App {
+public class App extends Application {
     public static void main(String[] args) {
-		ZipInputStream inputStream = new ZipInputStream(App.class.getResourceAsStream("/smaller.osm.zip"));
-		Try.of(inputStream::getNextEntry)
-				.onFailure(x -> log.error("Error while getting entry in zip file", x))
-				.getOrNull();
+        launch(args);
+    }
 
-		XmlMapData xmlMapData = new XmlMapData(inputStream);
-		CompletableFuture.supplyAsync(xmlMapData, Executors.newSingleThreadExecutor())
-				.thenAccept(rootNode -> log.info("# of Nodes: " + rootNode.getNodes().size()));
-
-		log.info("Hi mom, show me first");
-	}
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
+		Image icon = new Image(App.class.getResourceAsStream("/media/icon.png"));
+		primaryStage.setTitle("Mappr");
+		primaryStage.getIcons().add(icon);
+		primaryStage.setWidth(1100);
+		primaryStage.setHeight(650);
+		primaryStage.setScene(new Scene(root));
+		primaryStage.setResizable(false);
+		primaryStage.show();
+    }
 }

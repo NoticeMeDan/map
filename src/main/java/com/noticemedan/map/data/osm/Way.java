@@ -18,4 +18,5 @@ public class Way{
 
 	@ElementList(inline = true, entry = "tag", required = false)
 	private List<Tag> tags;
+
 }
