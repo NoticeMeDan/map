@@ -1,19 +1,10 @@
 package com.noticemedan.map.model.KDTree;
 
+import java.util.Random;
+
 public class Quick {
 
-	public static void main(String[] args) {
-		int N = 100000000;
-		Comparable[] a = new Comparable[N];
-		for(int i = 0; i < N; i++) {
-			a[i] = Math.random();
-		}
-
-		Stopwatch stopwatch = new Stopwatch();
-		Comparable k = Quick.select(a, N/2-1);
-		System.out.println(stopwatch.elapsedTime());
-		System.out.println(k);
-	}
+	private static Random random = new Random();
 
 	private static int partition(Comparable[] a, int lo, int hi) {  // Partition into a[lo..i-1], a[i], a[i+1..hi].
 		int i = lo, j = hi + 1;            // left and right scan indices
@@ -28,8 +19,8 @@ public class Quick {
 		return j;
 	}
 
-	// TODO NB: Removed shuffle method (as to not import it from algs4. Bring it back?)
 	public static Comparable select(Comparable[] a, int k) {
+		shuffle(a);
 		int lo = 0, hi = a.length - 1;
 		while (hi > lo) {
 			int j = partition(a, lo, hi);
@@ -51,5 +42,18 @@ public class Quick {
 		Object swap = a[i];
 		a[i] = a[j];
 		a[j] = swap;
+	}
+
+	/**
+	 * Rearrange the elements of an array in random order.
+	 */
+	private static void shuffle(Object[] a) {
+		int N = a.length;
+		for (int i = 0; i < N; i++) {
+			int r = i + random.nextInt(N-i);     // between i and N-1
+			Object temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
 	}
 }
