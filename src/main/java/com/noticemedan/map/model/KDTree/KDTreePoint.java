@@ -17,8 +17,8 @@ class KDTreePoint implements Comparable<KDTreePoint> {
 	public int compareTo(KDTreePoint that) {
 		if(sortX) {
 			if (this.x > that.x) return 1;
-			if (this.x == that.y) return 0;
-			if (this.x < that.y) return -1;
+			if (this.x == that.x) return 0;
+			if (this.x < that.x) return -1;
 		} else {
 			if (this.y > that.y) return 1;
 			if (this.y == that.y) return 0;

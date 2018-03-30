@@ -15,7 +15,8 @@ public @Data class KDTreeNode {
 		this.rightChild = rightChild;
 	}
 
-	public KDTreeNode(KDTreePoint[] points) {
+	public KDTreeNode(KDTreePoint[] points, int depth) {
 		this.points = points;
+		this.depth = depth;
 	}
 }
