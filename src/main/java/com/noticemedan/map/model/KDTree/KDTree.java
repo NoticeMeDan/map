@@ -81,14 +81,8 @@ public class KDTree implements Tree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-
 	@Override
-	public ArrayList<MapObject> rangeSearch(Point SW, Point NE) {
-		throw new RuntimeException("Range search not implemented yet.");
-	}
-
-	@Override
-	public MapObject nearestNeighbor(Point queryPoint) {
-		throw new RuntimeException("Nearest neighbor search not implemented yet");
+	public ArrayList<KDTreePoint> rangeSearch(double lx, double ly, double hx, double hy) {
+		return null;
 	}
 }

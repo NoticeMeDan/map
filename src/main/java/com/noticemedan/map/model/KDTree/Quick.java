@@ -20,7 +20,7 @@ public class Quick {
 	}
 
 	public static Comparable select(Comparable[] a, int k) {
-		shuffle(a);
+		//shuffle(a); //TODO Should we have shuffle? 2x loading time... is it necessary for efficient quickselect?
 		int lo = 0, hi = a.length - 1;
 		while (hi > lo) {
 			int j = partition(a, lo, hi);

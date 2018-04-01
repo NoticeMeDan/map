@@ -2,10 +2,10 @@ package com.noticemedan.map.model.KDTree;
 
 import com.noticemedan.map.model.MapObject;
 
-import java.awt.*;
 import java.util.ArrayList;
 
+// TODO bedre interface!
 public interface Tree {
-	public ArrayList<MapObject> rangeSearch(Point SW, Point NE);
-	public MapObject nearestNeighbor(Point queryPoint);
+	public ArrayList<KDTreePoint> rangeSearch(double lx, double ly, double hx, double hy);
+	//public MapObject nearestNeighbor(Point queryPoint);
 }
