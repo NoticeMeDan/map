@@ -5,6 +5,8 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.*;
 
+import java.util.ArrayList;
+
 public class KDTreeTest {
 
 	KDTreePoint[] randomGeneratedPoints;
@@ -106,5 +108,11 @@ public class KDTreeTest {
 		pointsForMultiMedianKDTree[3] = new KDTreePoint(5,6);
 		pointsForMultiMedianKDTree[4] = new KDTreePoint(9,8);
 		multiMedianKDTree = new KDTree(pointsForMultiMedianKDTree, 1);
+	}
+
+	@Test
+	public void testReportSubtree() {
+		//smallKDTree.reportSubtree(smallKDTree.getRootNode());
+		ArrayList<KDTreePoint> points = smallKDTree.rangeSearch();
 	}
 }

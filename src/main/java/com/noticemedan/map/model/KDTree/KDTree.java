@@ -1,17 +1,17 @@
 package com.noticemedan.map.model.KDTree;
 
-import com.noticemedan.map.model.MapObject;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class KDTree implements Tree {
+public class KDTree {
 
 	@Getter private KDTreeNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
+	private ArrayList<KDTreePoint> rangeSearchQueryResults;
 
 	public KDTree(KDTreePoint[] points, int maxNumberOfElementsAtLeaf) {
 		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
@@ -81,8 +81,35 @@ public class KDTree implements Tree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	@Override
-	public ArrayList<KDTreePoint> rangeSearch(double lx, double ly, double hx, double hy) {
+	public ArrayList<KDTreePoint> rangeSearch() {
+		rangeSearchQueryResults = new ArrayList<>();
+		reportSubtree(rootNode);
+		return this.rangeSearchQueryResults;
+	}
+
+	/*public ArrayList<KDTreePoint> rangeSearch(KDTreeNode node, double x1, double y1, double x2, double y2, int depth) {
+
+		//String[] test1 = new String[] {"Hello", "there", "how"};
+		//Arrays.asList(test1);
+
 		return null;
+	}*/
+
+	// Using inorder traversal (LVR)
+	public void reportSubtree(KDTreeNode parent) {
+		//L
+		if (parent.getLeftChild() != null) {
+			reportSubtree(parent.getLeftChild());
+		}
+
+		//V
+		if (parent.getPoints() != null) {
+			rangeSearchQueryResults.addAll(Arrays.asList(parent.getPoints()));
+		}
+
+		//R
+		if (parent.getRightChild() != null) {
+			reportSubtree(parent.getRightChild());
+		}
 	}
 }
