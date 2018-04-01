@@ -1,35 +1,24 @@
 package com.noticemedan.map.model.KDTree;
 
+import com.noticemedan.map.model.MapObject;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
 
-public class KDTree {
+import java.awt.*;
+import java.util.ArrayList;
+
+public class KDTree implements Tree {
 
 	@Getter private KDTreeNode rootNode;
-	private KDTreePoint[] points;
-	private int N; // Number of nodes to build
+	private int maxNumberOfElementsAtLeaf;
 
-	public KDTree(int N) {
-		this.N = N;
-		buildNodes();
+	public KDTree(KDTreePoint[] points, int maxNumberOfElementsAtLeaf) {
+		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
+		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
+
+		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
 		this.rootNode = buildKDTree(points, 0);
-	}
-
-	public static void main(String[] args) {
-		KDTree tree = new KDTree(1000);
-	}
-
-	// TODO: Remove method when implemented using shapes.
-	private void buildNodes() {
-		points = new KDTreePoint[N];
-
-		System.out.println("Begin making points");
-		for(int i = 0; i < N; i++) {
-			KDTreePoint point = new KDTreePoint(Math.random(), Math.random());
-			points[i] = point;
-		}
-		System.out.println("Points ended, begin building kd tree");
 	}
 
 	/**
@@ -42,15 +31,17 @@ public class KDTree {
 		parent.setDepth(depth);
 
 		// Define size of points array in leaf nodes.
-		if (points.length < 10 ) {
+		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
 		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			firstHalfArray = splitPointArrayByMedian(points)._1;
-			secondHalfArray = splitPointArrayByMedian(points)._2;
+			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			firstHalfArray = tuple2._1;
+			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getX());
 		} else { // If depth odd, split by y-value
-			firstHalfArray = splitPointArrayByMedian(points)._1;
-			secondHalfArray = splitPointArrayByMedian(points)._2;
+			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			firstHalfArray = tuple2._1;
+			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getY());
 		}
 
@@ -82,11 +73,22 @@ public class KDTree {
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].getSortX()) 		points [i].setSortX(false);
-			if (!points[i].getSortX()) 		points [i].setSortX(true);
+			if (points[i].getSortX()) {	points[i].setSortX(false); }
+			else {						points[i].setSortX(true);  }
 			if (i < k) 						firstHalf[i] = points[i];
 			if (i >= k) 					secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
+	}
+
+
+	@Override
+	public ArrayList<MapObject> rangeSearch(Point SW, Point NE) {
+		throw new RuntimeException("Range search not implemented yet.");
+	}
+
+	@Override
+	public MapObject nearestNeighbor(Point queryPoint) {
+		throw new RuntimeException("Nearest neighbor search not implemented yet");
 	}
 }
