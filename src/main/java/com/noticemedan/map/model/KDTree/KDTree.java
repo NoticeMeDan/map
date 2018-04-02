@@ -81,28 +81,69 @@ public class KDTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public ArrayList<KDTreePoint> rangeSearch(double x1, double y1, double x2, double y2, int depth) {
+	public ArrayList<KDTreePoint> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
-		searchTree(rootNode, x1, y1, x2, y2);
+		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		searchTree(rootNode, query, startBoundingBox);
 		return this.rangeSearchQueryResults;
 	}
 
-	public void searchTree(KDTreeNode parent, double x1, double y1, double x2, double y2) {
+	private void searchTree(KDTreeNode parent, Rect query, Rect boundingBox) {
+		//Create bounding boxes for search:
+		Rect boundingBoxLeft;
+		Rect boundingBoxRight;
+		KDTreeNode leftChild = parent.getLeftChild();
+		KDTreeNode rightChild = parent.getRightChild();
 
-		// If current node is a leaf, check if point is within range R;
+		if (parent.getDepth() % 2 == 0) { //If search depth is even
+			boundingBoxLeft = new Rect(boundingBox.getX1(), boundingBox.getY1(), parent.getSplitValue(), boundingBox.getY2()); //lower
+			boundingBoxRight = new Rect(parent.getSplitValue(), boundingBox.getY1(), boundingBox.getX2(), boundingBox.getY2()); //higher
+		} else {
+			boundingBoxLeft = new Rect(boundingBox.getX1(), boundingBox.getY1(), boundingBox.getX2(), parent.getSplitValue()); //lower
+			boundingBoxRight = new Rect(boundingBox.getX1(), parent.getSplitValue(), boundingBox.getX2(), boundingBox.getY2()); //higher
+		}
+
+		// If current node is a leaf, check if point is within query;
 		if (parent.getPoints() != null) {
 			for (int i = 0; i < parent.getPoints().length; i++) {
-				//parent.getPoints()[i].getX();
+				if (pointInRect(parent.getPoints()[i], query)) rangeSearchQueryResults.add(parent.getPoints()[i]);
+			}
+		} else {
+			// If left bounding box for left child is completely in query, report all points in this subtree
+			if (rectCompletelyInRect(boundingBoxLeft, query)) {
+				reportSubtree(leftChild);
+			} else {
+				if (parent.getDepth() % 2 == 0) { // Check depth of current search
+					/* Because depth is equal, use x-values for checking if bounding box range intersects query range.
+					 * If they do not intersect, it means that the query is not within the left subtree.
+					 */
+					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), query.getX1(), query.getX2())) {
+						// Because they do intersect, search that subtree further.
+						searchTree(leftChild, query, boundingBoxLeft);
+					}
+				} else {
+					// If depth is uneven, use y-values for checking if bounding box range intersects query range.
+					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), query.getY1(), query.getY2())) {
+						// Because they do intersect, search that subtree further.
+						searchTree(leftChild, query, boundingBoxLeft);
+					}
+				}
+			}
+
+			if (rectCompletelyInRect(boundingBoxRight, query)) {
+				reportSubtree(rightChild);
+			} else {
+				if (parent.getDepth() % 2 == 0) {
+					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), query.getX1(), query.getX2())) {
+						searchTree(rightChild, query, boundingBoxRight);
+					}
+				} else {
+					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), query.getY1(), query.getY2())) {
+						searchTree(rightChild, query, boundingBoxRight);
+					}
+				}
 			}
 		}
-		double inf = Double.POSITIVE_INFINITY;
-		System.out.println(inf);
-
-		if (parent.getDepth() % 2 == 0) {}
-
-		//String[] test1 = new String[] {"Hello", "there", "how"};
-		//Arrays.asList(test1);
-
 	}
 
 	// Using in order traversal (LVR: Left, Visit, Right)
@@ -122,11 +163,12 @@ public class KDTree {
 		return a <= d && b >= c;
 	}
 
+	//TODO: Not so pretty code with 'part1', 'part2'...
 	static public boolean pointInRect(KDTreePoint point, Rect rect) {
 		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getX());
 		boolean part2 = Math.abs(point.getX()) <= Math.abs(rect.getX2());
 		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getY());
-		boolean part4 = Math.abs(point.getY()) <= Math.abs(rect.getX2());
+		boolean part4 = Math.abs(point.getY()) <= Math.abs(rect.getY2());
 		return part1 && part2 && part3 && part4;
 	}
 }

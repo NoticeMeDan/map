@@ -5,6 +5,8 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.*;
 
+import java.util.ArrayList;
+
 public class KDTreeTest {
 
 	KDTreePoint[] randomGeneratedPoints;
@@ -193,5 +195,11 @@ public class KDTreeTest {
 		KDTreePoint point = new KDTreePoint(-5,-5);
 		Rect rect = new Rect(-2,-2,-4,-4);
 		assertEquals(KDTree.pointInRect(point, rect), false);
+	}
+
+	@Test
+	public void testRangeSearch() {
+		Rect query = new Rect(0.5,0.5,10.5,10.5);
+		ArrayList<KDTreePoint> result = smallKDTree.rangeSearch(query);
 	}
 }
