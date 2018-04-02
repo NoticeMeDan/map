@@ -81,35 +81,52 @@ public class KDTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public ArrayList<KDTreePoint> rangeSearch() {
+	public ArrayList<KDTreePoint> rangeSearch(double x1, double y1, double x2, double y2, int depth) {
 		rangeSearchQueryResults = new ArrayList<>();
-		reportSubtree(rootNode);
+		searchTree(rootNode, x1, y1, x2, y2);
 		return this.rangeSearchQueryResults;
 	}
 
-	/*public ArrayList<KDTreePoint> rangeSearch(KDTreeNode node, double x1, double y1, double x2, double y2, int depth) {
+	public void searchTree(KDTreeNode parent, double x1, double y1, double x2, double y2) {
+
+		// If current node is a leaf, check if point is within range R;
+		if (parent.getPoints() != null) {
+			for (int i = 0; i < parent.getPoints().length; i++) {
+				//parent.getPoints()[i].getX();
+			}
+		}
+		double inf = Double.POSITIVE_INFINITY;
+		System.out.println(inf);
+
+		if (parent.getDepth() % 2 == 0) {}
 
 		//String[] test1 = new String[] {"Hello", "there", "how"};
 		//Arrays.asList(test1);
 
-		return null;
-	}*/
+	}
 
-	// Using inorder traversal (LVR)
+	// Using in order traversal (LVR: Left, Visit, Right)
 	public void reportSubtree(KDTreeNode parent) {
-		//L
-		if (parent.getLeftChild() != null) {
-			reportSubtree(parent.getLeftChild());
-		}
+		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
+		if (parent.getPoints() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getPoints())); //V
+		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
+	}
 
-		//V
-		if (parent.getPoints() != null) {
-			rangeSearchQueryResults.addAll(Arrays.asList(parent.getPoints()));
-		}
+	static public boolean rectCompletelyInRect(Rect smallRect, Rect largeRect) {
+		boolean smallRectXRangeInLargeRectXRange = largeRect.getX1() <= smallRect.getX1() && smallRect.getX1() <= smallRect.getX2() && smallRect.getX2() <= largeRect.getX2();
+		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY1() && smallRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
+		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
+	}
+	static public boolean rangeIntersectsRange(double a, double b, double c, double d) {
+		// Do range a-b and c-d intersect?
+		return a <= d && b >= c;
+	}
 
-		//R
-		if (parent.getRightChild() != null) {
-			reportSubtree(parent.getRightChild());
-		}
+	static public boolean pointInRect(KDTreePoint point, Rect rect) {
+		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getX());
+		boolean part2 = Math.abs(point.getX()) <= Math.abs(rect.getX2());
+		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getY());
+		boolean part4 = Math.abs(point.getY()) <= Math.abs(rect.getX2());
+		return part1 && part2 && part3 && part4;
 	}
 }
