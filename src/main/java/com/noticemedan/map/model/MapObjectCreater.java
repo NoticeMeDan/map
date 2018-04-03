@@ -3,6 +3,7 @@ package com.noticemedan.map.model;
 import com.noticemedan.map.data.OsmParser;
 import com.noticemedan.map.data.osm.*;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MapObjectCreater implements MapObjectCreaterInterface {
 	private static MapObjectCreater instance;
+	private static MapObjectProperties mapObjectProperties;
 	private static Bounds bounds;
 	private static Map<Long, Node> nodeMap;
 	private static Map<Long, Way> wayMap;
@@ -35,6 +37,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 
 	private MapObjectCreater(Dimension dim) {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
+		mapObjectProperties = new MapObjectProperties();
 		OsmParser osmParser = new OsmParser();
 		this.dim = dim;
 
@@ -111,6 +114,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	private MapObject getMapObjectFromWay(Way way, OSMType type) {
 		MapObject mapObject = new MapObject();
 		mapObject.setOsmType(type);
+		mapObject.setColor(mapObjectProperties.derriveColorFromOSMType(type));
 		mapObject.setPoints(getPointListFromWay(way));
 		return mapObject;
 	}
@@ -139,42 +143,12 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		return -((-lat * yFactor) - topLeftLat);
 	}
 
-	// TODO This mess is gonna get cleaned up
-	// @Simon
 	private OSMType getOSMType(Tag t) {
-		if (t.getK().equals("building"))
-			return OSMType.BUILDING;
-		if (t.getK().equals("natural")) {
-			if (t.getV().equals("water"))
-				return OSMType.WATER;
-			if (t.getV().equals("tree"))
-				return OSMType.TREE;
-			if (t.getV().equals("grassland"))
-				return OSMType.GRASSLAND;
-			if (t.getV().equals("sans"))
-				return OSMType.SAND;
-			if (t.getV().equals("tree_row"))
-				return OSMType.TREE_ROW;
-			if (t.getV().equals("heath"))
-				return OSMType.HEATH;
-			if (t.getV().equals("coastline"))
-				return OSMType.COASTLINE;
-		}
-		if (t.getK().equals("leisure")) {
-			if (t.getV().equals("playground"))
-				return OSMType.PLAYGROUND;
-			if (t.getV().equals("garden"))
-				return OSMType.GARDEN;
-			if (t.getV().equals("park"))
-				return OSMType.PARK;
-		}
-		if (t.getK().equals("highway")) {
-			if (t.getV().equals("highway"))
-				return OSMType.HIGHWAY;
-			else
-				return OSMType.ROAD;
-		}
-		return OSMType.UNKNOWN;
+		return mapObjectProperties.derriveOSMTypeFromTag(t);
+	}
+
+	private Color getColor(OSMType t) {
+		return mapObjectProperties.derriveColorFromOSMType(t);
 	}
 
 	/**

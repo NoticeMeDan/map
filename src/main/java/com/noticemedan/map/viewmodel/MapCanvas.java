@@ -8,15 +8,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Shape;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +33,13 @@ public class MapCanvas {
     }
 
     private void drawCanvas() {
-		/* setPenAttributes(20, Color.ORANGE);
+    	setPenAttributes(3, Color.ORANGE);
 		if (mapContainsKey(OSMType.COASTLINE))
-			drawObjects(mapObjects.get(OSMType.COASTLINE));*/
+			drawObjects(mapObjects.get(OSMType.COASTLINE));
 
-		/* setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
+		 setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
 		if (mapContainsKey(OSMType.UNKNOWN))
-			drawObjects(mapObjects.get(OSMType.UNKNOWN)); */
+			drawObjects(mapObjects.get(OSMType.UNKNOWN));
 
         setPenAttributes(5,Color.LIGHTGRAY);
         if (mapContainsKey(OSMType.ROAD))
@@ -124,7 +119,7 @@ public class MapCanvas {
 	}
 
 	private boolean isClosed(MapObject object) {
-		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY /*&& (object.getOsmType() != OSMType.COASTLINE)*/);
+		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY && (object.getOsmType() != OSMType.COASTLINE));
 	}
 
 	private void putOnCanvas(Point2D point) {
