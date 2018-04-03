@@ -1,6 +1,8 @@
 package com.noticemedan.map.data.osm;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Root(strict = false)
 public class Osm {
 	private @Element Bounds bounds;

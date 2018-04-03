@@ -1,14 +1,17 @@
 package com.noticemedan.map.data.osm;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Root(strict = false)
 public class Relation {
 	@Attribute long id;
