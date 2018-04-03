@@ -11,9 +11,9 @@ public class KDTree {
 
 	@Getter private KDTreeNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
-	private ArrayList<KDTreePoint> rangeSearchQueryResults;
+	private ArrayList<KDMapObject> rangeSearchQueryResults;
 
-	public KDTree(KDTreePoint[] points, int maxNumberOfElementsAtLeaf) {
+	public KDTree(KDMapObject[] points, int maxNumberOfElementsAtLeaf) {
 		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 
@@ -24,9 +24,9 @@ public class KDTree {
 	/**
 	 * @return 		Root node of KDTree.
 	 */
-	private KDTreeNode buildKDTree(KDTreePoint[] points, int depth) {
-		KDTreePoint[] firstHalfArray;
-		KDTreePoint[] secondHalfArray;
+	private KDTreeNode buildKDTree(KDMapObject[] points, int depth) {
+		KDMapObject[] firstHalfArray;
+		KDMapObject[] secondHalfArray;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
@@ -34,12 +34,12 @@ public class KDTree {
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
 		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			Tuple2<KDMapObject[], KDMapObject[]> tuple2 = splitPointArrayByMedian(points);
 			firstHalfArray = tuple2._1;
 			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getX());
 		} else { // If depth odd, split by y-value
-			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			Tuple2<KDMapObject[], KDMapObject[]> tuple2 = splitPointArrayByMedian(points);
 			firstHalfArray = tuple2._1;
 			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getY());
@@ -55,33 +55,33 @@ public class KDTree {
 		return parent;
 	}
 
-	private Tuple2<KDTreePoint[], KDTreePoint[]> splitPointArrayByMedian(KDTreePoint[] points) {
+	private Tuple2<KDMapObject[], KDMapObject[]> splitPointArrayByMedian(KDMapObject[] points) {
 		int N = points.length;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new KDTreePoint[] { points[0] }, new KDTreePoint[] { points[1] } );
+		if (N == 2) return Tuple.of(new KDMapObject[] { points[0] }, new KDMapObject[] { points[1] } );
 
 		Quick.select(points, N/2);
 
 		// k is the index where the array should be split.
 		int k = N/2+1;
-		KDTreePoint[] 	firstHalf = new KDTreePoint[k];
-		KDTreePoint[]   secondHalf = new KDTreePoint[N-k];
+		KDMapObject[] 	firstHalf = new KDMapObject[k];
+		KDMapObject[]   secondHalf = new KDMapObject[N-k];
 
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].getSortX()) {	points[i].setSortX(false); }
-			else {						points[i].setSortX(true);  }
+			if (points[i].isDepthEven()) {	points[i].setDepthEven(false); }
+			else {							points[i].setDepthEven(true);  }
 			if (i < k) 						firstHalf[i] = points[i];
 			if (i >= k) 					secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public ArrayList<KDTreePoint> rangeSearch(Rect query) {
+	public ArrayList<KDMapObject> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		searchTree(rootNode, query, startBoundingBox);
@@ -164,7 +164,7 @@ public class KDTree {
 	}
 
 	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(KDTreePoint point, Rect rect) {
+	static public boolean pointInRect(KDMapObject point, Rect rect) {
 		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getX());
 		boolean part2 = Math.abs(point.getX()) <= Math.abs(rect.getX2());
 		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getY());

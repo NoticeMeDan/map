@@ -3,19 +3,19 @@ package com.noticemedan.map.model.KDTree;
 import lombok.Data;
 
 public @Data
-class KDTreePoint implements Comparable<KDTreePoint> {
+class KDMapObject implements Comparable<KDMapObject> {
 	private double x;
 	private double y;
-	private boolean sortX;
+	private boolean depthEven;
 
-	public KDTreePoint(double x, double y) {
+	public KDMapObject(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.sortX = true;
+		this.depthEven = true;
 	}
 
-	public int compareTo(KDTreePoint that) {
-		if(sortX) {
+	public int compareTo(KDMapObject that) {
+		if(depthEven) {
 			if (this.x > that.x) return 1;
 			if (this.x == that.x) return 0;
 			if (this.x < that.x) return -1;
@@ -24,10 +24,6 @@ class KDTreePoint implements Comparable<KDTreePoint> {
 			if (this.y == that.y) return 0;
 			if (this.y < that.y) return -1;
 		}
-		//TODO This will never run right?
 		return 0;
 	}
-
-	//TODO Delete!!! But lombok does not generate this getter for me...
-	public boolean getSortX() { return sortX; }
 }
