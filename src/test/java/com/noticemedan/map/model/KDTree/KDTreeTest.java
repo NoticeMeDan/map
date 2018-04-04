@@ -1,6 +1,7 @@
 package com.noticemedan.map.model.KDTree;
 
 import static org.testng.Assert.*;
+
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.*;
@@ -16,7 +17,6 @@ public class KDTreeTest {
 	KDTree multiMedianKDTree;
 	KDTree oneElementKDTree;
 	KDTree smallKDTree;
-	KDTree largeKDTree_100000;
 
 	@BeforeTest
 	public void buildSmallKDTree() {
@@ -79,6 +79,7 @@ public class KDTreeTest {
 	public void testVeryLargeKDTreeSpeed() { //10E7 points, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
 		KDTree veryLargeKDTree = new KDTree(buildRandomPoints(10000000), 1000);
+		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
 		assertTrue(stopwatch.elapsedTime() < 30);
 	}
 

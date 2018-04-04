@@ -6,7 +6,7 @@ public @Data
 class KDMapObject implements Comparable<KDMapObject> {
 	private double x;
 	private double y;
-	private boolean depthEven;
+	private boolean depthEven; // Is this object at even depth in KD-Tree?
 
 	public KDMapObject(double x, double y) {
 		this.x = x;
