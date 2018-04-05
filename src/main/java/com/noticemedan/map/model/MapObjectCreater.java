@@ -8,10 +8,8 @@ import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.util.EnumMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -29,22 +27,27 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	private static Map<Long, Relation> relationMap;
 	private static List<Way> wayList;
 	private static List<Relation> relationList;
+	private static Collection<List<Point2D>> coastwayCollection;
 	private double xFactor;
 	private double yFactor;
 	private double topLeftLon;
 	private double topLeftLat;
 	private EnumMap<OSMType, List<MapObject>> mapObjectEnumMap;
+	private List<CoastlineObject> coastlineObjects;
 	private Dimension dim;
 
 	private MapObjectCreater(Dimension dim) {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
 		mapObjectProperties = new MapObjectProperties();
+		coastwayCollection = new LinkedList<>();
+		coastlineObjects = new LinkedList<>();
 		OsmParser osmParser = new OsmParser();
 		this.dim = dim;
 
 		initializeCollections(osmParser.getRootNode());
 		initializeBoundsAndMapConstants();
-		populateMapObjectEnumMap();
+		populateObjectCollections();
+		stichCoastlines();
 	}
 
 	private static void initializeCollections(Osm rootNode) {
@@ -72,35 +75,42 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		topLeftLat = maxLat * yFactor;
 	}
 
-	private void populateMapObjectEnumMap() {
-		relationList.forEach(this::createAndPutMapObjectToEnumMap);
-		wayList.forEach(this::createAndPutMapObjectToEnumMap);
+	private void populateObjectCollections() {
+		relationList.forEach(this::createAndPutMapObjectToCollection);
+		wayList.forEach(this::createAndPutMapObjectToCollection);
 	}
 
-	private void createAndPutMapObjectToEnumMap(Relation relation) {
+	private void createAndPutMapObjectToCollection(Relation relation) {
 		if (relation == null) return;
 		if (relation.getMembers() == null) return;
 		for (Member member : relation.getMembers()) {
 			if (member.getType().equals("relation"))
-				createAndPutMapObjectToEnumMap(relationMap.get(member.getRef()));
+				createAndPutMapObjectToCollection(relationMap.get(member.getRef()));
 			if (member.getType().equals("way"))
-				createAndPutMapObjectToEnumMap(wayMap.get(member.getRef()));
+				createAndPutMapObjectToCollection(wayMap.get(member.getRef()));
 		}
 	}
 
-	private void createAndPutMapObjectToEnumMap(Way way) {
+	private void createAndPutMapObjectToCollection(Way way) {
 		if (way == null) return;
 		if (way.getNodeRefs() == null) return;
 		OSMType type = OSMType.UNKNOWN;
-		if (way.getTags() != null) {
+		if (way.getTags() != null)
 			for (Tag tag : way.getTags()) {
 				if (type.equals(OSMType.UNKNOWN)) type = this.getOSMType(tag);
 				else break;
 			}
+
+		if (type.equals(OSMType.COASTLINE)) {
+			coastwayCollection.add(getPointListFromWay(way));
 		}
-		MapObject mapObject = getMapObjectFromWay(way, type);
-		putMapObjectToEnumMap(type, mapObject);
+		else {
+			MapObject mapObject = getMapObjectFromWay(way, type);
+			putMapObjectToEnumMap(type, mapObject);
+		}
 	}
+
+
 
 	private void putMapObjectToEnumMap(OSMType key, MapObject mapObject) {
 		if (mapObjectEnumMap.containsKey(key))
@@ -114,38 +124,74 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 
 	private MapObject getMapObjectFromWay(Way way, OSMType type) {
 		List<Point2D> pointList = getPointListFromWay(way);
-
-		double sumX = 0;
-		double sumY = 0;
-		double maxX = 0;
-		double maxY = 0;
-		double minX = pointList.get(0).getX();
-		double minY = pointList.get(0).getY();
-		double avgX;
-		double avgY;
+		Rect bounds = getBoundsFromPointList(pointList);
+		double avgX = (bounds.getX1() + bounds.getX2()) / 2;
+		double avgY = (bounds.getY1() + bounds.getY2()) / 2;
 
 		MapObject mapObject = new MapObject();
 		mapObject.setOsmType(type);
 		mapObject.setColor(getColor(type));
 		mapObject.setPoints(pointList);
+		mapObject.setBounds(bounds);
+		mapObject.setAvgPoint(new Point2D(avgX, avgY));
 
+		return mapObject;
+	}
+
+	private Rect getBoundsFromPointList(List<Point2D> pointList) {
+		double maxX = 0;
+		double maxY = 0;
+		double minX = pointList.get(0).getX();
+		double minY = pointList.get(0).getY();
 		for (Point2D p : pointList) {
 			if (p.getX() > maxX) maxX = p.getX();
 			if (p.getY() > maxY) maxY = p.getY();
 			if (p.getX() < minX) minX = p.getX();
 			if (p.getY() < minY) minY = p.getY();
-
-			sumX += p.getX();
-			sumY += p.getY();
 		}
 
-		avgX = sumX / pointList.size();
-		avgY = sumY / pointList.size();
+		return new Rect(minX, minY, maxX, maxY);
+	}
 
-		mapObject.setAvgPoint(new Point2D(avgX, avgY));
-		mapObject.setBounds(new Rect(minX, minY, maxX, maxY));
+	private void stichCoastlines() {
+		Collection<List<Point2D>> coastlines = coastwayCollection;
+		Point2D previousFirstPoint = null;
+		List<Point2D> currentPointlist;
+		Point2D currentLastPoint;
+		List<Point2D> stichedPointList = new Stack<>();
 
-		return mapObject;
+		int counter = 0;
+		for (List<Point2D> pointlist : coastlines) {
+
+			currentPointlist = pointlist;
+			currentLastPoint = pointlist.get(pointlist.size() - 1);
+
+			if (counter > 0) {
+				if (previousFirstPoint.equals(currentLastPoint)) {
+					currentPointlist.remove(currentPointlist.size() - 1);
+					stichedPointList.addAll(currentPointlist);
+				}
+			}
+			else {
+				stichedPointList.addAll(pointlist);
+			}
+
+			CoastlineObject coastlineObject = new CoastlineObject();
+			Rect bounds = getBoundsFromPointList(stichedPointList);
+			double avgX = (bounds.getX1() + bounds.getX2()) / 2;
+			double avgY = (bounds.getY1() + bounds.getY2()) / 2;
+
+			coastlineObject.setPoints(stichedPointList);
+			coastlineObject.setBounds(bounds);
+			coastlineObject.setAvgPoint(new Point2D(avgX, avgY));
+			coastlineObject.setColor(getColor(OSMType.COASTLINE));
+
+			coastlineObjects.add(coastlineObject);
+			previousFirstPoint = pointlist.get(0);
+
+			counter++;
+		}
+
 	}
 
 	private List<Point2D> getPointListFromWay(Way way) {
@@ -197,24 +243,28 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	 * Alter this method as needed
 	 */
 	public void writeOut() {
-		/*printSizeOfMapObjectList(OSMType.ROAD);
+		printSizeOfMapObjectList(OSMType.ROAD);
 		printSizeOfMapObjectList(OSMType.HIGHWAY);
 		printSizeOfMapObjectList(OSMType.WATER);
 		printSizeOfMapObjectList(OSMType.TREE);
 		printSizeOfMapObjectList(OSMType.GRASSLAND);
 		printSizeOfMapObjectList(OSMType.SAND);
 		printSizeOfMapObjectList(OSMType.BUILDING);
-		printSizeOfMapObjectList(OSMType.COASTLINE);
 		printSizeOfMapObjectList(OSMType.TREE_ROW);
 		printSizeOfMapObjectList(OSMType.HEATH);
-		printSizeOfMapObjectList(OSMType.UNKNOWN);*/
+		printSizeOfMapObjectList(OSMType.UNKNOWN);
 
-
+		log.info(this.coastlineObjects.toString());
 	}
 
 	@Override
 	public Map<OSMType, List<MapObject>> getMapObjectsByType() {
-		return mapObjectEnumMap;
+		return this.mapObjectEnumMap;
+	}
+
+	@Override
+	public List<CoastlineObject> getListOfCoastlineObjects() {
+		return this.coastlineObjects;
 	}
 
 }

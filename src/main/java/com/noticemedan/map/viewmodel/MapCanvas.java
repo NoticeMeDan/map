@@ -1,6 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 
+import com.noticemedan.map.model.CoastlineObject;
 import com.noticemedan.map.model.MapObject;
 import com.noticemedan.map.model.MapObjectCreater;
 import com.noticemedan.map.model.OSMType;
@@ -28,13 +29,17 @@ public class MapCanvas {
 		this.canvas = new Canvas(50, 50);
 		this.pen = canvas.getGraphicsContext2D();
 		this.mapObjectCreater = MapObjectCreater.getInstance(dim);
+		mapObjectCreater.writeOut();
 		this.mapObjects = mapObjectCreater.getMapObjectsByType();
         drawCanvas();
     }
 
     private void drawCanvas() {
     	setPenAttributes(3, Color.ORANGE);
-		if (mapContainsKey(OSMType.COASTLINE))
+    	List<CoastlineObject> coastlineObjects = mapObjectCreater.getListOfCoastlineObjects();
+    	drawObjects(coastlineObjects);
+
+/*		if (mapContainsKey(OSMType.COASTLINE))
 			drawObjects(mapObjects.get(OSMType.COASTLINE));
 
 		 setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
@@ -83,7 +88,7 @@ public class MapCanvas {
 
 		setPenAttributes(0.2,Color.rgb(14,184,118));
 		if (mapContainsKey(OSMType.PARK))
-			drawObjects(mapObjects.get(OSMType.PARK));
+			drawObjects(mapObjects.get(OSMType.PARK));*/
     }
 
     private boolean mapContainsKey(OSMType key) {
@@ -96,11 +101,11 @@ public class MapCanvas {
     	pen.setFill(color);
 	}
 
-	private void drawObjects(List<MapObject> objects){
-    	for(MapObject object : objects){
+	private void drawObjects(List<CoastlineObject> objects){
+    	for(CoastlineObject object : objects){
     		List<Point2D> points = object.getPoints();
     		drawPath(points);
-			if ((isClosed(object))) {
+			if (true) {
 				pen.closePath();
 				pen.fill();
 			} else pen.stroke();
@@ -119,7 +124,7 @@ public class MapCanvas {
 	}
 
 	private boolean isClosed(MapObject object) {
-		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY && (object.getOsmType() != OSMType.COASTLINE));
+		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY /*&& (object.getOsmType() != OSMType.COASTLINE)*/);
 	}
 
 	private void putOnCanvas(Point2D point) {
