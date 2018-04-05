@@ -8,9 +8,9 @@ public @Data class KDTreeNode {
 	private KDTreeNode leftChild;
 	private KDTreeNode rightChild;
 	private int depth;
-	private KDTreePoint[] points;
+	private KDMapObject[] points;
 
-	public KDTreeNode(KDTreePoint[] points, int depth) {
+	public KDTreeNode(KDMapObject[] points, int depth) {
 		this.points = points;
 		this.depth = depth;
 	}
