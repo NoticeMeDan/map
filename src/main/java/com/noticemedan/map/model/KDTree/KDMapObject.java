@@ -13,7 +13,7 @@ class KDMapObject implements Comparable<KDMapObject> {
 		this.y = y;
 		this.depthEven = true;
 	}
-
+//
 	public int compareTo(KDMapObject that) {
 		if(depthEven) {
 			if (this.x > that.x) return 1;
