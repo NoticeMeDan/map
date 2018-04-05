@@ -12,6 +12,10 @@ import java.util.List;
 
 public class ForestCreator {
 	@Getter Forest forest;
+
+	/**
+	 * WIP
+	 */
 	public ForestCreator() {
 		List<MapObject> conList = new LinkedList<>();
 		Collection mapObjectsCollection = MapObjectCreater.getInstance(new Dimension(1600,1600)).getMapObjectsByType().values();
@@ -19,7 +23,7 @@ public class ForestCreator {
 		while (it.hasNext()) conList.addAll(it.next());
 		MapObject[] mapObjects = conList.toArray(new MapObject[conList.size()]);
 		KDTree tree = new KDTree(mapObjects, 20);
-		Forest forest = new Forest();
+		this.forest = new Forest();
 		forest.setTree(tree);
 	}
 }

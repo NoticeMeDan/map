@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class KDTree {
 
@@ -82,7 +83,7 @@ public class KDTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public ArrayList<MapObject> rangeSearch(Rect query) {
+	public List<MapObject> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		searchTree(rootNode, query, startBoundingBox);
@@ -159,6 +160,7 @@ public class KDTree {
 		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY1() && smallRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
 		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
 	}
+
 	static public boolean rangeIntersectsRange(double a, double b, double c, double d) {
 		// Do range a-b and c-d intersect?
 		return a <= d && b >= c;

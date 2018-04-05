@@ -3,6 +3,7 @@ package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.KDTree.Forest;
 import com.noticemedan.map.model.KDTree.ForestCreator;
+import com.noticemedan.map.model.KDTree.Rect;
 import com.noticemedan.map.model.MapObject;
 import com.noticemedan.map.model.MapObjectCreater;
 import com.noticemedan.map.model.OSMType;
@@ -32,8 +33,11 @@ public class MapCanvas {
 		this.mapObjectCreater = MapObjectCreater.getInstance(dim);
 		this.mapObjects = mapObjectCreater.getMapObjectsByType();
 
+		//@Magnus sådan kommer du til at bruge forest klassen med et eksempel på range search.
+		//Brug evt. debugger for at inspicere mapObjects:)
 		ForestCreator forestCreator = new ForestCreator();
 		Forest forest = forestCreator.getForest();
+		List<MapObject> mapObjects = forest.rangeSearch(new Rect(20,20,500,500));
 
         drawCanvas();
     }

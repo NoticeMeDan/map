@@ -8,6 +8,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class KDTreeTest {
 
@@ -192,7 +193,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Positive_1() {
 		Rect query = new Rect(0.5,7.5,4,10.5);
-		ArrayList<MapObject> result = smallKDTree.rangeSearch(query);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
 		assertEquals(result.size(), 2);
 
 		//Check a point
@@ -203,7 +204,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Positive_2() {
 		Rect query = new Rect(3.5,0.5,6.5,8.5);
-		ArrayList<MapObject> result = smallKDTree.rangeSearch(query);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
 		assertEquals(result.size(),3);
 
 		//Check a point
@@ -214,7 +215,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Negative_1() {
 		Rect query = new Rect(8.0,4.0,10,6);
-		ArrayList<MapObject> result = smallKDTree.rangeSearch(query);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
 		assertTrue(result.size() <= 0);
 	}
 }
