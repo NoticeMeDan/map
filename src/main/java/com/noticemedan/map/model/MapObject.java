@@ -4,10 +4,12 @@ import com.noticemedan.map.model.KDTree.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class MapObject implements Comparable<MapObject> {
 	private OSMType osmType;
 	private List<Point2D> points;
@@ -35,5 +37,9 @@ public class MapObject implements Comparable<MapObject> {
 		double lengthX = bounds.getX2() - bounds.getX1();
 		double lengthY = bounds.getY2() - bounds.getY1();
 		return Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2));
+	}
+
+	public MapObject(double x, double y) {
+		this.avgPoint = new Point2D(x, y);
 	}
 }
