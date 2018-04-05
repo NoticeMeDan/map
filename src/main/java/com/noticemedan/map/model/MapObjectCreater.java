@@ -2,6 +2,7 @@ package com.noticemedan.map.model;
 
 import com.noticemedan.map.data.OsmParser;
 import com.noticemedan.map.data.osm.*;
+import com.noticemedan.map.model.KDTree.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
@@ -112,10 +113,38 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	}
 
 	private MapObject getMapObjectFromWay(Way way, OSMType type) {
+		List<Point2D> pointList = getPointListFromWay(way);
+
+		double sumX = 0;
+		double sumY = 0;
+		double maxX = 0;
+		double maxY = 0;
+		double minX = pointList.get(0).getX();
+		double minY = pointList.get(0).getY();
+		double avgX;
+		double avgY;
+
 		MapObject mapObject = new MapObject();
 		mapObject.setOsmType(type);
-		mapObject.setColor(mapObjectProperties.derriveColorFromOSMType(type));
-		mapObject.setPoints(getPointListFromWay(way));
+		mapObject.setColor(getColor(type));
+		mapObject.setPoints(pointList);
+
+		for (Point2D p : pointList) {
+			if (p.getX() > maxX) maxX = p.getX();
+			if (p.getY() > maxY) maxY = p.getY();
+			if (p.getX() < minX) minX = p.getX();
+			if (p.getY() < minY) minY = p.getY();
+
+			sumX += p.getX();
+			sumY += p.getY();
+		}
+
+		avgX = sumX / pointList.size();
+		avgY = sumY / pointList.size();
+
+		mapObject.setAvgPoint(new Point2D(avgX, avgY));
+		mapObject.setBounds(new Rect(minX, minY, maxX, maxY));
+
 		return mapObject;
 	}
 
@@ -168,7 +197,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	 * Alter this method as needed
 	 */
 	public void writeOut() {
-		printSizeOfMapObjectList(OSMType.ROAD);
+		/*printSizeOfMapObjectList(OSMType.ROAD);
 		printSizeOfMapObjectList(OSMType.HIGHWAY);
 		printSizeOfMapObjectList(OSMType.WATER);
 		printSizeOfMapObjectList(OSMType.TREE);
@@ -178,7 +207,9 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		printSizeOfMapObjectList(OSMType.COASTLINE);
 		printSizeOfMapObjectList(OSMType.TREE_ROW);
 		printSizeOfMapObjectList(OSMType.HEATH);
-		printSizeOfMapObjectList(OSMType.UNKNOWN);
+		printSizeOfMapObjectList(OSMType.UNKNOWN);*/
+
+
 	}
 
 	@Override
