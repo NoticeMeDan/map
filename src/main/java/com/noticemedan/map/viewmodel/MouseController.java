@@ -32,11 +32,14 @@ public class MouseController {
             double minX = Math.abs(customPane.getViewportBounds().getMinX());
             double minY = Math.abs(customPane.getViewportBounds().getMinY());
 
-            double maxX = minX + customPane.getViewportBounds().getMaxX();
-            double maxY = minY + customPane.getViewportBounds().getMaxY();
-            Rect viewPort = new Rect(minX,minY,maxX,maxY);
+            double maxX = minX + customPane.getViewportBounds().getWidth();
+            double maxY = minY + customPane.getViewportBounds().getHeight();
+            Rect viewPort = new Rect(minX,minY,maxX*2,maxY*2);
+
+			System.out.println(customPane.getViewportBounds().getWidth() + " , " + customPane.getViewportBounds().getHeight() + " | " + customPane.getViewportBounds().getMinX() + " , " + customPane.getViewportBounds().getMinY());
             System.out.println("3  " + viewPort);
             customPane.getMapCanvas().setViewArea(viewPort);
-            customPane.getMapCanvas().redrawCanvas();}));
+            customPane.getMapCanvas().redrawCanvas();
+			}));
 	}
 }
