@@ -11,19 +11,19 @@ import java.awt.*;
 public class CustomPane extends ScrollPane {
     private Group paneViewContent;
     @Getter private Group canvasContent;
-    private MapCanvas mapCanvas;
+    @Getter private MapCanvas mapCanvas;
 
     public CustomPane(Dimension dim) {
         super();
-        initializeFields(dim);
+        initializeFields();
         applyContent();
-        adjustPaneProperties(dim);
+        adjustPaneProperties();
         setWidth(dim.getWidth());
         setHeight(dim.getHeight());
     }
 
-    private void initializeFields(Dimension dim){
-        this.mapCanvas = new MapCanvas(dim);
+    private void initializeFields(){
+        this.mapCanvas = new MapCanvas();
         this.paneViewContent = new Group();
         this.canvasContent = new Group();
     }
@@ -34,12 +34,12 @@ public class CustomPane extends ScrollPane {
         this.setContent(paneViewContent);
     }
 
-    private void adjustPaneProperties(Dimension dim){
+    private void adjustPaneProperties(){
     	this.setStyle("-fx-background: #2349B5");
 		this.setPrefWidth(1100);
 		this.setPrefHeight(650);
-        this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        this.setVbarPolicy(ScrollBarPolicy.NEVER);
+        //this.setHbarPolicy(ScrollBarPolicy.NEVER);
+        //this.setVbarPolicy(ScrollBarPolicy.NEVER);
         this.setPannable(true);
     }
 
