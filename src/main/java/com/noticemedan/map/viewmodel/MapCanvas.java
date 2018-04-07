@@ -1,6 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
 
+import com.noticemedan.map.model.KDTree.Forest;
+import com.noticemedan.map.model.KDTree.ForestCreator;
+import com.noticemedan.map.model.KDTree.Rect;
 import com.noticemedan.map.model.MapObject;
 import com.noticemedan.map.model.MapObjectCreater;
 import com.noticemedan.map.model.OSMType;
@@ -29,17 +32,24 @@ public class MapCanvas {
 		this.pen = canvas.getGraphicsContext2D();
 		this.mapObjectCreater = MapObjectCreater.getInstance(dim);
 		this.mapObjects = mapObjectCreater.getMapObjectsByType();
+
+		//@Magnus sådan kommer du til at bruge forest klassen med et eksempel på range search.
+		//Brug evt. debugger for at inspicere mapObjects:)
+		ForestCreator forestCreator = new ForestCreator();
+		Forest forest = forestCreator.getForest();
+		List<MapObject> mapObjects = forest.rangeSearch(new Rect(20,20,500,500));
+
         drawCanvas();
     }
 
     private void drawCanvas() {
-    	setPenAttributes(3, Color.ORANGE);
+    	/*setPenAttributes(3, Color.ORANGE);
 		if (mapContainsKey(OSMType.COASTLINE))
 			drawObjects(mapObjects.get(OSMType.COASTLINE));
 
 		 setPenAttributes(0.2, Color.rgb(250, 75, 255, 0.2));
 		if (mapContainsKey(OSMType.UNKNOWN))
-			drawObjects(mapObjects.get(OSMType.UNKNOWN));
+			drawObjects(mapObjects.get(OSMType.UNKNOWN));*/
 
         setPenAttributes(5,Color.LIGHTGRAY);
         if (mapContainsKey(OSMType.ROAD))

@@ -8,10 +8,8 @@ import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.util.EnumMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -208,13 +206,10 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		printSizeOfMapObjectList(OSMType.TREE_ROW);
 		printSizeOfMapObjectList(OSMType.HEATH);
 		printSizeOfMapObjectList(OSMType.UNKNOWN);*/
-
-
 	}
 
 	@Override
 	public Map<OSMType, List<MapObject>> getMapObjectsByType() {
 		return mapObjectEnumMap;
 	}
-
 }

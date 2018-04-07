@@ -1,8 +1,9 @@
 package com.noticemedan.map.model.KDTree;
 
-import java.util.ArrayList;
+import com.noticemedan.map.model.MapObject;
+import java.util.List;
 
 public interface ForestInterface {
-	public ArrayList<KDMapObject> rangeSearch(Rect query);
-	public KDMapObject nearestNeighbor(double x, double y);
+	public List<MapObject> rangeSearch(Rect query);
+	public MapObject nearestNeighbor(double x, double y);
 }

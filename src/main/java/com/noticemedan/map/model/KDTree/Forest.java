@@ -1,26 +1,21 @@
 package com.noticemedan.map.model.KDTree;
 
-import java.util.ArrayList;
+import com.noticemedan.map.model.MapObject;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.List;
+
 
 public class Forest implements ForestInterface {
-	KDTree[] trees;
-
-	public Forest(int N, double[] zoomBreakPoints) {
-		if(N != zoomBreakPoints.length) new RuntimeException("Number of trees and zoom break points should be equal.");
-		trees = new KDTree[N];
-	}
-
-
+	@Setter private KDTree tree;
 
 	@Override
-	public ArrayList<KDMapObject> rangeSearch(Rect query) {
-		new RuntimeException("rangeSearch() not implemented yet.");
-		return null;
+	public List<MapObject> rangeSearch(Rect query) {
+		return tree.rangeSearch(query);
 	}
 
 	@Override
-	public KDMapObject nearestNeighbor(double x, double y) {
-		new RuntimeException("nearestNeighbor() not implemented yet.");
-		return null;
+	public MapObject nearestNeighbor(double x, double y) {
+		throw new RuntimeException("nearestNeighbor() not implemented yet.");
 	}
 }
