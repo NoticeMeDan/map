@@ -13,7 +13,7 @@ public class OsmParser {
 	@Getter private Osm rootNode;
 
 	public OsmParser() {
-		BufferedInputStream inputStream = new BufferedInputStream(App.class.getResourceAsStream("/small.osm"));
+		BufferedInputStream inputStream = new BufferedInputStream(App.class.getResourceAsStream("/test-map-1.osm"));
 		OsmMapData osmMapData = new OsmMapData();
 		rootNode = osmMapData.deserialize(inputStream);
 		log.info("# of Nodes: " + rootNode.getNodes().size());

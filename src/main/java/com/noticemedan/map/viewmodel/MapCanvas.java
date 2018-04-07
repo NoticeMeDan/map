@@ -36,8 +36,8 @@ public class MapCanvas {
 		//@Magnus sådan kommer du til at bruge forest klassen med et eksempel på range search.
 		//Brug evt. debugger for at inspicere mapObjects:)
 		ForestCreator forestCreator = new ForestCreator();
-		Forest forest = forestCreator.getForest();
-		List<MapObject> mapObjects = forest.rangeSearch(new Rect(20,20,500,500));
+		/*Forest forest = forestCreator.getForest();
+		List<MapObject> mapObjects = forest.rangeSearch(new Rect(20,20,500,500));*/
 
         drawCanvas();
     }
