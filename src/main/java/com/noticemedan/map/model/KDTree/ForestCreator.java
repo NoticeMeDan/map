@@ -14,8 +14,7 @@ public class ForestCreator {
 	@Getter Forest forest;
 
 	/**
-	 * TODO: WIP ForestCreator
-	 * This is a short term solution that uses the enummap. Made for @Magnus <3
+	 * TODO: This is a short term solution of range search with zoom levels that uses the enummap. Made for @Magnus <3
 	 */
 	public ForestCreator() {
 		//TODO: Delete this section when MapCreater can transfer objects directly to this class.
