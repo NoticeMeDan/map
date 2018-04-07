@@ -1,7 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.KDTree.Rect;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MouseController {
 
     private final double factor = 1.1;
@@ -18,28 +20,22 @@ public class MouseController {
         });
     }
 
-    public void panning(CustomPane customPane){
-    	customPane.setOnDragDetected(event -> {
-			/*System.out.println("Scrollbar: "+ customPane.getHvalue() + " | " + customPane.getVvalue());
-			System.out.println("Layout: "+ customPane.getLayoutX() + " | " + customPane.getLayoutY());
-			System.out.println("Viewport Bounds: " + customPane.getViewportBounds());*/
-		});
-	}
-
 	//TESTING
-	public void panDraw(CustomPane customPane){
-		customPane.setOnDragDetected(event -> customPane.setOnMouseReleased(event2 -> {
-            double minX = Math.abs(customPane.getViewportBounds().getMinX());
-            double minY = Math.abs(customPane.getViewportBounds().getMinY());
+	public void dragAndDraw(CustomPane customPane){
+		customPane.setOnDragDetected(event -> {
+			event.consume();
 
-            double maxX = minX + customPane.getViewportBounds().getWidth();
-            double maxY = minY + customPane.getViewportBounds().getHeight();
-            Rect viewPort = new Rect(minX,minY,maxX*2,maxY*2);
+            double minX = Math.abs(customPane.getViewportBounds().getMinX()) * 0.5;
+            double minY = Math.abs(customPane.getViewportBounds().getMinY()) * 0.5;
 
-			System.out.println(customPane.getViewportBounds().getWidth() + " , " + customPane.getViewportBounds().getHeight() + " | " + customPane.getViewportBounds().getMinX() + " , " + customPane.getViewportBounds().getMinY());
-            System.out.println("3  " + viewPort);
-            customPane.getMapCanvas().setViewArea(viewPort);
-            customPane.getMapCanvas().redrawCanvas();
-			}));
+            double maxX = minX + customPane.getViewportBounds().getWidth() * 1.5;
+            double maxY = minY + customPane.getViewportBounds().getHeight() * 1.5;
+
+			Rect viewPort = new Rect(minX,minY,maxX,maxY);
+			log.info("3  " + viewPort);
+
+			customPane.getMapCanvas().setViewArea(viewPort);
+			customPane.getMapCanvas().redrawCanvas();
+		});
 	}
 }
