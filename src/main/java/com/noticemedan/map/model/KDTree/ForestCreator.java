@@ -34,7 +34,6 @@ public class ForestCreator {
 			if (mapObjects[i].getOsmType() == GRASSLAND) zoomLevels[0].add(mapObjects[i]);
 			if (mapObjects[i].getOsmType() == WATER) zoomLevels[0].add(mapObjects[i]);
 
-
 			if (mapObjects[i].getOsmType() == ROAD) zoomLevels[1].add(mapObjects[i]);
 			if (mapObjects[i].getOsmType() == TREE_ROW) zoomLevels[1].add(mapObjects[i]);
 
