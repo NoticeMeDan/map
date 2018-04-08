@@ -11,17 +11,17 @@ public class Forest implements ForestInterface {
 	private KDTree trees[];
 
 	@Override
-	public List<MapObject> rangeSearch(Rect query, int zoomLevel) {
+	public List<MapObject> rangeSearch(Rect searchQuery, int zoomLevel) {
 		ArrayList searchResults = new ArrayList<>();
 		for (int i = 0; i < zoomLevel+1; i++) {
-			searchResults.addAll(trees[i].rangeSearch(query));
+			searchResults.addAll(trees[i].rangeSearch(searchQuery));
 		}
 		return searchResults;
 	}
 
 	//Range search as if only having one zoom level.
-	public List<MapObject> rangeSearch(Rect query) {
-		return rangeSearch(query, trees.length-1);
+	public List<MapObject> rangeSearch(Rect searchQuery) {
+		return rangeSearch(searchQuery, trees.length-1);
 	}
 
 	@Override
