@@ -90,7 +90,7 @@ public class KDTree {
 		return this.rangeSearchQueryResults;
 	}
 
-	private void searchTree(KDTreeNode parent, Rect query, Rect boundingBox) {
+	private void searchTree(KDTreeNode parent, Rect searchQuery, Rect boundingBox) {
 		//Create bounding boxes for search:
 		Rect boundingBoxLeft;
 		Rect boundingBoxRight;
@@ -108,40 +108,40 @@ public class KDTree {
 		// If current node is a leaf, check if point is within query;
 		if (parent.getPoints() != null) {
 			for (int i = 0; i < parent.getPoints().length; i++) {
-				if (pointInRect(parent.getPoints()[i], query)) rangeSearchQueryResults.add(parent.getPoints()[i]);
+				if (pointInRect(parent.getPoints()[i], searchQuery)) rangeSearchQueryResults.add(parent.getPoints()[i]);
 			}
 		} else {
 			// If left bounding box for left child is completely in query, report all points in this subtree
-			if (rectCompletelyInRect(boundingBoxLeft, query)) {
+			if (rectCompletelyInRect(boundingBoxLeft, searchQuery)) {
 				reportSubtree(leftChild);
 			} else {
 				if (parent.getDepth() % 2 == 0) { // Check depth of current search
 					/* Because depth is equal, use x-values for checking if bounding box range intersects query range.
 					 * If they do not intersect, it means that the query is not within the left subtree.
 					 */
-					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), query.getX1(), query.getX2())) {
+					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
 						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, query, boundingBoxLeft);
+						searchTree(leftChild, searchQuery, boundingBoxLeft);
 					}
 				} else {
 					// If depth is uneven, use y-values for checking if bounding box range intersects query range.
-					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), query.getY1(), query.getY2())) {
+					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
 						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, query, boundingBoxLeft);
+						searchTree(leftChild, searchQuery, boundingBoxLeft);
 					}
 				}
 			}
 
-			if (rectCompletelyInRect(boundingBoxRight, query)) {
+			if (rectCompletelyInRect(boundingBoxRight, searchQuery)) {
 				reportSubtree(rightChild);
 			} else {
 				if (parent.getDepth() % 2 == 0) {
-					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), query.getX1(), query.getX2())) {
-						searchTree(rightChild, query, boundingBoxRight);
+					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
+						searchTree(rightChild, searchQuery, boundingBoxRight);
 					}
 				} else {
-					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), query.getY1(), query.getY2())) {
-						searchTree(rightChild, query, boundingBoxRight);
+					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
+						searchTree(rightChild, searchQuery, boundingBoxRight);
 					}
 				}
 			}

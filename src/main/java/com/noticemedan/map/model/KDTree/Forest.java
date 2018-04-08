@@ -1,17 +1,27 @@
 package com.noticemedan.map.model.KDTree;
 
 import com.noticemedan.map.model.MapObject;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
-
+@AllArgsConstructor
 public class Forest implements ForestInterface {
-	@Setter private KDTree tree;
+	private KDTree trees[];
 
 	@Override
-	public List<MapObject> rangeSearch(Rect query) {
-		return tree.rangeSearch(query);
+	public List<MapObject> rangeSearch(Rect searchQuery, int zoomLevel) {
+		ArrayList searchResults = new ArrayList<>();
+		for (int i = 0; i < zoomLevel+1; i++) {
+			searchResults.addAll(trees[i].rangeSearch(searchQuery));
+		}
+		return searchResults;
+	}
+
+	//Range search as if only having one zoom level.
+	public List<MapObject> rangeSearch(Rect searchQuery) {
+		return rangeSearch(searchQuery, trees.length-1);
 	}
 
 	@Override

@@ -38,8 +38,4 @@ public class MapObject implements Comparable<MapObject> {
 		double lengthY = bounds.getY2() - bounds.getY1();
 		return Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2));
 	}
-
-	public MapObject(double x, double y) {
-		this.avgPoint = new Point2D(x, y);
-	}
 }

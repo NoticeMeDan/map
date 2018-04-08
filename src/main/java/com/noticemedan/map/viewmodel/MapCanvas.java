@@ -29,6 +29,7 @@ public class MapCanvas {
 	public MapCanvas() {
 		this.canvas = new Canvas(6000, 6000);
 		this.pen = canvas.getGraphicsContext2D();
+
 		this.forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
 		this.zoomLevel = 1.0;
