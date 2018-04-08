@@ -4,9 +4,14 @@ import com.noticemedan.map.model.MapObject;
 import com.noticemedan.map.model.MapObjectCreater;
 import lombok.Getter;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Dimension;
+
+//TODO: Delete all these collections when enummap has been removed.
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 
 import static com.noticemedan.map.model.OSMType.*;
 
@@ -14,18 +19,16 @@ public class ForestCreator {
 	@Getter Forest forest;
 
 	/**
-	 * TODO: This is a short term solution of range search with zoom levels that uses the enummap.
+	 * This is a short term solution of range search with zoom levels that uses the enummap.
 	 * TODO: Delete this constructor after deletion of enummap.
 	 */
 	public ForestCreator() {
-		//TODO: Delete this section when MapCreater can transfer objects directly to this class.
 		List<MapObject> conList = new LinkedList<>();
 		Collection mapObjectsCollection = MapObjectCreater.getInstance(new Dimension(1600,1600)).getMapObjectsByType().values();
 		Iterator<List<MapObject>> it = mapObjectsCollection.iterator();
 		while (it.hasNext()) conList.addAll(it.next());
 		MapObject[] mapObjects = conList.toArray(new MapObject[conList.size()]);
 
-		//TODO: Delete this section when MapCreater can transfer objects directly to this class.
 		//This is the activity that mapcreator is supposed to do.
 		ArrayList<MapObject>[] zoomLevels = new ArrayList[3];
 		for (int i = 0; i < zoomLevels.length; i++) zoomLevels[i] = new ArrayList<>();
