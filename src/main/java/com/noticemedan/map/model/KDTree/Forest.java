@@ -19,6 +19,11 @@ public class Forest implements ForestInterface {
 		return searchResults;
 	}
 
+	//Range search as if only having one zoom level.
+	public List<MapObject> rangeSearch(Rect query) {
+		return rangeSearch(query, trees.length-1);
+	}
+
 	@Override
 	public MapObject nearestNeighbor(double x, double y) {
 		throw new RuntimeException("nearestNeighbor() not implemented yet.");

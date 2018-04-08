@@ -14,7 +14,8 @@ public class ForestCreator {
 	@Getter Forest forest;
 
 	/**
-	 * TODO: This is a short term solution of range search with zoom levels that uses the enummap. Made for @Magnus <3
+	 * TODO: This is a short term solution of range search with zoom levels that uses the enummap.
+	 * TODO: Delete this constructor after deletion of enummap.
 	 */
 	public ForestCreator() {
 		//TODO: Delete this section when MapCreater can transfer objects directly to this class.
@@ -29,22 +30,21 @@ public class ForestCreator {
 		ArrayList<MapObject>[] zoomLevels = new ArrayList[3];
 		for (int i = 0; i < zoomLevels.length; i++) zoomLevels[i] = new ArrayList<>();
 		for (int i = 0; i < mapObjects.length; i++) {
-			if (mapObjects[i].getOsmType() == ROAD) zoomLevels[0].add(mapObjects[i]);
+			if (mapObjects[i].getOsmType() == HIGHWAY) zoomLevels[0].add(mapObjects[i]);
+			if (mapObjects[i].getOsmType() == GRASSLAND) zoomLevels[0].add(mapObjects[i]);
+			if (mapObjects[i].getOsmType() == WATER) zoomLevels[0].add(mapObjects[i]);
 
-			if (mapObjects[i].getOsmType() == GRASSLAND) zoomLevels[1].add(mapObjects[i]);
+
+			if (mapObjects[i].getOsmType() == ROAD) zoomLevels[1].add(mapObjects[i]);
 			if (mapObjects[i].getOsmType() == TREE_ROW) zoomLevels[1].add(mapObjects[i]);
 
 			if (mapObjects[i].getOsmType() == BUILDING) zoomLevels[2].add(mapObjects[i]);
-			if (mapObjects[i].getOsmType() == WATER) zoomLevels[2].add(mapObjects[i]);
 		}
 		KDTree[] trees = new KDTree[3];
 		for (int i = 0; i < trees.length; i++) trees[i] = new KDTree(zoomLevels[i].toArray(new MapObject[zoomLevels[i].size()]), 20);
 		this.forest = new Forest(trees);
 	}
 
-	/**
-	 * Closer implementation.
-	 */
 	public ForestCreator(MapObject[][] mapObjects, int[] maxNumberOfElementsAtLeaf) {
 		if (mapObjects.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
 

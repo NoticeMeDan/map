@@ -45,6 +45,7 @@ public class MainViewController {
 		CustomPane mapCanvas = new CustomPane(new Dimension(1600, 1600));
 		MouseController controller = new MouseController();
 		controller.addZoomAbility(mapCanvas);
+		controller.dragAndDraw(mapCanvas);
 		mapPaneContainer.getChildren().addAll(mapCanvas);
 	}
 
