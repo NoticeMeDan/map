@@ -77,6 +77,7 @@ public class MapCanvas {
 	}
 
 	//HOT FIX UNTIL MapObject isOpen() IS WORKING
+	//TODO set boolean isOpen() when creating new MapObject.
 	private boolean isClosed(MapObject mapObject) {
 		return mapObject.getOsmType() != OSMType.ROAD && (mapObject.getOsmType() != OSMType.HIGHWAY && (mapObject.getOsmType() != OSMType.COASTLINE));
 	}
