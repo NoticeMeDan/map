@@ -1,11 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
-
 import com.noticemedan.map.model.KDTree.Forest;
 import com.noticemedan.map.model.KDTree.ForestCreator;
 import com.noticemedan.map.model.KDTree.Rect;
 import com.noticemedan.map.model.MapObject;
-import com.noticemedan.map.model.MapObjectCreater;
 import com.noticemedan.map.model.OSMType;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -14,10 +12,7 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.awt.*;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class MapCanvas {
@@ -48,13 +43,13 @@ public class MapCanvas {
 		drawObjects(forest.rangeSearch(viewArea));
 	}
 
-	public void redrawCanvas(){
+	public void redrawCanvas() {
 		pen.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 		drawCanvas();
 	}
 
-	private void drawObjects(List<MapObject> objects){
-		for(MapObject object : objects){
+	private void drawObjects(List<MapObject> objects) {
+		for(MapObject object : objects) {
 			if(object.getOsmType()==OSMType.UNKNOWN) continue;
 			if(object.getColor()!=null) setPenColor(object.getColor()); //IF-STATEMENT UNTIL MapObject getColor() WORKS PROPERLY
 
@@ -76,7 +71,7 @@ public class MapCanvas {
 		}
 	}
 
-	private void setPenColor(Color color){
+	private void setPenColor(Color color) {
 		pen.setStroke(color);
 		pen.setFill(color);
 	}

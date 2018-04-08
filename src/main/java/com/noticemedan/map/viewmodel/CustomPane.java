@@ -1,9 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.KDTree.Rect;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import lombok.Getter;
 
@@ -23,7 +21,7 @@ public class CustomPane extends ScrollPane {
         setHeight(dim.getHeight());
     }
 
-    private void initializeFields(){
+    private void initializeFields() {
         this.mapCanvas = new MapCanvas();
         this.paneViewContent = new Group();
         this.canvasContent = new Group();
@@ -35,7 +33,7 @@ public class CustomPane extends ScrollPane {
         this.setContent(paneViewContent);
     }
 
-    private void adjustPaneProperties(){
+    private void adjustPaneProperties() {
     	this.setStyle("-fx-background: #2349B5");
 		this.setPrefWidth(1100);
 		this.setPrefHeight(650);
@@ -44,10 +42,9 @@ public class CustomPane extends ScrollPane {
         this.setPannable(true);
     }
 
-    public Rect getExtendedViewPortBounds(){
+    public Rect getExtendedViewPortBounds() {
 		double minX = Math.abs(this.getViewportBounds().getMinX());
 		double minY = Math.abs(this.getViewportBounds().getMinY());
-
 		double maxX = minX + this.getViewportBounds().getWidth();
 		double maxY = minY + this.getViewportBounds().getHeight();
 

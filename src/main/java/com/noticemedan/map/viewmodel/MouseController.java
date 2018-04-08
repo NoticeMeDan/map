@@ -6,23 +6,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MouseController {
 
-    private final double factor = 1.1;
+    private double zoomLevel = 1.0;
 
-    //THIS NEEDS TO BE REDONE TO WORK WITH KD-TREE AND zoomLevel in MapCanvas
-	/**
-	 * TODO Make zoomMethod: that pivots around mouseposition.
-	 * TODO Make zoomMethod: that take use of the zoomLevel variable in MapCanvas.
-	 * TODO Make zoomMethod: that scales properly without messing with the KD-TREE search area.
-	 * */
-	//OLD ZOOM
-    public void addZoomAbility(CustomPane customPane){
+	/*
+	THIS NEEDS TO BE REDONE TO WORK WITH KD-TREE AND zoomLevel in MapCanvas
+	TODO Make zoomMethod: that pivots around mouseposition.
+	TODO Make zoomMethod: that take use of the zoomLevel variable in MapCanvas.
+	TODO Make zoomMethod: that scales properly without messing with the KD-TREE search area.
+	*/
+	public void addZoomAbility(CustomPane customPane) {
         customPane.getCanvasContent().setOnScroll(event -> {
             event.consume();
 
             if (event.getDeltaY() == 0) return;
 
-            double zoomLevel = customPane.getMapCanvas().getZoomLevel();
-            zoomLevel = (event.getDeltaY() > 0) ? zoomLevel * 1.1 : zoomLevel * (1 / 1.1);
+            this.zoomLevel = customPane.getMapCanvas().getZoomLevel();
+            this.zoomLevel = (event.getDeltaY() > 0) ? zoomLevel * 1.1 : zoomLevel * (1 / 1.1);
 
             customPane.getMapCanvas().setZoomLevel(zoomLevel);
             customPane.getMapCanvas().redrawCanvas();
