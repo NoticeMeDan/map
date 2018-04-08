@@ -42,12 +42,12 @@ public class CustomPane extends ScrollPane {
         this.setPannable(true);
     }
 
-    public Rect getExtendedViewPortBounds() {
+    public Rect getExtendedViewPortBounds(double zoomLevel) {
 		double minX = Math.abs(this.getViewportBounds().getMinX());
 		double minY = Math.abs(this.getViewportBounds().getMinY());
 		double maxX = minX + this.getViewportBounds().getWidth();
 		double maxY = minY + this.getViewportBounds().getHeight();
-
-		return new Rect(minX * 0.5 ,minY * 0.5,maxX * 1.5,maxY * 1.5);
+		double extendvalue = 1/zoomLevel;
+		return new Rect(minX * 0.5 * extendvalue,minY * 0.5 * extendvalue,maxX * 1.5 * extendvalue,maxY * 1.5 * extendvalue);
 	}
 }

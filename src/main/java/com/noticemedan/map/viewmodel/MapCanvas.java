@@ -48,13 +48,13 @@ public class MapCanvas {
 		drawCanvas();
 	}
 
-	private void drawObjects(List<MapObject> objects) {
-		for(MapObject object : objects) {
-			if(object.getOsmType()==OSMType.UNKNOWN) continue;
-			if(object.getColor()!=null) setPenColor(object.getColor()); //IF-STATEMENT UNTIL MapObject getColor() WORKS PROPERLY
+	private void drawObjects(List<MapObject> mapObjects) {
+		for(MapObject mapObject : mapObjects) {
+			if(mapObject.getOsmType()==OSMType.UNKNOWN) continue;
+			if(mapObject.getColor()!=null) setPenColor(mapObject.getColor()); //IF-STATEMENT UNTIL MapObject getColor() WORKS PROPERLY
 
-			drawPath(object.getPoints());
-			if ((isClosed(object))) {
+			drawPath(mapObject.getPoints());
+			if ((isClosed(mapObject))) {
 				pen.closePath();
 				pen.fill();
 			} else pen.stroke();
@@ -77,7 +77,7 @@ public class MapCanvas {
 	}
 
 	//HOT FIX UNTIL MapObject isOpen() IS WORKING
-	private boolean isClosed(MapObject object) {
-		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY && (object.getOsmType() != OSMType.COASTLINE));
+	private boolean isClosed(MapObject mapObject) {
+		return mapObject.getOsmType() != OSMType.ROAD && (mapObject.getOsmType() != OSMType.HIGHWAY && (mapObject.getOsmType() != OSMType.COASTLINE));
 	}
 }
