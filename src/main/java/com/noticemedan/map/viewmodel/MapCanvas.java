@@ -124,7 +124,7 @@ public class MapCanvas {
 	}
 
 	private boolean isClosed(MapObject object) {
-		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY /*&& (object.getOsmType() != OSMType.COASTLINE)*/);
+		return object.getOsmType() != OSMType.ROAD && (object.getOsmType() != OSMType.HIGHWAY && (object.getOsmType() != OSMType.COASTLINE));
 	}
 
 	private void putOnCanvas(Point2D point) {

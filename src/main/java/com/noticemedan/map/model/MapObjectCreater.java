@@ -47,7 +47,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		initializeCollections(osmParser.getRootNode());
 		initializeBoundsAndMapConstants();
 		populateObjectCollections();
-		stichCoastlines();
+		coastlineObjects = stichCoastlines(coastwayCollection);
 	}
 
 	private static void initializeCollections(Osm rootNode) {
@@ -153,45 +153,51 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		return new Rect(minX, minY, maxX, maxY);
 	}
 
-	private void stichCoastlines() {
-		Collection<List<Point2D>> coastlines = coastwayCollection;
-		Point2D previousFirstPoint = null;
-		List<Point2D> currentPointlist;
-		Point2D currentLastPoint;
-		List<Point2D> stichedPointList = new Stack<>();
+	public List<CoastlineObject> stichCoastlines(Collection<List<Point2D>> coastlines) {
+		List<CoastlineObject> coastlineObjects = new LinkedList<>();
+
+		List<Point2D> previousLine = null;
+		List<Point2D> stichedPoints = new LinkedList<>();
 
 		int counter = 0;
-		for (List<Point2D> pointlist : coastlines) {
-
-			currentPointlist = pointlist;
-			currentLastPoint = pointlist.get(pointlist.size() - 1);
-
-			if (counter > 0) {
-				if (previousFirstPoint.equals(currentLastPoint)) {
-					currentPointlist.remove(currentPointlist.size() - 1);
-					stichedPointList.addAll(currentPointlist);
-				}
-			}
-			else {
-				stichedPointList.addAll(pointlist);
-			}
-
-			CoastlineObject coastlineObject = new CoastlineObject();
-			Rect bounds = getBoundsFromPointList(stichedPointList);
-			double avgX = (bounds.getX1() + bounds.getX2()) / 2;
-			double avgY = (bounds.getY1() + bounds.getY2()) / 2;
-
-			coastlineObject.setPoints(stichedPointList);
-			coastlineObject.setBounds(bounds);
-			coastlineObject.setAvgPoint(new Point2D(avgX, avgY));
-			coastlineObject.setColor(getColor(OSMType.COASTLINE));
-
-			coastlineObjects.add(coastlineObject);
-			previousFirstPoint = pointlist.get(0);
-
+		for (List<Point2D> line : coastlines) {
 			counter++;
+			if (previousLine != null) {
+				System.out.println("CH: " + previousLine.get(0) + " == " + (line.get(line.size() - 1)) + " : " + previousLine.get(0).equals(line.get(line.size() - 1)));
+
+				if (!previousLine.get(0).equals(line.get(line.size() - 1))) {
+					if (stichedPoints.isEmpty()) continue;
+					CoastlineObject coastlineObject = new CoastlineObject();
+					coastlineObject.setPoints(new LinkedList<>(stichedPoints));
+					coastlineObjects.add(coastlineObject);
+
+					System.out.println("Add stichedPoints:");
+					coastlineObject.getPoints().forEach(System.out::println);
+
+					stichedPoints.clear();
+					previousLine = line;
+
+					continue;
+				}
+
+				if (stichedPoints.isEmpty()) stichedPoints.addAll(0, previousLine);
+				stichedPoints.addAll(0, line);
+
+				if (counter == coastlines.size()) {
+					if (stichedPoints.isEmpty()) continue;
+					CoastlineObject coastlineObject = new CoastlineObject();
+					coastlineObject.setPoints(new LinkedList<>(stichedPoints));
+					coastlineObjects.add(coastlineObject);
+				}
+
+				System.out.println("StichPoints:");
+				stichedPoints.forEach(System.out::println);
+			}
+
+			previousLine = line;
 		}
 
+		return coastlineObjects;
 	}
 
 	private List<Point2D> getPointListFromWay(Way way) {
