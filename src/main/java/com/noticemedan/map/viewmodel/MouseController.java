@@ -14,6 +14,7 @@ public class MouseController {
 	 * TODO Make zoomMethod: that take use of the zoomLevel variable in MapCanvas.
 	 * TODO Make zoomMethod: that scales properly without messing with the KD-TREE search area.
 	 * */
+	//OLD ZOOM
     public void addZoomAbility(CustomPane customPane){
         customPane.getCanvasContent().setOnScroll(event -> {
             event.consume();
@@ -27,22 +28,22 @@ public class MouseController {
     }
 
 	//STILL BUGGY - Don't always draw on last position, and a bit laggy.
-	public void dragAndDraw(CustomPane customPane){
-		customPane.setOnDragDetected(event -> {
-			event.consume();
+	public void dragAndDraw(CustomPane customPane) {
+	customPane.setOnDragDetected(event -> {
+		//multiply with 0.5/1.5 to increase the rangesearch search area
+		double minX = Math.abs(customPane.getViewportBounds().getMinX());
+		double minY = Math.abs(customPane.getViewportBounds().getMinY());
 
-			//multiply with 0.5/1.5 to increase the rangesearch search area
-            double minX = Math.abs(customPane.getViewportBounds().getMinX()) * 0.5;
-            double minY = Math.abs(customPane.getViewportBounds().getMinY()) * 0.5;
+		double maxX = minX + customPane.getViewportBounds().getWidth();
+		double maxY = minY + customPane.getViewportBounds().getHeight();
 
-            double maxX = minX + customPane.getViewportBounds().getWidth() * 1.5;
-            double maxY = minY + customPane.getViewportBounds().getHeight() * 1.5;
+		Rect viewPort = new Rect(minX * 0.5,minY * 0.5,maxX * 1.5,maxY * 1.5);
+		log.info("3  " + viewPort);
 
-			Rect viewPort = new Rect(minX,minY,maxX,maxY);
-			log.info("3  " + viewPort);
-
-			customPane.getMapCanvas().setViewArea(viewPort);
-			customPane.getMapCanvas().redrawCanvas();
-		});
+		customPane.getMapCanvas().setViewArea(viewPort);
+		customPane.getMapCanvas().redrawCanvas();
+		event.consume();
+	});
 	}
 }
+
