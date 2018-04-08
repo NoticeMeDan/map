@@ -1,5 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
+import com.noticemedan.map.model.KDTree.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -43,66 +44,13 @@ public class CustomPane extends ScrollPane {
         this.setPannable(true);
     }
 
-    public void repositionScroller(double scaleFactor, Point2D scrollOffset) {
-        adjustHorizontalPosition(scaleFactor,scrollOffset.getX());
-        adjustVerticalPosition(scaleFactor,scrollOffset.getY());
-    }
+    public Rect getExtendedViewPortBounds(){
+		double minX = Math.abs(this.getViewportBounds().getMinX());
+		double minY = Math.abs(this.getViewportBounds().getMinY());
 
-    private void adjustHorizontalPosition(double scaleFactor, double offSet){
-        double deltaWidth = this.paneViewContent.getLayoutBounds().getWidth() - this.getViewportBounds().getWidth();
-        if (deltaWidth > 0) {
-            double horizontalCenter = this.getViewportBounds().getWidth() / 2 ;
-            double newScrollXOffset = (scaleFactor - 1) *  horizontalCenter + scaleFactor * offSet;
-            this.setHvalue(this.getHmin() + newScrollXOffset * (this.getHmax() - this.getHmin()) / deltaWidth);
-        } else {
-            this.setHvalue(this.getHmin());
-        }
-    }
+		double maxX = minX + this.getViewportBounds().getWidth();
+		double maxY = minY + this.getViewportBounds().getHeight();
 
-    private void adjustVerticalPosition(double scaleFactor, double offSet){
-        double deltaHeight = this.paneViewContent.getLayoutBounds().getHeight() - this.getViewportBounds().getHeight();
-        if (deltaHeight > 0) {
-            double halfHeight = this.getViewportBounds().getHeight() / 2 ;
-            double newScrollYOffset = (scaleFactor - 1) * halfHeight + scaleFactor * offSet;
-            this.setVvalue(this.getVmin() + newScrollYOffset * (this.getVmax() - this.getVmin()) / deltaHeight);
-        } else {
-            this.setVvalue(this.getVmin());
-        }
-    }
-
-    public Point2D calculateScrollOffset() {
-        double XOffset = calculateHorizontalOffset();
-        double YOffset = calculateVerticalOffset();
-        return new Point2D(XOffset, YOffset);
-    }
-
-    private double calculateHorizontalOffset(){
-        double contentWidth = this.paneViewContent.getLayoutBounds().getWidth();
-        double viewportWidth = this.getViewportBounds().getWidth();
-        double deltaWidth = contentWidth - viewportWidth;
-        double horizontalScrollProportion = (this.getHvalue() - this.getHmin()) / (this.getHmax() - this.getHmin());
-
-        return horizontalScrollProportion * Math.max(0, deltaWidth);
-    }
-
-    private double calculateVerticalOffset(){
-        double contentHeight = this.paneViewContent.getLayoutBounds().getHeight();
-        double viewportHeight = this.getViewportBounds().getHeight();
-        double deltaHeight = contentHeight - viewportHeight;
-        double verticalScrollProportion = (this.getVvalue() - this.getVmin()) / (this.getVmax() - this.getVmin());
-
-        return verticalScrollProportion * Math.max(0, deltaHeight);
-    }
-
-    public void zoomToCenter(double scaleFactor){
-        // amount of scrolling in each direction in paneViewContent coordinate units
-        Point2D scrollOffset = this.calculateScrollOffset();
-        Canvas canvas = mapCanvas.getCanvas();
-
-        canvas.setScaleX(canvas.getScaleX() * scaleFactor);
-        canvas.setScaleY(canvas.getScaleY() * scaleFactor);
-
-        // move viewport so that old center remains in the center after the scaling
-        this.repositionScroller(scaleFactor, scrollOffset);
-    }
+		return new Rect(minX * 0.5 ,minY * 0.5,maxX * 1.5,maxY * 1.5);
+	}
 }

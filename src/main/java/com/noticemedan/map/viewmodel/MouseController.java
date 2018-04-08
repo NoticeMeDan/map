@@ -21,28 +21,22 @@ public class MouseController {
 
             if (event.getDeltaY() == 0) return;
 
-            double scaleFactor = (event.getDeltaY() > 0) ? factor : 1 / factor;
+            double zoomLevel = customPane.getMapCanvas().getZoomLevel();
+            zoomLevel = (event.getDeltaY() > 0) ? zoomLevel * 1.1 : zoomLevel * (1 / 1.1);
 
-            customPane.zoomToCenter(scaleFactor);
+            customPane.getMapCanvas().setZoomLevel(zoomLevel);
+            customPane.getMapCanvas().redrawCanvas();
         });
     }
 
 	//STILL BUGGY - Don't always draw on last position, and a bit laggy.
 	public void dragAndDraw(CustomPane customPane) {
 	customPane.setOnDragDetected(event -> {
-		//multiply with 0.5/1.5 to increase the rangesearch search area
-		double minX = Math.abs(customPane.getViewportBounds().getMinX());
-		double minY = Math.abs(customPane.getViewportBounds().getMinY());
-
-		double maxX = minX + customPane.getViewportBounds().getWidth();
-		double maxY = minY + customPane.getViewportBounds().getHeight();
-
-		Rect viewPort = new Rect(minX * 0.5,minY * 0.5,maxX * 1.5,maxY * 1.5);
+		event.consume();
+		Rect viewPort = customPane.getExtendedViewPortBounds();
 		log.info("3  " + viewPort);
-
 		customPane.getMapCanvas().setViewArea(viewPort);
 		customPane.getMapCanvas().redrawCanvas();
-		event.consume();
 	});
 	}
 }
