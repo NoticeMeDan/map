@@ -1,19 +1,21 @@
 package com.noticemedan.map.model.KDTree;
 
+import com.noticemedan.map.model.MapObject;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class KDTree {
 
 	@Getter private KDTreeNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
-	private ArrayList<KDTreePoint> rangeSearchQueryResults;
+	private ArrayList<MapObject> rangeSearchQueryResults;
 
-	public KDTree(KDTreePoint[] points, int maxNumberOfElementsAtLeaf) {
+	public KDTree(MapObject[] points, int maxNumberOfElementsAtLeaf) {
 		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 
@@ -24,9 +26,9 @@ public class KDTree {
 	/**
 	 * @return 		Root node of KDTree.
 	 */
-	private KDTreeNode buildKDTree(KDTreePoint[] points, int depth) {
-		KDTreePoint[] firstHalfArray;
-		KDTreePoint[] secondHalfArray;
+	private KDTreeNode buildKDTree(MapObject[] points, int depth) {
+		MapObject[] firstHalfArray;
+		MapObject[] secondHalfArray;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
@@ -34,15 +36,15 @@ public class KDTree {
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
 		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			Tuple2<MapObject[], MapObject[]> tuple2 = splitPointArrayByMedian(points);
 			firstHalfArray = tuple2._1;
 			secondHalfArray = tuple2._2;
-			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getX());
+			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
 		} else { // If depth odd, split by y-value
-			Tuple2<KDTreePoint[], KDTreePoint[]> tuple2 = splitPointArrayByMedian(points);
+			Tuple2<MapObject[], MapObject[]> tuple2 = splitPointArrayByMedian(points);
 			firstHalfArray = tuple2._1;
 			secondHalfArray = tuple2._2;
-			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getY());
+			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
 		}
 
 		// Recursively find the parent's left and right child.
@@ -55,40 +57,40 @@ public class KDTree {
 		return parent;
 	}
 
-	private Tuple2<KDTreePoint[], KDTreePoint[]> splitPointArrayByMedian(KDTreePoint[] points) {
+	private Tuple2<MapObject[], MapObject[]> splitPointArrayByMedian(MapObject[] points) {
 		int N = points.length;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new KDTreePoint[] { points[0] }, new KDTreePoint[] { points[1] } );
+		if (N == 2) return Tuple.of(new MapObject[] { points[0] }, new MapObject[] { points[1] } );
 
 		Quick.select(points, N/2);
 
 		// k is the index where the array should be split.
 		int k = N/2+1;
-		KDTreePoint[] 	firstHalf = new KDTreePoint[k];
-		KDTreePoint[]   secondHalf = new KDTreePoint[N-k];
+		MapObject[] 	firstHalf = new MapObject[k];
+		MapObject[]   secondHalf = new MapObject[N-k];
 
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].getSortX()) {	points[i].setSortX(false); }
-			else {						points[i].setSortX(true);  }
+			if (points[i].isDepthEven()) {	points[i].setDepthEven(false); }
+			else {							points[i].setDepthEven(true);  }
 			if (i < k) 						firstHalf[i] = points[i];
 			if (i >= k) 					secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public ArrayList<KDTreePoint> rangeSearch(Rect query) {
+	public List<MapObject> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		searchTree(rootNode, query, startBoundingBox);
 		return this.rangeSearchQueryResults;
 	}
 
-	private void searchTree(KDTreeNode parent, Rect query, Rect boundingBox) {
+	private void searchTree(KDTreeNode parent, Rect searchQuery, Rect boundingBox) {
 		//Create bounding boxes for search:
 		Rect boundingBoxLeft;
 		Rect boundingBoxRight;
@@ -106,40 +108,40 @@ public class KDTree {
 		// If current node is a leaf, check if point is within query;
 		if (parent.getPoints() != null) {
 			for (int i = 0; i < parent.getPoints().length; i++) {
-				if (pointInRect(parent.getPoints()[i], query)) rangeSearchQueryResults.add(parent.getPoints()[i]);
+				if (pointInRect(parent.getPoints()[i], searchQuery)) rangeSearchQueryResults.add(parent.getPoints()[i]);
 			}
 		} else {
 			// If left bounding box for left child is completely in query, report all points in this subtree
-			if (rectCompletelyInRect(boundingBoxLeft, query)) {
+			if (rectCompletelyInRect(boundingBoxLeft, searchQuery)) {
 				reportSubtree(leftChild);
 			} else {
 				if (parent.getDepth() % 2 == 0) { // Check depth of current search
 					/* Because depth is equal, use x-values for checking if bounding box range intersects query range.
 					 * If they do not intersect, it means that the query is not within the left subtree.
 					 */
-					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), query.getX1(), query.getX2())) {
+					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
 						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, query, boundingBoxLeft);
+						searchTree(leftChild, searchQuery, boundingBoxLeft);
 					}
 				} else {
 					// If depth is uneven, use y-values for checking if bounding box range intersects query range.
-					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), query.getY1(), query.getY2())) {
+					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
 						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, query, boundingBoxLeft);
+						searchTree(leftChild, searchQuery, boundingBoxLeft);
 					}
 				}
 			}
 
-			if (rectCompletelyInRect(boundingBoxRight, query)) {
+			if (rectCompletelyInRect(boundingBoxRight, searchQuery)) {
 				reportSubtree(rightChild);
 			} else {
 				if (parent.getDepth() % 2 == 0) {
-					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), query.getX1(), query.getX2())) {
-						searchTree(rightChild, query, boundingBoxRight);
+					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
+						searchTree(rightChild, searchQuery, boundingBoxRight);
 					}
 				} else {
-					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), query.getY1(), query.getY2())) {
-						searchTree(rightChild, query, boundingBoxRight);
+					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
+						searchTree(rightChild, searchQuery, boundingBoxRight);
 					}
 				}
 			}
@@ -158,17 +160,18 @@ public class KDTree {
 		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY1() && smallRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
 		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
 	}
+
 	static public boolean rangeIntersectsRange(double a, double b, double c, double d) {
 		// Do range a-b and c-d intersect?
 		return a <= d && b >= c;
 	}
 
 	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(KDTreePoint point, Rect rect) {
-		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getX());
-		boolean part2 = Math.abs(point.getX()) <= Math.abs(rect.getX2());
-		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getY());
-		boolean part4 = Math.abs(point.getY()) <= Math.abs(rect.getY2());
+	static public boolean pointInRect(MapObject point, Rect rect) {
+		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getAvgPoint().getX());
+		boolean part2 = Math.abs(point.getAvgPoint().getX()) <= Math.abs(rect.getX2());
+		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getAvgPoint().getY());
+		boolean part4 = Math.abs(point.getAvgPoint().getY()) <= Math.abs(rect.getY2());
 		return part1 && part2 && part3 && part4;
 	}
 }

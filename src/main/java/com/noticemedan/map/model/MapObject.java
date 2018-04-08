@@ -4,10 +4,12 @@ import com.noticemedan.map.model.KDTree.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class MapObject implements Comparable<MapObject> {
 	private OSMType osmType;
 	private List<Point2D> points;

@@ -1,18 +1,16 @@
 package com.noticemedan.map.model.KDTree;
 
-import static org.testng.Assert.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Ignore;
+import com.noticemedan.map.model.MapObject;
+import javafx.geometry.Point2D;
 import org.testng.annotations.*;
-
-import java.util.ArrayList;
+import static org.testng.Assert.*;
+import java.util.List;
 
 public class KDTreeTest {
 
-	KDTreePoint[] randomGeneratedPoints;
-	KDTreePoint[] pointsOneElementKDTree;
-	KDTreePoint[] pointsForSmallKDTRee;
-	KDTreePoint[] pointsForMultiMedianKDTree;
+	MapObject[] pointsOneElementKDTree;
+	MapObject[] pointsForSmallKDTree;
+	MapObject[] pointsForMultiMedianKDTree;
 
 	KDTree multiMedianKDTree;
 	KDTree oneElementKDTree;
@@ -20,29 +18,38 @@ public class KDTreeTest {
 
 	@BeforeTest
 	public void buildSmallKDTree() {
-		pointsForSmallKDTRee = new KDTreePoint[8];
-		pointsForSmallKDTRee[0] = new KDTreePoint(1,10);
-		pointsForSmallKDTRee[1] = new KDTreePoint(2,3);
-		pointsForSmallKDTRee[2] = new KDTreePoint(3,8);
-		pointsForSmallKDTRee[3] = new KDTreePoint(4,6);
-		pointsForSmallKDTRee[4] = new KDTreePoint(5,1);
-		pointsForSmallKDTRee[5] = new KDTreePoint(6,7);
-		pointsForSmallKDTRee[6] = new KDTreePoint(7,2);
-		pointsForSmallKDTRee[7] = new KDTreePoint(9,9);
-		smallKDTree = new KDTree(pointsForSmallKDTRee, 2);
+		pointsForSmallKDTree = new MapObject[8];
+		pointsForSmallKDTree[0] = new MapObject();
+		pointsForSmallKDTree[0].setAvgPoint(new Point2D(1,10));
+		pointsForSmallKDTree[1] = new MapObject();
+		pointsForSmallKDTree[1].setAvgPoint(new Point2D(2,3));
+		pointsForSmallKDTree[2] = new MapObject();
+		pointsForSmallKDTree[2].setAvgPoint(new Point2D(3,8));
+		pointsForSmallKDTree[3] = new MapObject();
+		pointsForSmallKDTree[3].setAvgPoint(new Point2D(4,6));
+		pointsForSmallKDTree[4] = new MapObject();
+		pointsForSmallKDTree[4].setAvgPoint(new Point2D(5,1));
+		pointsForSmallKDTree[5] = new MapObject();
+		pointsForSmallKDTree[5].setAvgPoint(new Point2D(6,7));
+		pointsForSmallKDTree[6] = new MapObject();
+		pointsForSmallKDTree[6].setAvgPoint(new Point2D(7,2));
+		pointsForSmallKDTree[7] = new MapObject();
+		pointsForSmallKDTree[7].setAvgPoint(new Point2D(9,9));
+
+		smallKDTree = new KDTree(pointsForSmallKDTree, 2);
 	}
 
 	@Test
 	public void testSmallKDTree_LeafNodeValues_Positive() {
 		//Test some random leaf nodes values
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getX(), 2.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getY(), 3.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getAvgPoint().getX(), 2.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getAvgPoint().getY(), 3.0);
 
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getX(), 9.0);
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getAvgPoint().getX(), 9.0);
 
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getX(), 1.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getY(), 10.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getAvgPoint().getX(), 1.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getAvgPoint().getY(), 10.0);
 	}
 
 	@Test
@@ -61,60 +68,58 @@ public class KDTreeTest {
 	@Test
 	public void testSmallKDTree_NodeSplitValues_Negative() {
 		//Test some random node split values
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getX(), 8);
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getY(), 3);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getAvgPoint().getX(), 8);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getAvgPoint().getY(), 3);
 
 	}
 
-	public void buildRandomPoints() {
-		int N = 10000000;
-		randomGeneratedPoints = new KDTreePoint[N];
+	public MapObject[] buildRandomPoints(int N) {
+		MapObject[] randomGeneratedPoints = new MapObject[N];
 
 		for(int i = 0; i < N; i++) {
-			randomGeneratedPoints[i] = new KDTreePoint(Math.random(), Math.random());
+			randomGeneratedPoints[i] = new MapObject();
+			randomGeneratedPoints[i].setAvgPoint(new Point2D(Math.random(), Math.random()));
 		}
+		return randomGeneratedPoints;
 	}
 
-	@Ignore @Test
-	public void testVeryLargeKDTreeSpeed() { //10E7 points
-		buildRandomPoints();
-		System.out.println("Started...");
+	@Ignore @Test //Usually takes 25 seconds
+	public void testVeryLargeKDTreeSpeed() { //10E7 points, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
-		KDTree veryLargeKDTree = new KDTree(randomGeneratedPoints, 1000);
+		KDTree veryLargeKDTree = new KDTree(buildRandomPoints(10000000), 1000);
+		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
 		assertTrue(stopwatch.elapsedTime() < 30);
-		System.out.println(stopwatch.elapsedTime());
 	}
 
 	@BeforeTest
 	public void buildOneElementKDTree() {
-		pointsOneElementKDTree = new KDTreePoint[1];
-		pointsOneElementKDTree[0] = new KDTreePoint(1,10);
+		pointsOneElementKDTree = new MapObject[1];
+		pointsOneElementKDTree[0] = new MapObject();
+		pointsOneElementKDTree[0].setAvgPoint(new Point2D(1,10));
 		oneElementKDTree = new KDTree(pointsOneElementKDTree, 1);
 	}
 
 	@Test
 	public void oneElementKDTree_Postive() {
-		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getX(),1.0);
-		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getY(),10.0);
+		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getAvgPoint().getX(),1.0);
+		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getAvgPoint().getY(),10.0);
 	}
 
 	//Delete test?
 	@BeforeTest
 	public void buildMultiMedianKDTree() {
-		pointsForMultiMedianKDTree = new KDTreePoint[5];
-		pointsForMultiMedianKDTree[0] = new KDTreePoint(1,8);
-		pointsForMultiMedianKDTree[1] = new KDTreePoint(5,3);
-		pointsForMultiMedianKDTree[2] = new KDTreePoint(5,8);
-		pointsForMultiMedianKDTree[3] = new KDTreePoint(5,6);
-		pointsForMultiMedianKDTree[4] = new KDTreePoint(9,8);
+		pointsForMultiMedianKDTree = new MapObject[5];
+		pointsForMultiMedianKDTree[0] = new MapObject();
+		pointsForMultiMedianKDTree[0].setAvgPoint(new Point2D(1,8));
+		pointsForMultiMedianKDTree[1] = new MapObject();
+		pointsForMultiMedianKDTree[1].setAvgPoint(new Point2D(5,3));
+		pointsForMultiMedianKDTree[2] = new MapObject();
+		pointsForMultiMedianKDTree[2].setAvgPoint(new Point2D(5,8));
+		pointsForMultiMedianKDTree[3] = new MapObject();
+		pointsForMultiMedianKDTree[3].setAvgPoint(new Point2D(5,6));
+		pointsForMultiMedianKDTree[4] = new MapObject();
+		pointsForMultiMedianKDTree[4].setAvgPoint(new Point2D(9,8));
 		multiMedianKDTree = new KDTree(pointsForMultiMedianKDTree, 1);
-	}
-
-	//Delete test?
-	@Test
-	public void testReportSubtree() {
-		//smallKDTree.reportSubtree(smallKDTree.getRootNode());
-		//ArrayList<KDTreePoint> queryResult = smallKDTree.rangeSearch();
 	}
 
 	@Test
@@ -164,42 +169,70 @@ public class KDTreeTest {
 
 	@Test
 	public void pointInRect_Positive_1 () {
-		KDTreePoint point = new KDTreePoint(3,3);
+		MapObject point = new MapObject();
+		point.setAvgPoint(new Point2D(3,3));
 		Rect rect = new Rect(2,2,4,4);
 		assertEquals(KDTree.pointInRect(point, rect), true);
 	}
 
 	@Test
 	public void pointInRect_Positive_2_PointOnEdge () {
-		KDTreePoint point = new KDTreePoint(2,3);
+		MapObject point = new MapObject();
+		point.setAvgPoint(new Point2D(2,3));
 		Rect rect = new Rect(2,2,4,4);
 		assertEquals(KDTree.pointInRect(point, rect), true);
 	}
 
 	@Test
 	public void pointInRect_Positive_3_PointOnEdge_NegativeCoord () {
-		KDTreePoint point = new KDTreePoint(-2,-3);
+		MapObject point = new MapObject();
+		point.setAvgPoint(new Point2D(-2,-3));
 		Rect rect = new Rect(-2,-2,-4,-4);
 		assertEquals(KDTree.pointInRect(point, rect), true);
 	}
 
 	@Test
 	public void pointInRect_Negative_1 () {
-		KDTreePoint point = new KDTreePoint(5,5);
+		MapObject point = new MapObject();
+		point.setAvgPoint(new Point2D(5,5));
 		Rect rect = new Rect(2,2,4,4);
 		assertEquals(KDTree.pointInRect(point, rect), false);
 	}
 
 	@Test
 	public void pointInRect_Negative_2_NegativeCoord () {
-		KDTreePoint point = new KDTreePoint(-5,-5);
+		MapObject point = new MapObject();
+		point.setAvgPoint(new Point2D(-5,-5));
 		Rect rect = new Rect(-2,-2,-4,-4);
 		assertEquals(KDTree.pointInRect(point, rect), false);
 	}
 
 	@Test
-	public void testRangeSearch() {
-		Rect query = new Rect(0.5,0.5,10.5,10.5);
-		ArrayList<KDTreePoint> result = smallKDTree.rangeSearch(query);
+	public void rangeSearch_SmallKDTree_Positive_1() {
+		Rect query = new Rect(0.5,7.5,4,10.5);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
+		assertEquals(result.size(), 2);
+
+		//Check a point
+		assertEquals(result.get(0).getAvgPoint().getX(), 3.0);
+		assertEquals(result.get(0).getAvgPoint().getY(), 8.0);
+	}
+
+	@Test
+	public void rangeSearch_SmallKDTree_Positive_2() {
+		Rect query = new Rect(3.5,0.5,6.5,8.5);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
+		assertEquals(result.size(),3);
+
+		//Check a point
+		assertEquals(result.get(2).getAvgPoint().getX(),6.0);
+		assertEquals(result.get(2).getAvgPoint().getY(),7.0);
+	}
+
+	@Test
+	public void rangeSearch_SmallKDTree_Negative_1() {
+		Rect query = new Rect(8.0,4.0,10,6);
+		List<MapObject> result = smallKDTree.rangeSearch(query);
+		assertTrue(result.size() <= 0);
 	}
 }
