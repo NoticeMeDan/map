@@ -1,20 +1,15 @@
 package com.noticemedan.map.model.KDTree;
 
-import static org.testng.Assert.*;
-
 import com.noticemedan.map.model.MapObject;
 import javafx.geometry.Point2D;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.*;
-
-import java.util.ArrayList;
+import static org.testng.Assert.*;
 import java.util.List;
 
 public class KDTreeTest {
 
 	MapObject[] pointsOneElementKDTree;
-	MapObject[] pointsForSmallKDTRee;
+	MapObject[] pointsForSmallKDTree;
 	MapObject[] pointsForMultiMedianKDTree;
 
 	KDTree multiMedianKDTree;
@@ -23,25 +18,25 @@ public class KDTreeTest {
 
 	@BeforeTest
 	public void buildSmallKDTree() {
-		pointsForSmallKDTRee = new MapObject[8];
-		pointsForSmallKDTRee[0] = new MapObject();
-		pointsForSmallKDTRee[0].setAvgPoint(new Point2D(1,10));
-		pointsForSmallKDTRee[1] = new MapObject();
-		pointsForSmallKDTRee[1].setAvgPoint(new Point2D(2,3));
-		pointsForSmallKDTRee[2] = new MapObject();
-		pointsForSmallKDTRee[2].setAvgPoint(new Point2D(3,8));
-		pointsForSmallKDTRee[3] = new MapObject();
-		pointsForSmallKDTRee[3].setAvgPoint(new Point2D(4,6));
-		pointsForSmallKDTRee[4] = new MapObject();
-		pointsForSmallKDTRee[4].setAvgPoint(new Point2D(5,1));
-		pointsForSmallKDTRee[5] = new MapObject();
-		pointsForSmallKDTRee[5].setAvgPoint(new Point2D(6,7));
-		pointsForSmallKDTRee[6] = new MapObject();
-		pointsForSmallKDTRee[6].setAvgPoint(new Point2D(7,2));
-		pointsForSmallKDTRee[7] = new MapObject();
-		pointsForSmallKDTRee[7].setAvgPoint(new Point2D(9,9));
+		pointsForSmallKDTree = new MapObject[8];
+		pointsForSmallKDTree[0] = new MapObject();
+		pointsForSmallKDTree[0].setAvgPoint(new Point2D(1,10));
+		pointsForSmallKDTree[1] = new MapObject();
+		pointsForSmallKDTree[1].setAvgPoint(new Point2D(2,3));
+		pointsForSmallKDTree[2] = new MapObject();
+		pointsForSmallKDTree[2].setAvgPoint(new Point2D(3,8));
+		pointsForSmallKDTree[3] = new MapObject();
+		pointsForSmallKDTree[3].setAvgPoint(new Point2D(4,6));
+		pointsForSmallKDTree[4] = new MapObject();
+		pointsForSmallKDTree[4].setAvgPoint(new Point2D(5,1));
+		pointsForSmallKDTree[5] = new MapObject();
+		pointsForSmallKDTree[5].setAvgPoint(new Point2D(6,7));
+		pointsForSmallKDTree[6] = new MapObject();
+		pointsForSmallKDTree[6].setAvgPoint(new Point2D(7,2));
+		pointsForSmallKDTree[7] = new MapObject();
+		pointsForSmallKDTree[7].setAvgPoint(new Point2D(9,9));
 
-		smallKDTree = new KDTree(pointsForSmallKDTRee, 2);
+		smallKDTree = new KDTree(pointsForSmallKDTree, 2);
 	}
 
 	@Test

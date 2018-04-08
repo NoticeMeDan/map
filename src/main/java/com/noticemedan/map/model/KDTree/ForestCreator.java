@@ -42,4 +42,14 @@ public class ForestCreator {
 		this.forest = new Forest(trees);
 	}
 
+	/**
+	 * Closer implementation.
+	 */
+	public ForestCreator(MapObject[][] mapObjects, int[] maxNumberOfElementsAtLeaf) {
+		if (mapObjects.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
+
+		KDTree[] trees = new KDTree[mapObjects.length];
+		for (int i = 0; i < trees.length; i++) trees[i] = new KDTree(mapObjects[i], maxNumberOfElementsAtLeaf[i]);
+		this.forest = new Forest(trees);
+	}
 }
