@@ -163,16 +163,11 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		for (List<Point2D> line : coastlines) {
 			counter++;
 			if (previousLine != null) {
-				System.out.println("CH: " + previousLine.get(0) + " == " + (line.get(line.size() - 1)) + " : " + previousLine.get(0).equals(line.get(line.size() - 1)));
-
 				if (!previousLine.get(0).equals(line.get(line.size() - 1))) {
 					if (stichedPoints.isEmpty()) continue;
 					CoastlineObject coastlineObject = new CoastlineObject();
 					coastlineObject.setPoints(new LinkedList<>(stichedPoints));
 					coastlineObjects.add(coastlineObject);
-
-					System.out.println("Add stichedPoints:");
-					coastlineObject.getPoints().forEach(System.out::println);
 
 					stichedPoints.clear();
 					previousLine = line;
@@ -189,9 +184,6 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 					coastlineObject.setPoints(new LinkedList<>(stichedPoints));
 					coastlineObjects.add(coastlineObject);
 				}
-
-				System.out.println("StichPoints:");
-				stichedPoints.forEach(System.out::println);
 			}
 
 			previousLine = line;
