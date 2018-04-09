@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MouseController {
 
     private double zoomLevel = 1.0;
+	boolean trigger;
 
 	/*THIS NEEDS TO BE REDONE TO WORK WITH KD-TREE AND zoomLevel in MapCanvas
 	TODO Make zoomMethod: that pivots around mouseposition.
@@ -28,12 +29,18 @@ public class MouseController {
 
 	// TODO FIX INITIAL LAG
 	public void dragAndDraw(CustomPane customPane) {
-	customPane.setOnDragDetected(event -> {
-		event.consume();
-		Rect viewPort = customPane.getExtendedViewPortBounds(this.zoomLevel);
-		customPane.getMapCanvas().setViewArea(viewPort);
-		customPane.getMapCanvas().redrawCanvas();
-	});
+		customPane.setOnDragDetected(event -> {
+			event.consume();
+			drawOnRelease(customPane);
+		});
+	}
+
+	private void drawOnRelease(CustomPane customPane) {
+		customPane.setOnMousePressed(event -> {
+			event.consume();
+			Rect viewPort = customPane.getExtendedViewPortBounds(this.zoomLevel);
+			customPane.getMapCanvas().setViewArea(viewPort);
+			customPane.getMapCanvas().redrawCanvas();
+		});
 	}
 }
-
