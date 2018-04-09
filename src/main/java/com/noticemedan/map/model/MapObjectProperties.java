@@ -9,23 +9,25 @@ public class MapObjectProperties {
 	HashMap<OSMType, Color> osmColors = new HashMap<>();
 
 	public MapObjectProperties() {
-		osmColors.put(OSMType.ROAD, Color.LIGHTGRAY);
-		osmColors.put(OSMType.HIGHWAY, Color.ORANGE);
+		osmColors.put(OSMType.COASTLINE, Color.rgb(232, 205, 190));
+		osmColors.put(OSMType.ROAD, Color.rgb(150, 150, 150));
+		osmColors.put(OSMType.HIGHWAY, Color.rgb(150, 250, 150));
 		osmColors.put(OSMType.BUILDING, Color.rgb(125,125,125));
 		osmColors.put(OSMType.GRASSLAND, Color.rgb(12,158,89));
 		osmColors.put(OSMType.WATER, Color.rgb(40,84,210));
-		osmColors.put(OSMType.SAND, Color.YELLOW);
+		osmColors.put(OSMType.SAND, Color.rgb(100, 100, 100));
 		osmColors.put(OSMType.TREE_ROW, Color.rgb(12,158,89));
 		osmColors.put(OSMType.HEATH, Color.rgb(12,158,89));
 		osmColors.put(OSMType.PLAYGROUND, Color.rgb(88,232,93));
 		osmColors.put(OSMType.GARDEN, Color.rgb(14,232,93));
 		osmColors.put(OSMType.PARK, Color.rgb(14,184,118));
+		osmColors.put(OSMType.UNKNOWN, Color.rgb(100, 100, 100));
 	}
 
-	public Color derriveColorFromOSMType(OSMType osmType) {
-		Color color = Color.PINK; // UNKNOWN
+	public Color deriveColorFromOSMType(OSMType osmType) {
+		Color color = Color.PINK;
 		if (osmColors.get(osmType) != null)
-			color = osmColors.get(color);
+			return osmColors.get(osmType);
 		return color;
 	}
 
@@ -64,6 +66,4 @@ public class MapObjectProperties {
 		}
 		return OSMType.UNKNOWN;
 	}
-
-
 }

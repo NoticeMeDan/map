@@ -5,4 +5,5 @@ import java.util.Map;
 
 public interface MapObjectCreaterInterface {
     Map<OSMType, List<MapObject>> getMapObjectsByType();
+    List<CoastlineObject> getListOfCoastlineObjects();
 }

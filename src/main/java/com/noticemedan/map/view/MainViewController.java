@@ -11,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 
-import java.awt.*;
-
 public class MainViewController {
 	//Content Pane
 	@FXML Button routeButton;
@@ -42,7 +40,7 @@ public class MainViewController {
 	}
 
 	private void insertMapCanvasIntoPane() {
-		CustomPane mapCanvas = new CustomPane(new Dimension(1600, 1600));
+		CustomPane mapCanvas = new CustomPane();
 		MouseController controller = new MouseController();
 		controller.addZoomAbility(mapCanvas);
 		controller.dragAndDraw(mapCanvas);
