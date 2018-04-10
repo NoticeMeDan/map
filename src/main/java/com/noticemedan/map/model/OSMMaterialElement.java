@@ -7,13 +7,15 @@ import javafx.scene.paint.Color;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class OSMMaterialElement implements Comparable<OSMMaterialElement> {
 	private OSMType osmType;
-	private List<Point2D> points;
+	private List<Point2D> points; // TODO REMOVE
+	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon
 	private Point2D avgPoint;

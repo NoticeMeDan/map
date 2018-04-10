@@ -47,13 +47,15 @@ public class MainViewController {
 	}
 
 	private void insertOSMPane() {
+		Dimension screenSize = new Dimension(1100, 650);
+
 		SwingNode swingNode = new SwingNode();
 		OSMManager m = new OSMManager();
 		CanvasView cv = new CanvasView(m);
-		cv.setSize(new Dimension(1100, 650));
+		cv.setSize(screenSize);
 		System.out.println(Entities.writeOut());
 		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		cv.zoom(1100 / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		cv.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
 		new MouseController(cv, m);
 		SwingUtilities.invokeLater(() -> {
 			swingNode.setContent(cv);

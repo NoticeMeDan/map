@@ -1,6 +1,7 @@
 package com.noticemedan.map.view;
 
 import com.noticemedan.map.data.OSMManager;
+import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.osm.OSMType;
 
 import javax.swing.*;
@@ -14,14 +15,14 @@ import java.util.Observer;
 
 public class CanvasView extends JComponent implements Observer{
 
-    private final OSMManager model;
+    private final OSMManager osmManager;
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
 
     public CanvasView(OSMManager m) {
-        this.model = m;
-        model.addObserver(this);
+        this.osmManager = m;
+        osmManager.addObserver(this);
     }
 
     @Override
@@ -45,39 +46,39 @@ public class CanvasView extends JComponent implements Observer{
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
         g.setPaint(new Color(237, 237, 237));
-        for (Shape coastline: model.get(OSMType.COASTLINE)) {
-            g.fill(coastline);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.COASTLINE)) {
+            g.fill(element.getShape());
         }
         g.setPaint(new Color(60, 149, 255));
-        for (Shape water: model.get(OSMType.WATER)) {
-            if (water.intersects(viewRect)) {
-                g.fill(water);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.WATER)) {
+            if (element.getShape().intersects(viewRect)) {
+                g.fill(element.getShape());
             }
         }
         g.setPaint(Color.black);
-        for (Shape line: model.get(OSMType.UNKNOWN)) {
-            if (line.intersects(viewRect)) {
-                g.draw(line);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.UNKNOWN)) {
+            if (element.getShape().intersects(viewRect)) {
+                g.draw(element.getShape());
             }
         }
         g.setStroke(new BasicStroke(0.00001f));
         g.setPaint(new Color(230, 139, 213));
-        for (Shape road : model.get(OSMType.ROAD)) {
-            if (road.intersects(viewRect)) {
-                g.draw(road);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.ROAD)) {
+            if (element.getShape().intersects(viewRect)) {
+                g.draw(element.getShape());
             }
         }
         g.setStroke(new BasicStroke(0.00005f));
         g.setPaint(new Color(255, 114, 109));
-        for (Shape highway: model.get(OSMType.HIGHWAY)) {
-            if (highway.intersects(viewRect)) {
-                g.draw(highway);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.HIGHWAY)) {
+            if (element.getShape().intersects(viewRect)) {
+                g.draw(element.getShape());
             }
         }
         g.setPaint(new Color(172, 169, 151));
-        for (Shape building: model.get(OSMType.BUILDING)) {
-            if (building.intersects(viewRect)) {
-                g.fill(building);
+        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.BUILDING)) {
+            if (element.getShape().intersects(viewRect)) {
+                g.fill(element.getShape());
             }
         }
         long t2 = System.nanoTime();

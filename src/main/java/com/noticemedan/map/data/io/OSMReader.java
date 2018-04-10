@@ -1,11 +1,13 @@
 package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
+import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
 import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.utilities.Rect;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -24,21 +26,20 @@ import java.util.List;
 import java.util.zip.ZipInputStream;
 
 public class OSMReader {
-	private EnumMap<OSMType, List<Shape>> shapes = initializeMap();
+	private EnumMap<OSMType, List<OSMMaterialElement>> osmMaterialElements = initializeMap();
 
-	private EnumMap<OSMType, List<Shape>> initializeMap() {
-		EnumMap<OSMType, List<Shape>> map = new EnumMap<>(OSMType.class);
+	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
+		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);
 		for (OSMType type: OSMType.values()) {
 			map.put(type, new ArrayList<>());
 		}
 		return map;
 	}
 
-	public EnumMap<OSMType, List<Shape>> getShapesFromFile(FileInputStream fileInputStream) {
-		String filename = ".osm";
+	public EnumMap<OSMType, List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
+		String filename = ".osm"; // TODO @Simon
 		System.out.println(filename);
 		if (filename.endsWith(".osm")) {
-			System.out.println("");
 			readFromOSM(new InputSource(fileInputStream));
 		}
 		else if (filename.endsWith(".zip")) {
@@ -46,8 +47,6 @@ public class OSMReader {
 				ZipInputStream zis = new ZipInputStream(fileInputStream);
 				zis.getNextEntry();
 				readFromOSM(new InputSource(zis));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -55,18 +54,16 @@ public class OSMReader {
 		else if (filename.endsWith(".bin")) {
 			try {
 				ObjectInputStream is = new ObjectInputStream(fileInputStream);
-				shapes = (EnumMap<OSMType, List<Shape>>) is.readObject();
+				osmMaterialElements = (EnumMap<OSMType, List<OSMMaterialElement>>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
 				Entities.setMaxLon((double) is.readObject());
 				Entities.setMaxLat((double) is.readObject());
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
+			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		return shapes;
+		return osmMaterialElements;
 	}
 
 	public void readFromOSM(InputSource filename) {
@@ -74,15 +71,24 @@ public class OSMReader {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(new OSMHandler());
 			xmlReader.parse(filename);
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (SAXException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void add(OSMType type, Shape shape) {
-		shapes.get(type).add(shape);
+		Rectangle shapeBounds = shape.getBounds();
+		double x1 = shapeBounds.getX();
+		double y1 = shapeBounds.getY();
+		double x2 = shapeBounds.getWidth();
+		double y2 = shapeBounds.getHeight();
+		Rect rect = new Rect(x1, y1, x2, y2);
+		OSMMaterialElement osmMaterialElement = new OSMMaterialElement();
+		osmMaterialElement.setOsmType(type);
+		osmMaterialElement.setBounds(rect);
+		osmMaterialElement.setAvgPoint(rect.getAveragePoint());
+		osmMaterialElement.setShape(shape);
+		osmMaterialElements.get(type).add(osmMaterialElement);
 	}
 
 	public class OSMHandler extends DefaultHandler {
