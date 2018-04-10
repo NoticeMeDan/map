@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Root(strict = false)
-public class Osm {
+public class OSMRootNode {
 	private @Element Bounds bounds;
 
 	@ElementList(inline = true, entry = "node", required = false)

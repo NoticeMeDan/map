@@ -1,6 +1,7 @@
 package com.noticemedan.map.model.KDTree;
 
-import com.noticemedan.map.model.MapObject;
+import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.Utilities.Rect;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class Forest implements ForestInterface {
 	private KDTree trees[];
 
 	@Override
-	public List<MapObject> rangeSearch(Rect searchQuery, int zoomLevel) {
+	public List<OSMMaterialElement> rangeSearch(Rect searchQuery, int zoomLevel) {
 		ArrayList searchResults = new ArrayList<>();
 		for (int i = 0; i < zoomLevel+1; i++) {
 			searchResults.addAll(trees[i].rangeSearch(searchQuery));
@@ -20,12 +21,12 @@ public class Forest implements ForestInterface {
 	}
 
 	//Range search as if only having one zoom level.
-	public List<MapObject> rangeSearch(Rect searchQuery) {
+	public List<OSMMaterialElement> rangeSearch(Rect searchQuery) {
 		return rangeSearch(searchQuery, trees.length-1);
 	}
 
 	@Override
-	public MapObject nearestNeighbor(double x, double y) {
+	public OSMMaterialElement nearestNeighbor(double x, double y) {
 		throw new RuntimeException("nearestNeighbor() not implemented yet.");
 	}
 }

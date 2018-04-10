@@ -1,7 +1,7 @@
 package com.noticemedan.map.view;
 
-import com.noticemedan.map.viewmodel.CustomPane;
 import com.noticemedan.map.viewmodel.MouseController;
+import com.noticemedan.map.viewmodel.OSMPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +15,8 @@ public class MainViewController {
 	//Content Pane
 	@FXML Button routeButton;
 	@FXML Pane searchFieldImitator;
-	@FXML Pane mapPaneContainer;
+	@FXML
+	Pane osmPaneContainer;
 
 	//Search pane
 	@FXML Pane searchPane;
@@ -34,17 +35,17 @@ public class MainViewController {
 	@FXML ListView routeSearchResultsListView;
 
 	public void initialize() {
-		insertMapCanvasIntoPane();
+		insertOSMPane();
 		hideComponentsAtStartUp();
 		eventListeners();
 	}
 
-	private void insertMapCanvasIntoPane() {
-		CustomPane mapCanvas = new CustomPane();
+	private void insertOSMPane() {
+		OSMPane osmPane = new OSMPane();
 		MouseController controller = new MouseController();
-		controller.addZoomAbility(mapCanvas);
-		controller.dragAndDraw(mapCanvas);
-		mapPaneContainer.getChildren().addAll(mapCanvas);
+		controller.addZoomAbility(osmPane);
+		controller.dragAndDraw(osmPane);
+		osmPaneContainer.getChildren().addAll(osmPane);
 	}
 
 	private void hideComponentsAtStartUp() {

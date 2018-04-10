@@ -1,35 +1,35 @@
 package com.noticemedan.map.data.io;
 
-import com.noticemedan.map.data.osm.Osm;
+import com.noticemedan.map.data.osm.OSMRootNode;
 import io.vavr.control.Try;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.*;
+import java.io.InputStream;
 import java.util.function.Supplier;
 
 @Slf4j
 @NoArgsConstructor
-public class OsmMapData implements MapDataIOReader, Supplier<Osm> {
+public class OSMMapData implements OSMMapDataIOReader, Supplier<OSMRootNode> {
 	private InputStream osmData;
 
-	public OsmMapData(InputStream osmData) {
+	public OSMMapData(InputStream osmData) {
 		this.osmData = osmData;
 	}
 
 	@Override
-	public Osm deserialize(InputStream inputStream) {
+	public OSMRootNode deserialize(InputStream inputStream) {
 		Serializer serializer = new Persister();
 
-		return Try.of(() -> serializer.read(Osm.class, inputStream))
+		return Try.of(() -> serializer.read(OSMRootNode.class, inputStream))
 				.onFailure(x -> log.error("Error while deserializing OSM", x))
-				.getOrElse(new Osm());
+				.getOrElse(new OSMRootNode());
 	}
 
 	@Override
-	public Osm get() {
+	public OSMRootNode get() {
 		return this.deserialize(this.osmData);
 	}
 }

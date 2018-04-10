@@ -1,6 +1,6 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.model.KDTree.Rect;
+import com.noticemedan.map.model.Utilities.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class MapObject implements Comparable<MapObject> {
+public class OSMMaterialElement extends OSMElement implements Comparable<OSMMaterialElement> {
 	private OSMType osmType;
 	private List<Point2D> points;
 	private Color color;
@@ -20,8 +20,8 @@ public class MapObject implements Comparable<MapObject> {
 	private boolean depthEven = true; // Is this object at even depth in KD-Tree?
 
 	@Override
-	public int compareTo(MapObject that) {
-		if(depthEven) {
+	public int compareTo(OSMMaterialElement that) {
+		if (depthEven) {
 			if (this.avgPoint.getX() > that.avgPoint.getX()) return 1;
 			if (this.avgPoint.getX() == that.avgPoint.getX()) return 0;
 			if (this.avgPoint.getX() < that.avgPoint.getX()) return -1;

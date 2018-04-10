@@ -1,16 +1,17 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.model.KDTree.Rect;
+import com.noticemedan.map.model.Utilities.Rect;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import lombok.Getter;
 
-public class CustomPane extends ScrollPane {
+public class OSMPane extends ScrollPane {
     private Group paneViewContent;
     @Getter private Group canvasContent;
-    @Getter private MapCanvas mapCanvas;
+	@Getter
+	private OSMCanvas osmCanvas;
 
-	public CustomPane() {
+	public OSMPane() {
         super();
         initializeFields();
         applyContent();
@@ -18,14 +19,14 @@ public class CustomPane extends ScrollPane {
     }
 
     private void initializeFields() {
-        this.mapCanvas = new MapCanvas();
+		this.osmCanvas = new OSMCanvas();
         this.paneViewContent = new Group();
         this.canvasContent = new Group();
     }
 
     private void applyContent() {
         paneViewContent.getChildren().add(canvasContent);
-        canvasContent.getChildren().add(mapCanvas.getCanvas());
+		canvasContent.getChildren().add(osmCanvas.getCanvas());
         this.setContent(paneViewContent);
     }
 

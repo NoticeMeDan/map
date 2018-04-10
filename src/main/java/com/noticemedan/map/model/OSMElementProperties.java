@@ -5,10 +5,10 @@ import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 
-public class MapObjectProperties {
-	HashMap<OSMType, Color> osmColors = new HashMap<>();
+public class OSMElementProperties {
+	private HashMap<OSMType, Color> osmColors = new HashMap<>();
 
-	public MapObjectProperties() {
+	public OSMElementProperties() {
 		osmColors.put(OSMType.COASTLINE, Color.rgb(232, 205, 190));
 		osmColors.put(OSMType.ROAD, Color.rgb(150, 150, 150));
 		osmColors.put(OSMType.HIGHWAY, Color.rgb(150, 250, 150));
@@ -21,13 +21,14 @@ public class MapObjectProperties {
 		osmColors.put(OSMType.PLAYGROUND, Color.rgb(88,232,93));
 		osmColors.put(OSMType.GARDEN, Color.rgb(14,232,93));
 		osmColors.put(OSMType.PARK, Color.rgb(14,184,118));
-		osmColors.put(OSMType.UNKNOWN, Color.rgb(100, 100, 100));
+		osmColors.put(OSMType.UNKNOWN, Color.rgb(200, 0, 190));
 	}
 
 	public Color deriveColorFromOSMType(OSMType osmType) {
-		Color color = Color.PINK;
+		Color color = osmColors.get(OSMType.UNKNOWN);
 		if (osmColors.get(osmType) != null)
-			return osmColors.get(osmType);
+			color = osmColors.get(osmType);
+
 		return color;
 	}
 
