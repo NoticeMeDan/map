@@ -1,15 +1,21 @@
 package com.noticemedan.map.view;
 
+import com.noticemedan.map.data.OSMManager;
+import com.noticemedan.map.model.Entities;
+import com.noticemedan.map.viewmodel.KeyboardController;
 import com.noticemedan.map.viewmodel.MouseController;
-import com.noticemedan.map.viewmodel.OSMPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MainViewController {
 	//Content Pane
@@ -41,12 +47,21 @@ public class MainViewController {
 	}
 
 	private void insertOSMPane() {
-		OSMPane osmPane = new OSMPane();
-		MouseController controller = new MouseController();
-		controller.addZoomAbility(osmPane);
-		controller.dragAndDraw(osmPane);
-		osmPaneContainer.getChildren().addAll(osmPane);
+		SwingNode swingNode = new SwingNode();
+		OSMManager m = new OSMManager();
+		CanvasView cv = new CanvasView(m);
+		cv.setSize(new Dimension(1100, 650));
+		System.out.println(Entities.writeOut());
+		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());
+		cv.zoom(1100 / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		new MouseController(cv, m);
+		SwingUtilities.invokeLater(() -> {
+			swingNode.setContent(cv);
+		});
+
+		osmPaneContainer.getChildren().addAll(swingNode);
 	}
+
 
 	private void hideComponentsAtStartUp() {
 		routePane.setVisible(false);

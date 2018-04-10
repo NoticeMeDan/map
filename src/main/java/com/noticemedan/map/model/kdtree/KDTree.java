@@ -1,8 +1,8 @@
-package com.noticemedan.map.model.KDTree;
+package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.Utilities.Quick;
-import com.noticemedan.map.model.Utilities.Rect;
+import com.noticemedan.map.model.utilities.Quick;
+import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
@@ -35,7 +35,7 @@ public class KDTree {
 	}
 
 	/**
-	 * @return 		Root node of KDTree.
+	 * @return 		Root node of kdtree.
 	 */
 	private KDTreeNode buildKDTree(OSMMaterialElement[] points, int depth) {
 		OSMMaterialElement[] firstHalfArray;

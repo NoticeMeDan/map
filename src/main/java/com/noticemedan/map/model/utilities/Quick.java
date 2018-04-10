@@ -1,4 +1,4 @@
-package com.noticemedan.map.model.Utilities;
+package com.noticemedan.map.model.utilities;
 
 import java.util.Random;
 

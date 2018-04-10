@@ -1,6 +1,7 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.model.Utilities.Rect;
+import com.noticemedan.map.model.utilities.Rect;
+import com.noticemedan.map.model.osm.OSMType;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class OSMMaterialElement extends OSMElement implements Comparable<OSMMaterialElement> {
+public class OSMMaterialElement implements Comparable<OSMMaterialElement> {
 	private OSMType osmType;
 	private List<Point2D> points;
 	private Color color;

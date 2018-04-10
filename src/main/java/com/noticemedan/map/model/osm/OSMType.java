@@ -1,4 +1,5 @@
-package com.noticemedan.map.model;
+package com.noticemedan.map.model.osm;
+
 public enum OSMType {
 	ROAD,
 	HIGHWAY,

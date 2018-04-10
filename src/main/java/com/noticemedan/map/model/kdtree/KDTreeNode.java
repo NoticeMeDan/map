@@ -1,4 +1,4 @@
-package com.noticemedan.map.model.KDTree;
+package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.model.OSMMaterialElement;
 import lombok.Data;

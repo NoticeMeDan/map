@@ -1,7 +1,7 @@
-package com.noticemedan.map.model.KDTree;
+package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.Utilities.Rect;
+import com.noticemedan.map.model.utilities.Rect;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
