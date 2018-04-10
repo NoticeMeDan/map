@@ -1,19 +1,16 @@
 package com.noticemedan.map.model.KDTree;
 
-import com.noticemedan.map.model.MapObject;
-import com.noticemedan.map.model.MapObjectCreater;
+import com.noticemedan.map.model.OSMElementCreator;
+import com.noticemedan.map.model.OSMMaterialElement;
 import lombok.Getter;
 
-import java.awt.Dimension;
-
-//TODO: Delete all these collections when enummap has been removed.
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 
 import static com.noticemedan.map.model.OSMType.*;
+
+//TODO: Delete all these collections when enummap has been removed.
 
 public class ForestCreator {
 	@Getter Forest forest;
@@ -23,35 +20,38 @@ public class ForestCreator {
 	 * TODO: Delete this constructor after deletion of enummap.
 	 */
 	public ForestCreator() {
-		List<MapObject> conList = new LinkedList<>();
-		Collection mapObjectsCollection = MapObjectCreater.getInstance(new Dimension(1600,1600)).getMapObjectsByType().values();
-		Iterator<List<MapObject>> it = mapObjectsCollection.iterator();
+		List<OSMMaterialElement> conList = new LinkedList<>();
+		Collection mapObjectsCollection = OSMElementCreator.getInstance(new Dimension(1600, 1600)).getMapObjectsByType().values();
+		Iterator<List<OSMMaterialElement>> it = mapObjectsCollection.iterator();
 		while (it.hasNext()) conList.addAll(it.next());
-		MapObject[] mapObjects = conList.toArray(new MapObject[conList.size()]);
+		OSMMaterialElement[] osmMaterialElement = conList.toArray(new OSMMaterialElement[conList.size()]);
 
 		//This is the activity that mapcreator is supposed to do.
-		ArrayList<MapObject>[] zoomLevels = new ArrayList[3];
+		ArrayList<OSMMaterialElement>[] zoomLevels = new ArrayList[3];
 		for (int i = 0; i < zoomLevels.length; i++) zoomLevels[i] = new ArrayList<>();
-		for (int i = 0; i < mapObjects.length; i++) {
-			if (mapObjects[i].getOsmType() == HIGHWAY) zoomLevels[0].add(mapObjects[i]);
-			if (mapObjects[i].getOsmType() == GRASSLAND) zoomLevels[0].add(mapObjects[i]);
-			if (mapObjects[i].getOsmType() == WATER) zoomLevels[0].add(mapObjects[i]);
+		for (int i = 0; i < osmMaterialElement.length; i++) {
+			if (osmMaterialElement[i].getOsmType() == HIGHWAY) zoomLevels[0].add(osmMaterialElement[i]);
+			if (osmMaterialElement[i].getOsmType() == GRASSLAND) zoomLevels[0].add(osmMaterialElement[i]);
+			if (osmMaterialElement[i].getOsmType() == WATER) zoomLevels[0].add(osmMaterialElement[i]);
 
-			if (mapObjects[i].getOsmType() == ROAD) zoomLevels[1].add(mapObjects[i]);
-			if (mapObjects[i].getOsmType() == TREE_ROW) zoomLevels[1].add(mapObjects[i]);
+			if (osmMaterialElement[i].getOsmType() == ROAD) zoomLevels[1].add(osmMaterialElement[i]);
+			if (osmMaterialElement[i].getOsmType() == TREE_ROW) zoomLevels[1].add(osmMaterialElement[i]);
 
-			if (mapObjects[i].getOsmType() == BUILDING) zoomLevels[2].add(mapObjects[i]);
+			if (osmMaterialElement[i].getOsmType() == BUILDING) zoomLevels[2].add(osmMaterialElement[i]);
 		}
 		KDTree[] trees = new KDTree[3];
-		for (int i = 0; i < trees.length; i++) trees[i] = new KDTree(zoomLevels[i].toArray(new MapObject[zoomLevels[i].size()]), 20);
+		for (int i = 0; i < trees.length; i++)
+			trees[i] = new KDTree(zoomLevels[i].toArray(new OSMMaterialElement[zoomLevels[i].size()]), 20);
 		this.forest = new Forest(trees);
 	}
 
-	public ForestCreator(MapObject[][] mapObjects, int[] maxNumberOfElementsAtLeaf) {
-		if (mapObjects.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
+	public ForestCreator(OSMMaterialElement[][] osmMaterialElement, int[] maxNumberOfElementsAtLeaf) {
+		if (osmMaterialElement.length != maxNumberOfElementsAtLeaf.length)
+			throw new RuntimeException("Length of parameter arrays are not equal");
 
-		KDTree[] trees = new KDTree[mapObjects.length];
-		for (int i = 0; i < trees.length; i++) trees[i] = new KDTree(mapObjects[i], maxNumberOfElementsAtLeaf[i]);
+		KDTree[] trees = new KDTree[osmMaterialElement.length];
+		for (int i = 0; i < trees.length; i++)
+			trees[i] = new KDTree(osmMaterialElement[i], maxNumberOfElementsAtLeaf[i]);
 		this.forest = new Forest(trees);
 	}
 }

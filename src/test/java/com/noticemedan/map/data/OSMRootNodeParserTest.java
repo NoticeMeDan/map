@@ -1,6 +1,6 @@
 package com.noticemedan.map.data;
 
-import com.noticemedan.map.data.io.OsmMapData;
+import com.noticemedan.map.data.io.OSMMapData;
 import com.noticemedan.map.data.osm.*;
 import org.testng.annotations.Test;
 
@@ -14,9 +14,8 @@ import java.util.concurrent.Executors;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertNotNull;
 
-public class OsmParserTest {
+public class OSMRootNodeParserTest {
 	private String osmString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<osm>\n" +
 			" <bounds minlat=\"55.6631000\" minlon=\"12.5730000\" maxlat=\"55.6804000\" maxlon=\"12.6031000\"/>\n" +
@@ -35,7 +34,7 @@ public class OsmParserTest {
 
 	private InputStream osmStream = new ByteArrayInputStream(osmString.getBytes(StandardCharsets.UTF_8));
 
-	private Osm osmNode = new Osm(
+	private OSMRootNode osmNode = new OSMRootNode(
 			new Bounds(55.6631000, 12.5730000, 55.680400, 12.6031000),
 			List.of(new Node(697547, 55.6736517, 12.5722541, List.of(new Tag("highway", "traffic_signals")))),
 			List.of(new Way(1813863, List.of(new NodeProxy(697547)), List.of(new Tag("name", "Reykjaviksgade")))),
@@ -44,18 +43,18 @@ public class OsmParserTest {
 
 	@Test
 	public void testParseOsmSync() {
-		OsmMapData osmMapData = new OsmMapData();
-		Osm testNode = osmMapData.deserialize(this.osmStream);
-		assertNotEquals(testNode, new Osm());
+		OSMMapData osmMapData = new OSMMapData();
+		OSMRootNode testNode = osmMapData.deserialize(this.osmStream);
+		assertNotEquals(testNode, new OSMRootNode());
 		assertEquals(testNode, this.osmNode);
 	}
 
 	@Test(dependsOnMethods = "testParseOsmSync")
 	public void testParseOsmAsync() {
-		OsmMapData osmMapData = new OsmMapData(osmStream);
+		OSMMapData osmMapData = new OSMMapData(osmStream);
 		CompletableFuture.supplyAsync(osmMapData, Executors.newSingleThreadExecutor())
 				.thenAccept(testNode -> {
-					assertNotEquals(testNode, new Osm());
+					assertNotEquals(testNode, new OSMRootNode());
 					assertEquals(testNode, this.osmNode);
 				});
 	}

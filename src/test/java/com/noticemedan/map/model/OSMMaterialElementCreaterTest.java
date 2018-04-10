@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-public class MapObjectCreaterTest {
-	MapObjectCreater mapObjectCreater = MapObjectCreater.getInstance(new Dimension(1600,1600));
+public class OSMMaterialElementCreaterTest {
+	OSMElementCreator osmElementCreator = OSMElementCreator.getInstance(new Dimension(1600, 1600));
 
 	public Collection<List<Point2D>> createTestLand() {
 		Collection<List<Point2D>> land = new LinkedList<>();
@@ -73,10 +73,10 @@ public class MapObjectCreaterTest {
 
 	@Test
 	public void testStichCoastlines() throws Exception {
-		List<CoastlineObject> testList = mapObjectCreater.stichCoastlines(createTestLand());
+		List<OSMCoastlineElement> testList = osmElementCreator.stitchCoastlines(createTestLand());
 		log.info("TestList size: " + testList.size());
 		testList.forEach(l -> {
-			System.out.println("CoastlineObject: " + l.toString());
+			System.out.println("OSMCoastlineElement: " + l.toString());
 			l.getPoints().forEach(System.out::println);
 		});
 	}

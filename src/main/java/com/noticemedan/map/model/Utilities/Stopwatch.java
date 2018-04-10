@@ -1,4 +1,4 @@
-package com.noticemedan.map.model.KDTree;
+package com.noticemedan.map.model.Utilities;
 
 public class Stopwatch {
 

@@ -1,6 +1,6 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.model.KDTree.Rect;
+import com.noticemedan.map.model.Utilities.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CoastlineObject {
+public class OSMCoastlineElement {
 	private List<Point2D> points;
 	private Color color;
 	private Point2D avgPoint;

@@ -1,8 +1,8 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.data.OsmParser;
+import com.noticemedan.map.data.OSMParser;
 import com.noticemedan.map.data.osm.*;
-import com.noticemedan.map.model.KDTree.Rect;
+import com.noticemedan.map.model.Utilities.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Uses OsmParser to read from Osm class and create associated MapObjects
+ * Uses OSMParser to read from OSMRootNode class and create associated MapObjects
  *
  * This class it generally reaching the limit for Cognitive Complexity
  * TODO This will be divided into smaller classes / sub- and superclasses
@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-public class MapObjectCreater implements MapObjectCreaterInterface {
-	private static MapObjectCreater instance;
-	private static MapObjectProperties mapObjectProperties = new MapObjectProperties();
+public class OSMElementCreator implements OSMElementCreatorInterface {
+	private static OSMElementCreator instance;
+	private static OSMElementProperties mapObjectProperties = new OSMElementProperties();
 	private static Collection<List<Point2D>> coastwayCollection = new LinkedList<>();
 	private static Bounds bounds;
 	private static Map<Long, Node> nodeMap;
@@ -37,23 +37,23 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	private double yFactor;
 	private double topLeftLon;
 	private double topLeftLat;
-	private EnumMap<OSMType, List<MapObject>> mapObjectEnumMap;
-	private List<CoastlineObject> coastlineObjects;
+	private EnumMap<OSMType, List<OSMMaterialElement>> mapObjectEnumMap;
+	private List<OSMCoastlineElement> coastlineObjects;
 	private Dimension dim;
 
-	private MapObjectCreater(Dimension dim) {
+	private OSMElementCreator(Dimension dim) {
 		mapObjectEnumMap = new EnumMap<>(OSMType.class);
-		OsmParser osmParser = new OsmParser();
+		OSMParser osmParser = new OSMParser();
 		this.dim = dim;
 
 		initializeCollections(osmParser.getRootNode());
 		initializeBoundsAndMapConstants();
 		populateObjectCollections();
 
-		coastlineObjects = stichCoastlines(coastwayCollection);
+		coastlineObjects = stitchCoastlines(coastwayCollection);
 	}
 
-	private static void initializeCollections(Osm rootNode) {
+	private static void initializeCollections(OSMRootNode rootNode) {
 		bounds = rootNode.getBounds();
 		wayMap = rootNode.getWays().stream().collect(Collectors.toMap(Way::getId, x -> x));
 		relationMap = rootNode.getRelations().stream().collect(Collectors.toMap(Relation::getId, x -> x));
@@ -62,8 +62,8 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		relationList = rootNode.getRelations();
 	}
 
-	public static MapObjectCreater getInstance(Dimension dim) {
-		if (instance == null) instance = new MapObjectCreater(dim);
+	public static OSMElementCreator getInstance(Dimension dim) {
+		if (instance == null) instance = new OSMElementCreator(dim);
 		return instance;
 	}
 
@@ -107,36 +107,36 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		if (type.equals(OSMType.COASTLINE)) {
 			coastwayCollection.add(getPointListFromWay(way));
 		} else {
-			MapObject mapObject = getMapObjectFromWay(way, type);
-			putMapObjectToEnumMap(type, mapObject);
+			OSMMaterialElement osmMaterialElement = getMapObjectFromWay(way, type);
+			putMapObjectToEnumMap(type, osmMaterialElement);
 		}
 	}
 
 
-	private void putMapObjectToEnumMap(OSMType key, MapObject mapObject) {
+	private void putMapObjectToEnumMap(OSMType key, OSMMaterialElement osmMaterialElement) {
 		if (mapObjectEnumMap.containsKey(key))
-			mapObjectEnumMap.get(key).add(mapObject);
+			mapObjectEnumMap.get(key).add(osmMaterialElement);
 		else {
-			List<MapObject> mapObjectList = new LinkedList<>();
-			mapObjectList.add(mapObject);
-			mapObjectEnumMap.put(key, mapObjectList);
+			List<OSMMaterialElement> osmMaterialElementList = new LinkedList<>();
+			osmMaterialElementList.add(osmMaterialElement);
+			mapObjectEnumMap.put(key, osmMaterialElementList);
 		}
 	}
 
-	private MapObject getMapObjectFromWay(Way way, OSMType type) {
+	private OSMMaterialElement getMapObjectFromWay(Way way, OSMType type) {
 		List<Point2D> pointList = getPointListFromWay(way);
 		Rect mapObjectBounds = getBoundsFromPointList(pointList);
 		double avgX = (mapObjectBounds.getX1() + mapObjectBounds.getX2()) / 2;
 		double avgY = (mapObjectBounds.getY1() + mapObjectBounds.getY2()) / 2;
 
-		MapObject mapObject = new MapObject();
-		mapObject.setOsmType(type);
-		mapObject.setColor(getColor(type));
-		mapObject.setPoints(pointList);
-		mapObject.setBounds(mapObjectBounds);
-		mapObject.setAvgPoint(new Point2D(avgX, avgY));
+		OSMMaterialElement osmMaterialElement = new OSMMaterialElement();
+		osmMaterialElement.setOsmType(type);
+		osmMaterialElement.setColor(getColor(type));
+		osmMaterialElement.setPoints(pointList);
+		osmMaterialElement.setBounds(mapObjectBounds);
+		osmMaterialElement.setAvgPoint(new Point2D(avgX, avgY));
 
-		return mapObject;
+		return osmMaterialElement;
 	}
 
 	private Rect getBoundsFromPointList(List<Point2D> pointList) {
@@ -160,8 +160,8 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	 *
 	 * @Simon
 	 */
-	public List<CoastlineObject> stichCoastlines(Collection<List<Point2D>> coastlines) {
-		List<CoastlineObject> listOfCoastlines = new LinkedList<>();
+	public List<OSMCoastlineElement> stitchCoastlines(Collection<List<Point2D>> coastlines) {
+		List<OSMCoastlineElement> listOfCoastlines = new LinkedList<>();
 
 		List<Point2D> previousLine = null;
 		List<Point2D> stichedPoints = new LinkedList<>();
@@ -172,7 +172,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 			if (previousLine != null) {
 
 				if (!previousLine.get(0).equals(line.get(line.size() - 1))) {
-					CoastlineObject coastlineObject = createCoastlineObject(stichedPoints);
+					OSMCoastlineElement coastlineObject = createCoastlineObject(stichedPoints);
 					if (coastlineObject != null) listOfCoastlines.add(coastlineObject);
 					stichedPoints.clear();
 					previousLine = line;
@@ -183,7 +183,7 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 				stichedPoints.addAll(0, line);
 
 				if (counter == coastlines.size()) {
-					CoastlineObject coastlineObject = createCoastlineObject(stichedPoints);
+					OSMCoastlineElement coastlineObject = createCoastlineObject(stichedPoints);
 					if (coastlineObject != null) listOfCoastlines.add(coastlineObject);
 				}
 			}
@@ -192,16 +192,14 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 		return listOfCoastlines;
 	}
 
-	public CoastlineObject createCoastlineObject(List<Point2D> pointlist) {
+	public OSMCoastlineElement createCoastlineObject(List<Point2D> pointlist) {
 		if (pointlist.isEmpty()) return null;
-		CoastlineObject coastlineObject = new CoastlineObject();
+		OSMCoastlineElement coastlineObject = new OSMCoastlineElement();
 		coastlineObject.setPoints(new LinkedList<>(pointlist));
 		coastlineObject.setColor(getColor(OSMType.COASTLINE));
 		Rect coastlineBounds = getBoundsFromPointList(pointlist);
-		double avgX = (coastlineBounds.getX1() + coastlineBounds.getX2()) / 2;
-		double avgY = (coastlineBounds.getY1() + coastlineBounds.getX2()) / 2;
 		coastlineObject.setBounds(coastlineBounds);
-		coastlineObject.setAvgPoint(new Point2D(avgX, avgY));
+		coastlineObject.setAvgPoint(coastlineBounds.getAveragePoint());
 
 		return coastlineObject;
 	}
@@ -270,12 +268,12 @@ public class MapObjectCreater implements MapObjectCreaterInterface {
 	}
 
 	@Override
-	public Map<OSMType, List<MapObject>> getMapObjectsByType() {
+	public Map<OSMType, List<OSMMaterialElement>> getMapObjectsByType() {
 		return this.mapObjectEnumMap;
 	}
 
 	@Override
-	public List<CoastlineObject> getListOfCoastlineObjects() {
+	public List<OSMCoastlineElement> getListOfCoastlineObjects() {
 		return this.coastlineObjects;
 	}
 

@@ -1,12 +1,12 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.model.CoastlineObject;
 import com.noticemedan.map.model.KDTree.Forest;
 import com.noticemedan.map.model.KDTree.ForestCreator;
-import com.noticemedan.map.model.KDTree.Rect;
-import com.noticemedan.map.model.MapObject;
-import com.noticemedan.map.model.MapObjectCreater;
+import com.noticemedan.map.model.OSMCoastlineElement;
+import com.noticemedan.map.model.OSMElementCreator;
+import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.OSMType;
+import com.noticemedan.map.model.Utilities.Rect;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,7 +19,7 @@ import java.awt.*;
 import java.util.List;
 
 @Slf4j
-public class MapCanvas {
+public class OSMCanvas {
 
 	private Forest forest;
 	@Getter @Setter
@@ -30,16 +30,16 @@ public class MapCanvas {
 	@Getter
 	@Setter
 	private double zoomLevel;
-	private MapObjectCreater moc;
+	private OSMElementCreator moc;
 
-	public MapCanvas() {
+	public OSMCanvas() {
 		ForestCreator forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
 		this.viewArea = new Rect(0, 0, 2000, 2000);
 		this.canvas = new Canvas(6000, 6000);
 		this.pen = canvas.getGraphicsContext2D();
 		this.zoomLevel = 1.0;
-		moc = MapObjectCreater.getInstance(new Dimension(2600, 1600));
+		moc = OSMElementCreator.getInstance(new Dimension(2600, 1600));
 		drawCanvas();
 	}
 
@@ -54,25 +54,25 @@ public class MapCanvas {
 	}
 
 	public void redrawCanvas() {
-		pen.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+		pen.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		drawCanvas();
 	}
 
-	private void drawCoastlines(List<CoastlineObject> coastlineObjects) {
-		for (CoastlineObject coastlineObject : coastlineObjects) {
+	private void drawCoastlines(List<OSMCoastlineElement> coastlineObjects) {
+		for (OSMCoastlineElement coastlineObject : coastlineObjects) {
 			setPenColor(coastlineObject.getColor());
 			drawPath(coastlineObject.getPoints());
 			pen.fill();
 		}
 	}
 
-	private void drawObjects(List<MapObject> mapObjects) {
-		for(MapObject mapObject : mapObjects) {
-			if(mapObject.getOsmType()==OSMType.UNKNOWN) continue;
-			if (mapObject.getColor() != null) setPenColor(mapObject.getColor());
+	private void drawObjects(List<OSMMaterialElement> osmMaterialElements) {
+		for (OSMMaterialElement osmMaterialElement : osmMaterialElements) {
+			if (osmMaterialElement.getOsmType() == OSMType.UNKNOWN) continue;
+			if (osmMaterialElement.getColor() != null) setPenColor(osmMaterialElement.getColor());
 
-			drawPath(mapObject.getPoints());
-			if ((isClosed(mapObject))) {
+			drawPath(osmMaterialElement.getPoints());
+			if ((isClosed(osmMaterialElement))) {
 				pen.fill();
 			} else pen.stroke();
 		}
@@ -81,10 +81,10 @@ public class MapCanvas {
 	private void drawPath(List<Point2D> points) {
 		Point2D startPoint = points.get(0);
 		pen.beginPath();
-		pen.moveTo(startPoint.getX()*this.zoomLevel, startPoint.getY()*this.zoomLevel);
+		pen.moveTo(startPoint.getX() * this.zoomLevel, startPoint.getY() * this.zoomLevel);
 		for (int i = 1; i < points.size(); i++) {
 			Point2D nextPoint = points.get(i);
-			pen.lineTo(nextPoint.getX()*this.zoomLevel, nextPoint.getY()*this.zoomLevel);
+			pen.lineTo(nextPoint.getX() * this.zoomLevel, nextPoint.getY() * this.zoomLevel);
 		}
 	}
 
@@ -93,9 +93,9 @@ public class MapCanvas {
 		pen.setFill(color);
 	}
 
-	//HOT FIX UNTIL MapObject isOpen() IS WORKING
-	//TODO set boolean isOpen() when creating new MapObject.
-	private boolean isClosed(MapObject mapObject) {
-		return mapObject.getOsmType() != OSMType.ROAD && (mapObject.getOsmType() != OSMType.HIGHWAY && (mapObject.getOsmType() != OSMType.COASTLINE));
+	//HOT FIX UNTIL OSMMaterialElement isOpen() IS WORKING
+	//TODO set boolean isOpen() when creating new OSMMaterialElement.
+	private boolean isClosed(OSMMaterialElement osmMaterialElement) {
+		return osmMaterialElement.getOsmType() != OSMType.ROAD && (osmMaterialElement.getOsmType() != OSMType.HIGHWAY && (osmMaterialElement.getOsmType() != OSMType.COASTLINE));
 	}
 }
