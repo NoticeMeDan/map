@@ -77,7 +77,7 @@
 //		log.info("TestList size: " + testList.size());
 //		testList.forEach(l -> {
 //			System.out.println("OSMCoastlineElement: " + l.toString());
-//			l.getPoints().forEach(System.out::println);
+//			l.getOsmMaterialElements().forEach(System.out::println);
 //		});
 //	}
 //}

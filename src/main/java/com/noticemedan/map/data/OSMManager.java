@@ -4,13 +4,15 @@ import com.noticemedan.map.App;
 import com.noticemedan.map.data.io.OSMReader;
 import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.osm.OSMType;
+import lombok.Getter;
 
 import java.io.*;
 import java.util.*;
 import java.util.List;
 
 public class OSMManager extends Observable implements Serializable {
-    private EnumMap<OSMType, List<OSMMaterialElement>> osmMaterialElements;
+    @Getter
+	private EnumMap<OSMType, List<OSMMaterialElement>> osmMaterialElements;
 
     public OSMManager() {
     	try {
@@ -25,15 +27,13 @@ public class OSMManager extends Observable implements Serializable {
 		}
     }
 
-
-
 	// TODO @Simon super dirty call to the top layer -> get this away!
     public void dirty() {
     	setChanged();
         notifyObservers();
     }
 
-    public List<OSMMaterialElement> getListOfShapes(OSMType type) {
+    public List<OSMMaterialElement> getListOfOSMMaterialElements(OSMType type) {
         return osmMaterialElements.get(type);
     }
 }

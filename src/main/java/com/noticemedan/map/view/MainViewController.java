@@ -51,7 +51,7 @@ public class MainViewController {
 
 		SwingNode swingNode = new SwingNode();
 		OSMManager m = new OSMManager();
-		CanvasView cv = new CanvasView(m);
+		CanvasView cv = new CanvasView();
 		cv.setSize(screenSize);
 		System.out.println(Entities.writeOut());
 		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());

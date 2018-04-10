@@ -38,7 +38,6 @@ public class OSMReader {
 
 	public EnumMap<OSMType, List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
 		String filename = ".osm"; // TODO @Simon
-		System.out.println(filename);
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
 		}
@@ -88,8 +87,31 @@ public class OSMReader {
 		osmMaterialElement.setBounds(rect);
 		osmMaterialElement.setAvgPoint(rect.getAveragePoint());
 		osmMaterialElement.setShape(shape);
+		osmMaterialElement.setColor(identifyColor(type));
 		osmMaterialElements.get(type).add(osmMaterialElement);
 	}
+
+	public Color identifyColor(OSMType osmType) {
+		Color color = new Color(230,0,160);
+		if (osmType == OSMType.COASTLINE)
+			color = new Color(230, 210, 175);
+		if (osmType == OSMType.WATER)
+			color = new Color(30, 70, 230);
+		if (osmType == OSMType.GRASSLAND)
+			color = new Color(70, 170, 90);
+		if (osmType == OSMType.TREE_ROW)
+			color = new Color(15, 130, 80);
+		if (osmType == OSMType.HEATH)
+			color = new Color(15, 120, 75);
+		if (osmType == OSMType.ROAD)
+			color = new Color(125,125,125);
+		if (osmType == OSMType.HIGHWAY)
+			color = new Color(200,100,0);
+		if (osmType == OSMType.BUILDING)
+			color = new Color(200,100,0);
+		return color;
+	}
+
 
 	public class OSMHandler extends DefaultHandler {
 		private EnumMap<OSMType, List<Shape>> shapes;

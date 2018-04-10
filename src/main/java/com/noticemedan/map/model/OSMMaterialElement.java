@@ -3,18 +3,15 @@ package com.noticemedan.map.model;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.osm.OSMType;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class OSMMaterialElement implements Comparable<OSMMaterialElement> {
 	private OSMType osmType;
-	private List<Point2D> points; // TODO REMOVE
 	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon

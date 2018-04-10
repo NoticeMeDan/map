@@ -23,9 +23,10 @@ public class ForestCreator {
 	 */
 	public ForestCreator() {
 		List<OSMMaterialElement> conList = new LinkedList<>();
-		Collection mapObjectsCollection = null; //OSMElementCreator.getInstance(new Dimension(1600, 1600)).getMapObjectsByType().values();
+		Collection osmElementCollection = osmManager.getOsmMaterialElements().values();
+		System.out.println(osmElementCollection);
 
-		Iterator<List<OSMMaterialElement>> it = mapObjectsCollection.iterator();
+		Iterator<List<OSMMaterialElement>> it = osmElementCollection.iterator();
 		while (it.hasNext()) conList.addAll(it.next());
 		OSMMaterialElement[] osmMaterialElement = conList.toArray(new OSMMaterialElement[conList.size()]);
 
@@ -33,6 +34,7 @@ public class ForestCreator {
 		ArrayList<OSMMaterialElement>[] zoomLevels = new ArrayList[3];
 		for (int i = 0; i < zoomLevels.length; i++) zoomLevels[i] = new ArrayList<>();
 		for (int i = 0; i < osmMaterialElement.length; i++) {
+			if (osmMaterialElement[i].getOsmType() == COASTLINE) zoomLevels[0].add(osmMaterialElement[i]);
 			if (osmMaterialElement[i].getOsmType() == HIGHWAY) zoomLevels[0].add(osmMaterialElement[i]);
 			if (osmMaterialElement[i].getOsmType() == GRASSLAND) zoomLevels[0].add(osmMaterialElement[i]);
 			if (osmMaterialElement[i].getOsmType() == WATER) zoomLevels[0].add(osmMaterialElement[i]);
@@ -56,5 +58,10 @@ public class ForestCreator {
 		for (int i = 0; i < trees.length; i++)
 			trees[i] = new KDTree(osmMaterialElement[i], maxNumberOfElementsAtLeaf[i]);
 		this.forest = new Forest(trees);
+	}
+
+
+	public void addObserver(Observer o) {
+		osmManager.addObserver(o);
 	}
 }

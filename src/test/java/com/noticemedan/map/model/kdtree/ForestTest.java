@@ -47,9 +47,9 @@
 //		Rect query = new Rect(0.5,7.5,3.5, 10.5);
 //		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 0);
 //		assertEquals(results.size(), 2);
-//		assertEquals(results.getListOfShapes(0).getOsmType(), ROAD);
-//		assertEquals(results.getListOfShapes(0).getAvgPoint().getX(), 3.0);
-//		assertEquals(results.getListOfShapes(0).getAvgPoint().getY(), 8.0);
+//		assertEquals(results.getListOfOSMMaterialElements(0).getOsmType(), ROAD);
+//		assertEquals(results.getListOfOSMMaterialElements(0).getAvgPoint().getX(), 3.0);
+//		assertEquals(results.getListOfOSMMaterialElements(0).getAvgPoint().getY(), 8.0);
 //	}
 //
 //	@Test
@@ -57,9 +57,9 @@
 //		Rect query = new Rect(4.5,0.5,10, 10);
 //		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 1);
 //		assertEquals(results.size(), 8);
-//		assertEquals(results.getListOfShapes(results.size()-1).getOsmType(), OSMType.WATER);
-//		assertEquals(results.getListOfShapes(results.size()-1).getAvgPoint().getX(), 9.0);
-//		assertEquals(results.getListOfShapes(results.size()-1).getAvgPoint().getY(), 9.0);
+//		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getOsmType(), OSMType.WATER);
+//		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getX(), 9.0);
+//		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getY(), 9.0);
 //	}
 //
 //	@Test
@@ -67,8 +67,8 @@
 //		Rect query = new Rect(0.5,5.5,9.5, 10.5);
 //		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 2);
 //		assertEquals(results.size(), 15);
-//		assertEquals(results.getListOfShapes(2).getOsmType(), ROAD);
-//		assertEquals(results.getListOfShapes(2).getAvgPoint().getX(), 1.0);
-//		assertEquals(results.getListOfShapes(2).getAvgPoint().getY(), 10.0);
+//		assertEquals(results.getListOfOSMMaterialElements(2).getOsmType(), ROAD);
+//		assertEquals(results.getListOfOSMMaterialElements(2).getAvgPoint().getX(), 1.0);
+//		assertEquals(results.getListOfOSMMaterialElements(2).getAvgPoint().getY(), 10.0);
 //	}
 //}

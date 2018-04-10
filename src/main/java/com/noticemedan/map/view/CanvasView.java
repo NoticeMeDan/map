@@ -1,8 +1,11 @@
 package com.noticemedan.map.view;
 
-import com.noticemedan.map.data.OSMManager;
+import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.kdtree.Forest;
+import com.noticemedan.map.model.kdtree.ForestCreator;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.utilities.Rect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,15 +17,18 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class CanvasView extends JComponent implements Observer{
-
-    private final OSMManager osmManager;
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
 
-    public CanvasView(OSMManager m) {
-        this.osmManager = m;
-        osmManager.addObserver(this);
+    private Forest forest;
+    private Rect viewArea;
+
+    public CanvasView() {
+		ForestCreator forestCreator = new ForestCreator();
+		this.forest = forestCreator.getForest();
+		forestCreator.addObserver(this);
+		this.viewArea = new Rect(0,0, Entities.getMaxLon(), Entities.getMaxLat());
     }
 
     @Override
@@ -45,42 +51,66 @@ public class CanvasView extends JComponent implements Observer{
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
-        g.setPaint(new Color(237, 237, 237));
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.COASTLINE)) {
-            g.fill(element.getShape());
+        g.setPaint(new Color(237, 233, 217));
+        for (OSMMaterialElement element : forest.rangeSearch(new Rect(0, 0, getWidth(), getHeight()))) {
+			if(element.getOsmType() == OSMType.COASTLINE) {
+				g.fill(element.getShape());
+			}
         }
-        g.setPaint(new Color(60, 149, 255));
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.WATER)) {
+
+		System.out.println("Range size: " + forest.rangeSearch(viewArea).size());
+		for (OSMMaterialElement element : forest.rangeSearch(viewArea)) {
+        	g.setPaint(element.getColor());
+			if(element.getOsmType() == OSMType.COASTLINE) {
+				g.fill(element.getShape());
+			}
+			if (element.getOsmType() == OSMType.ROAD || element.getOsmType() == OSMType.HIGHWAY) {
+				g.setStroke(new BasicStroke(0.00001f));
+				if (element.getShape().intersects(viewRect))
+					g.draw(element.getShape());
+			}
+			if (element.getOsmType() == OSMType.UNKNOWN) {
+				if (element.getShape().intersects(viewRect))
+					g.draw(element.getShape());
+			}
+			else {
+				if (element.getShape().intersects(viewRect))
+					g.fill(element.getShape());
+			}
+		}
+
+        /* g.setPaint(new Color(60, 149, 255));
+        for (OSMMaterialElement element : osmManager.getListOfOSMMaterialElements(OSMType.WATER)) {
             if (element.getShape().intersects(viewRect)) {
                 g.fill(element.getShape());
             }
         }
         g.setPaint(Color.black);
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.UNKNOWN)) {
+        for (OSMMaterialElement element : osmManager.getListOfOSMMaterialElements(OSMType.UNKNOWN)) {
             if (element.getShape().intersects(viewRect)) {
                 g.draw(element.getShape());
             }
         }
         g.setStroke(new BasicStroke(0.00001f));
         g.setPaint(new Color(230, 139, 213));
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.ROAD)) {
+        for (OSMMaterialElement element : osmManager.getListOfOSMMaterialElements(OSMType.ROAD)) {
             if (element.getShape().intersects(viewRect)) {
                 g.draw(element.getShape());
             }
         }
         g.setStroke(new BasicStroke(0.00005f));
         g.setPaint(new Color(255, 114, 109));
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.HIGHWAY)) {
+        for (OSMMaterialElement element : osmManager.getListOfOSMMaterialElements(OSMType.HIGHWAY)) {
             if (element.getShape().intersects(viewRect)) {
                 g.draw(element.getShape());
             }
         }
         g.setPaint(new Color(172, 169, 151));
-        for (OSMMaterialElement element : osmManager.getListOfShapes(OSMType.BUILDING)) {
+        for (OSMMaterialElement element : osmManager.getListOfOSMMaterialElements(OSMType.BUILDING)) {
             if (element.getShape().intersects(viewRect)) {
                 g.fill(element.getShape());
             }
-        }
+        }*/
         long t2 = System.nanoTime();
         fps = (fps + 1e9/ (t2 - t1)) / 2;
         g.setTransform(new AffineTransform());

@@ -48,14 +48,14 @@ public class KDTreeTest {
 	@Test
 	public void testSmallKDTree_LeafNodeValues_Positive() {
 		//Test some random leaf nodes values
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getAvgPoint().getX(), 2.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getPoints()[0].getAvgPoint().getY(), 3.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getOsmMaterialElements()[0].getAvgPoint().getX(), 2.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getOsmMaterialElements()[0].getAvgPoint().getY(), 3.0);
 
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getAvgPoint().getX(), 9.0);
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getPoints()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getOsmMaterialElements()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getOsmMaterialElements()[0].getAvgPoint().getX(), 9.0);
 
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getAvgPoint().getX(), 1.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getPoints()[1].getAvgPoint().getY(), 10.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getOsmMaterialElements()[1].getAvgPoint().getX(), 1.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getOsmMaterialElements()[1].getAvgPoint().getY(), 10.0);
 	}
 
 	@Test
@@ -74,8 +74,8 @@ public class KDTreeTest {
 	@Test
 	public void testSmallKDTree_NodeSplitValues_Negative() {
 		//Test some random node split values
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getAvgPoint().getX(), 8);
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getPoints()[1].getAvgPoint().getY(), 3);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getOsmMaterialElements()[1].getAvgPoint().getX(), 8);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getOsmMaterialElements()[1].getAvgPoint().getY(), 3);
 
 	}
 
@@ -90,7 +90,7 @@ public class KDTreeTest {
 	}
 
 	@Ignore @Test //Usually takes 25 seconds
-	public void testVeryLargeKDTreeSpeed() { //10E7 points, endpoints 1000
+	public void testVeryLargeKDTreeSpeed() { //10E7 osmMaterialElements, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
 		KDTree veryLargeKDTree = new KDTree(buildRandomPoints(10000000), 1000);
 		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
@@ -107,8 +107,8 @@ public class KDTreeTest {
 
 	@Test
 	public void oneElementKDTree_Postive() {
-		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getAvgPoint().getX(),1.0);
-		assertEquals(oneElementKDTree.getRootNode().getPoints()[0].getAvgPoint().getY(),10.0);
+		assertEquals(oneElementKDTree.getRootNode().getOsmMaterialElements()[0].getAvgPoint().getX(),1.0);
+		assertEquals(oneElementKDTree.getRootNode().getOsmMaterialElements()[0].getAvgPoint().getY(),10.0);
 	}
 
 	//Delete test?

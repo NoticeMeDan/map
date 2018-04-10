@@ -43,7 +43,7 @@ public class KDTree {
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
-		// Define size of points array in leaf nodes.
+		// Define size of osmMaterialElements array in leaf nodes.
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
 		} else if (depth % 2 == 0) { // If depth even, split by x-value
@@ -110,12 +110,12 @@ public class KDTree {
 		}
 
 		// If current node is a leaf, check if point is within query;
-		if (parent.getPoints() != null) {
-			for (int i = 0; i < parent.getPoints().length; i++) {
-				if (pointInRect(parent.getPoints()[i], searchQuery)) rangeSearchQueryResults.add(parent.getPoints()[i]);
+		if (parent.getOsmMaterialElements() != null) {
+			for (int i = 0; i < parent.getOsmMaterialElements().length; i++) {
+				if (pointInRect(parent.getOsmMaterialElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmMaterialElements()[i]);
 			}
 		} else {
-			// If left bounding box for left child is completely in query, report all points in this subtree
+			// If left bounding box for left child is completely in query, report all osmMaterialElements in this subtree
 			if (rectCompletelyInRect(boundingBoxLeft, searchQuery)) {
 				reportSubtree(leftChild);
 			} else {
@@ -155,7 +155,7 @@ public class KDTree {
 	// Using in order traversal (LVR: Left, Visit, Right)
 	public void reportSubtree(KDTreeNode parent) {
 		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getPoints() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getPoints())); //V
+		if (parent.getOsmMaterialElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmMaterialElements())); //V
 		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
 	}
 
