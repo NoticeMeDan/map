@@ -13,8 +13,8 @@ public class Rect {
 	double y2;
 
 	public Point2D getAveragePoint() {
-		double avgX = (x2 + x1) / 2;
-		double avgY = (y2 + y1) / 2;
+		double avgX = (x2 + x1) / 2.0;
+		double avgY = (y2 + y1) / 2.0;
 		return new Point2D(avgX, avgY);
 	}
 }

@@ -26,11 +26,11 @@ public class KDTree {
 	}
 
 	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OSMMaterialElement point, Rect rect) {
-		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getAvgPoint().getX());
-		boolean part2 = Math.abs(point.getAvgPoint().getX()) <= Math.abs(rect.getX2());
-		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getAvgPoint().getY());
-		boolean part4 = Math.abs(point.getAvgPoint().getY()) <= Math.abs(rect.getY2());
+	static public boolean pointInRect(OSMMaterialElement osmMaterialElement, Rect rect) {
+		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(osmMaterialElement.getAvgPoint().getX());
+		boolean part2 = Math.abs(osmMaterialElement.getAvgPoint().getX()) <= Math.abs(rect.getX2());
+		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(osmMaterialElement.getAvgPoint().getY());
+		boolean part4 = Math.abs(osmMaterialElement.getAvgPoint().getY()) <= Math.abs(rect.getY2());
 		return part1 && part2 && part3 && part4;
 	}
 

@@ -1,8 +1,7 @@
 package com.noticemedan.map.view;
 
-import com.noticemedan.map.data.OSMManager;
 import com.noticemedan.map.model.Entities;
-import com.noticemedan.map.viewmodel.KeyboardController;
+import com.noticemedan.map.viewmodel.CanvasView;
 import com.noticemedan.map.viewmodel.MouseController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,13 +49,12 @@ public class MainViewController {
 		Dimension screenSize = new Dimension(1100, 650);
 
 		SwingNode swingNode = new SwingNode();
-		OSMManager m = new OSMManager();
 		CanvasView cv = new CanvasView();
 		cv.setSize(screenSize);
 		System.out.println(Entities.writeOut());
 		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());
 		cv.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		new MouseController(cv, m);
+		new MouseController(cv);
 		SwingUtilities.invokeLater(() -> {
 			swingNode.setContent(cv);
 		});

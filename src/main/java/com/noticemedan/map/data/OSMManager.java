@@ -12,7 +12,7 @@ import java.util.List;
 
 public class OSMManager extends Observable implements Serializable {
     @Getter
-	private EnumMap<OSMType, List<OSMMaterialElement>> osmMaterialElements;
+	private List<OSMMaterialElement> osmMaterialElements;
 
     public OSMManager() {
     	try {
@@ -20,6 +20,7 @@ public class OSMManager extends Observable implements Serializable {
 			FileInputStream fileInputStream = new FileInputStream(file);
 			OSMReader osmReader = new OSMReader();
 			osmMaterialElements = osmReader.getShapesFromFile(fileInputStream);
+			System.out.println("Size: " + osmMaterialElements.size());
 			dirty();
 		}
 		catch (IOException e) {
@@ -31,9 +32,5 @@ public class OSMManager extends Observable implements Serializable {
     public void dirty() {
     	setChanged();
         notifyObservers();
-    }
-
-    public List<OSMMaterialElement> getListOfOSMMaterialElements(OSMType type) {
-        return osmMaterialElements.get(type);
     }
 }

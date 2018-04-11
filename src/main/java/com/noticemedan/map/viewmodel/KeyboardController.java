@@ -1,7 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.data.OSMManager;
-import com.noticemedan.map.view.CanvasView;
 import javafx.scene.layout.Pane;
 
 import java.awt.event.KeyAdapter;
