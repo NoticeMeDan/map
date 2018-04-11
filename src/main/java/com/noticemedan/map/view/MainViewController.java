@@ -19,7 +19,7 @@ import java.awt.*;
 
 public class MainViewController {
 	//Content Pane
-	//@FXML Button routeButton;
+	@FXML Button routeButton;
 	@FXML Pane searchFieldImitator;
 	@FXML Pane osmPaneContainer;
 
@@ -76,7 +76,7 @@ public class MainViewController {
 		searchAddressField.setOnAction(event -> addressSearchResultsListView.getItems().setAll(setUpDummyData()));
 		searchPaneCloseButton.setOnAction(event -> closeSearchPane());
 
-		//routeButton.setOnAction(event -> openRoutePane());
+		routeButton.setOnAction(event -> openRoutePane());
 		routePaneCloseButton.setOnAction(event -> closeRoutePane());
 
 		searchStartPointAddressField.setOnAction(event -> routeSearchResultsListView.getItems().setAll(setUpDummyData()));
