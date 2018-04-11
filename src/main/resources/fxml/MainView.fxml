@@ -11,13 +11,12 @@
 		<ToggleGroup fx:id="transitMethod"/>
 	</fx:define>
 		<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-				  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 
 				<Pane fx:id="searchFieldImitator" prefHeight="27.0" prefWidth="165.0" layoutX="14.0" layoutY="14.0" >
 					<Label id="searchFieldImitatorLabel" text="Søg..." />
 				</Pane>
-				<Button fx:id="routeButton" styleClass="defaultButton" layoutX="190.0" layoutY="14.0" mnemonicParsing="false" text="Rute" />
+				<Button fx:id="routeButton" layoutX="190.0" layoutY="21.0" mnemonicParsing="false" text="Rute" />
 
 				<VBox fx:id="searchPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
 					<HBox prefHeight="55.0" prefWidth="200.0">
