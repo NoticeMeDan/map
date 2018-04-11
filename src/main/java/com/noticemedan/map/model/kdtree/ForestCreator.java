@@ -2,6 +2,7 @@ package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.data.OSMManager;
 import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
 
 import java.util.*;
@@ -55,15 +56,13 @@ public class ForestCreator {
 	}
 
 	private void createForest(OSMMaterialElement[][] osmMaterialElement, int[] maxNumberOfElementsAtLeaf) {
-		if (osmMaterialElement.length != maxNumberOfElementsAtLeaf.length)
-			throw new RuntimeException("Length of parameter arrays are not equal");
+		if (osmMaterialElement.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
 
 		KDTree[] trees = new KDTree[osmMaterialElement.length];
 		for (int i = 0; i < trees.length; i++)
 			trees[i] = new KDTree(osmMaterialElement[i], maxNumberOfElementsAtLeaf[i]);
 		this.forest = new Forest(trees);
 	}
-
 
 	public void addObserver(Observer o) {
 		osmManager.addObserver(o);

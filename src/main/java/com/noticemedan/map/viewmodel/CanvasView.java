@@ -27,8 +27,12 @@ public class CanvasView extends JComponent implements Observer{
 		ForestCreator forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
 		forestCreator.addObserver(this);
+		//Half of bornholm (y-axis)
+		//this.viewArea = new Rect(-100,-55.1, 100, -54);
+
+		//Whole of bornholm
 		this.viewArea = new Rect(-100,-100, 100, 100);
-    }
+	}
 
 	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
 		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);

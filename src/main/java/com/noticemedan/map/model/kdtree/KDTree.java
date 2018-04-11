@@ -6,6 +6,7 @@ import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
+import java.awt.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,15 +24,6 @@ public class KDTree {
 
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
 		this.rootNode = buildKDTree(points, 0);
-	}
-
-	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OSMMaterialElement osmMaterialElement, Rect rect) {
-		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(osmMaterialElement.getAvgPoint().getX());
-		boolean part2 = Math.abs(osmMaterialElement.getAvgPoint().getX()) <= Math.abs(rect.getX2());
-		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(osmMaterialElement.getAvgPoint().getY());
-		boolean part4 = Math.abs(osmMaterialElement.getAvgPoint().getY()) <= Math.abs(rect.getY2());
-		return part1 && part2 && part3 && part4;
 	}
 
 	/**
@@ -92,6 +84,13 @@ public class KDTree {
 			if (i >= k) 					secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
+	}
+
+	public List<OSMMaterialElement> rangeSearch(Rect query) {
+		rangeSearchQueryResults = new ArrayList<>();
+		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		searchTree(rootNode, query, startBoundingBox);
+		return this.rangeSearchQueryResults;
 	}
 
 	private void searchTree(KDTreeNode parent, Rect searchQuery, Rect boundingBox) {
@@ -170,10 +169,12 @@ public class KDTree {
 		return a <= d && b >= c;
 	}
 
-	public List<OSMMaterialElement> rangeSearch(Rect query) {
-		rangeSearchQueryResults = new ArrayList<>();
-		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		searchTree(rootNode, query, startBoundingBox);
-		return this.rangeSearchQueryResults;
+	//TODO: Not so pretty code with 'part1', 'part2'...
+	static public boolean pointInRect(OSMMaterialElement osmMaterialElement, Rect rect) {
+		boolean part1 = rect.getX1() <= osmMaterialElement.getAvgPoint().getX();
+		boolean part2 = osmMaterialElement.getAvgPoint().getX() <= rect.getX2();
+		boolean part3 = rect.getY1() <= osmMaterialElement.getAvgPoint().getY();
+		boolean part4 = osmMaterialElement.getAvgPoint().getY() <= rect.getY2();
+		return part1 && part2 && part3 && part4;
 	}
 }
