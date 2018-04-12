@@ -175,24 +175,29 @@ We used both unit testing and system testing to find errors in our implementatio
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{l c c l}
-        \textbf{Navn} & \textbf{Mail} & \textbf{Telefon} & \textbf{MBTI} \\ \hline
-        Person A & \texttt{a@itu.dk} & 10101010 & ENFB--Champion \\
-        Person B & \texttt{b@itu.dk} & 10101010 & INFJ--Counselor \\
-        Person C & \texttt{c@itu.dk} & 10101010 & ENFJ--Teacher \\
-        Person D & \texttt{d@itu.dk} & 10101010 & ESTP--Promoter \\
-        Person E & \texttt{e@itu.dk} & 10101010 & INTJ--Mastermind \\
+    \begin{tabular}{l c c l l}
+        \textbf{Navn} & \textbf{Mail} & \textbf{DoB} & \textbf{MBTI} & \textbf{Role} \\ \hline
+        Elias Jørgensen & \texttt{ejoe@itu.dk} & 301098 & ISTJ & System-manager\\
+        Simon Høiberg & \texttt{shoe@itu.dk} & 030288 & ENTJ & Project Manager \\
+        Emil Bartholdy & \texttt{emba@itu.dk} & 270193 & ENTP & HR manager\\
+        Magnus Arnild & \texttt{mips@itu.dk} & 090594 & INTP & Idea - and concept developer\\
+        Mathias Egekvist & \texttt{maeg@itu.dk} & 61608483 & ENTP & Scrum master \\
     \end{tabular}
 \end{table}
 
 \subsection{Organisering}
 
 \paragraph{Planning of work}
-We meet twice a week to plan work and co-work if need be. We plan who is in charge of what for next time.
-We start out with a meeting going through what has been made, and what are we going to do next.
-We expect to work the hours set aside for it whether at home or on sight. Pauses is controlled by the individuel.
+We meet twice a week to plan work and co-work if need be. We plan who is in charge of what for next time. We have our primary communication channel on Slack.
+We start out with a SCRUM-meeting going through what has been made, and what are we going to do next.
+We all agree on a relaxed social tone and expect each member to be able to say, if they want more focus and quiet time for working.
 
-We expect to use at least 15 hours a week on it pr. person dependant on the indiuels experience.
+If any conflicts should arise we have chosen to use:
+Olsen & Pedersens "grundmodel for konfliktløsning".
+
+We expect to work the hours set aside for it whether at home or on sight. Pauses is controlled by the individuel. If need arises we use pair programming and write it in pull requests.
+
+We expect to use at least 15 hours a week on it pr. person dependant on the individuels experience.
 
 \paragraph{Meeting time}
 
@@ -205,12 +210,22 @@ We expect to use at least 15 hours a week on it pr. person dependant on the indi
     \item Saturday: individuel work (Weekend!)
     \item Sunday: individuel work (Weekend!)
 \end{itemize}
+Magnus and Mathias has special cases on Thursday, as Magnus has to leave at 13, and Mathias some times work from home.
+Everybody has accepted the above.
 
 \paragraph{Documentation and tools}
 We want to document our progress through the process using:
 \begin{itemize}
-    \item Individuel log: Writing the decisions and considerations in your work.
-    \item Minutes from meetings: The minutes includes what we have talked about, where we are in the process and where we are going next.
+    \item Github wiki for log book and meeting minutes: Writing the decisions and considerations in your work.
+\end{itemize}
+
+\paragraph{Generel tools}
+We expect to use these programming tools:
+\begin{itemize}
+    \item CI (Travis)
+    \item SonarQube
+    \item Vavr & Project Lombok
+    \item Code Review
 \end{itemize}
 
 \section{Development Diary}
