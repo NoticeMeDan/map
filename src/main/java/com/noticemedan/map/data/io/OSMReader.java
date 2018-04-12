@@ -2,11 +2,11 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
-import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.osm.OSMWay;
+import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.Rect;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -18,7 +18,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -138,7 +137,10 @@ public class OSMReader {
 					}
 					break;
 				case "tag":
-					switch (attributes.getValue("k")) {
+					String keyValue = attributes.getValue("k");
+					if (keyValue.contains("addr:")) keyValue = keyValue.substring(5);
+
+					switch (keyValue) {
 						case "highway":
 							type = OSMType.ROAD;
 							if (attributes.getValue("v").equals("primary")) {
@@ -154,6 +156,16 @@ public class OSMReader {
 							break;
 						case "building":
 							type = OSMType.BUILDING;
+							break;
+						case "housenumber":
+							break;
+						case "street":
+							break;
+						case "name":
+							break;
+						case "postcode":
+							break;
+						case "city":
 							break;
 						default:
 							break;

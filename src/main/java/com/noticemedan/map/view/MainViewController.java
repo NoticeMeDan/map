@@ -2,10 +2,7 @@ package com.noticemedan.map.view;
 
 import com.noticemedan.map.data.OSMManager;
 import com.noticemedan.map.model.Entities;
-import com.noticemedan.map.viewmodel.KeyboardController;
 import com.noticemedan.map.viewmodel.MouseController;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -75,14 +72,10 @@ public class MainViewController {
 	private void eventListeners() {
 		searchFieldImitator.setOnMouseClicked(event -> openSearchPane());
 
-		searchAddressField.setOnAction(event -> addressSearchResultsListView.getItems().setAll(setUpDummyData()));
 		searchPaneCloseButton.setOnAction(event -> closeSearchPane());
 
 		routeButton.setOnAction(event -> openRoutePane());
 		routePaneCloseButton.setOnAction(event -> closeRoutePane());
-
-		searchStartPointAddressField.setOnAction(event -> routeSearchResultsListView.getItems().setAll(setUpDummyData()));
-		searchEndPointAddressField.setOnAction(event -> routeSearchResultsListView.getItems().setAll(setUpDummyData()));
 
 		searchStartPointAddressField.setOnMouseClicked(event -> routeSearchResultsListView.getItems().clear());
 		searchEndPointAddressField.setOnMouseClicked(event -> routeSearchResultsListView.getItems().clear());
@@ -113,39 +106,5 @@ public class MainViewController {
 		searchStartPointAddressField.clear();
 		searchEndPointAddressField.clear();
 		routeSearchResultsListView.getItems().clear();
-	}
-
-	//TODO Delete when proper search function is implemented.
-	private ObservableList<DummyAddress> setUpDummyData() {
-		ObservableList<DummyAddress> dummyAddressSearchHits = FXCollections.observableArrayList();
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederiksberg Allé","20","2000","Frederiksberg C"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikskongehave","10","1600","Vejle"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikshavnsvej","168","1780","Hillerød"));
-		dummyAddressSearchHits.add(new DummyAddress("Frederikssøndervej","178","2100","Hellerup"));
-		return dummyAddressSearchHits;
 	}
 }

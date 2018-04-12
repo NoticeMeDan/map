@@ -76,7 +76,7 @@
 //		List<OSMCoastlineElement> testList = osmElementCreator.stitchCoastlines(createTestLand());
 //		log.info("TestList size: " + testList.size());
 //		testList.forEach(l -> {
-//			System.out.println("OSMCoastlineElement: " + l.toString());
+//			System.out.println("OSMCoastlineElement: " + l.streetAndHouseToString());
 //			l.getPoints().forEach(System.out::println);
 //		});
 //	}
