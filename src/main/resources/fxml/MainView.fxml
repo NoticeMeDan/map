@@ -3,6 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <AnchorPane minWidth="1100" minHeight="650" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.noticemedan.map.view.MainViewController">
 	<stylesheets>
 		<URL value="@../css/style.css" />
@@ -11,13 +13,21 @@
 		<ToggleGroup fx:id="transitMethod"/>
 	</fx:define>
 		<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-				  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 
 				<Pane fx:id="searchFieldImitator" prefHeight="27.0" prefWidth="165.0" layoutX="14.0" layoutY="14.0" >
 					<Label id="searchFieldImitatorLabel" text="Søg..." />
 				</Pane>
-				<Button fx:id="routeButton" styleClass="defaultButton" layoutX="190.0" layoutY="14.0" mnemonicParsing="false" text="Rute" />
+				<Button fx:id="routeButton" layoutX="200.0" layoutY="21.0" mnemonicParsing="false" />
+				<Button fx:id="favoriteButton" layoutX="168.0" layoutY="21.0" mnemonicParsing="false" />
+				<ImageView id="boxImage" layoutX="158.0" layoutY="21.0">
+					<Image url="@../graphics/searchbar-separator.png" />
+				</ImageView>
+
+				<Pane fx:id="pickedPointContainer" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+
+				</Pane>
 
 				<VBox fx:id="searchPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
 					<HBox prefHeight="55.0" prefWidth="200.0">

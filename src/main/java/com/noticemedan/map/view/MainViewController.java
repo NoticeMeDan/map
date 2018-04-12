@@ -20,8 +20,7 @@ public class MainViewController {
 	//Content Pane
 	@FXML Button routeButton;
 	@FXML Pane searchFieldImitator;
-	@FXML
-	Pane osmPaneContainer;
+	@FXML Pane osmPaneContainer;
 
 	//Search pane
 	@FXML Pane searchPane;
@@ -40,7 +39,7 @@ public class MainViewController {
 	@FXML ListView routeSearchResultsListView;
 
 	public void initialize() {
-		insertOSMPane();
+		//insertOSMPane();
 		hideComponentsAtStartUp();
 		eventListeners();
 	}
@@ -61,7 +60,6 @@ public class MainViewController {
 
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
-
 
 	private void hideComponentsAtStartUp() {
 		routePane.setVisible(false);
