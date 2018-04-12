@@ -39,7 +39,7 @@ public class MainViewController {
 	@FXML ListView routeSearchResultsListView;
 
 	public void initialize() {
-		//insertOSMPane();
+		insertOSMPane();
 		hideComponentsAtStartUp();
 		eventListeners();
 	}
