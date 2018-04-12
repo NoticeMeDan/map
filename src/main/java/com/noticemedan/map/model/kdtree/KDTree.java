@@ -6,6 +6,7 @@ import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
+import java.awt.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,15 +26,6 @@ public class KDTree {
 		this.rootNode = buildKDTree(points, 0);
 	}
 
-	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OSMMaterialElement point, Rect rect) {
-		boolean part1 = Math.abs(rect.getX1()) <= Math.abs(point.getAvgPoint().getX());
-		boolean part2 = Math.abs(point.getAvgPoint().getX()) <= Math.abs(rect.getX2());
-		boolean part3 = Math.abs(rect.getY1()) <= Math.abs(point.getAvgPoint().getY());
-		boolean part4 = Math.abs(point.getAvgPoint().getY()) <= Math.abs(rect.getY2());
-		return part1 && part2 && part3 && part4;
-	}
-
 	/**
 	 * @return 		Root node of kdtree.
 	 */
@@ -43,7 +35,7 @@ public class KDTree {
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
-		// Define size of points array in leaf nodes.
+		// Define size of osmMaterialElements array in leaf nodes.
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
 		} else if (depth % 2 == 0) { // If depth even, split by x-value
@@ -94,6 +86,13 @@ public class KDTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
+	public List<OSMMaterialElement> rangeSearch(Rect query) {
+		rangeSearchQueryResults = new ArrayList<>();
+		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		searchTree(rootNode, query, startBoundingBox);
+		return this.rangeSearchQueryResults;
+	}
+
 	private void searchTree(KDTreeNode parent, Rect searchQuery, Rect boundingBox) {
 		//Create bounding boxes for search:
 		Rect boundingBoxLeft;
@@ -110,12 +109,12 @@ public class KDTree {
 		}
 
 		// If current node is a leaf, check if point is within query;
-		if (parent.getPoints() != null) {
-			for (int i = 0; i < parent.getPoints().length; i++) {
-				if (pointInRect(parent.getPoints()[i], searchQuery)) rangeSearchQueryResults.add(parent.getPoints()[i]);
+		if (parent.getOsmMaterialElements() != null) {
+			for (int i = 0; i < parent.getOsmMaterialElements().length; i++) {
+				if (pointInRect(parent.getOsmMaterialElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmMaterialElements()[i]);
 			}
 		} else {
-			// If left bounding box for left child is completely in query, report all points in this subtree
+			// If left bounding box for left child is completely in query, report all osmMaterialElements in this subtree
 			if (rectCompletelyInRect(boundingBoxLeft, searchQuery)) {
 				reportSubtree(leftChild);
 			} else {
@@ -155,7 +154,7 @@ public class KDTree {
 	// Using in order traversal (LVR: Left, Visit, Right)
 	public void reportSubtree(KDTreeNode parent) {
 		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getPoints() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getPoints())); //V
+		if (parent.getOsmMaterialElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmMaterialElements())); //V
 		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
 	}
 
@@ -170,10 +169,12 @@ public class KDTree {
 		return a <= d && b >= c;
 	}
 
-	public List<OSMMaterialElement> rangeSearch(Rect query) {
-		rangeSearchQueryResults = new ArrayList<>();
-		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		searchTree(rootNode, query, startBoundingBox);
-		return this.rangeSearchQueryResults;
+	//TODO: Not so pretty code with 'part1', 'part2'...
+	static public boolean pointInRect(OSMMaterialElement osmMaterialElement, Rect rect) {
+		boolean part1 = rect.getX1() <= osmMaterialElement.getAvgPoint().getX();
+		boolean part2 = osmMaterialElement.getAvgPoint().getX() <= rect.getX2();
+		boolean part3 = rect.getY1() <= osmMaterialElement.getAvgPoint().getY();
+		boolean part4 = osmMaterialElement.getAvgPoint().getY() <= rect.getY2();
+		return part1 && part2 && part3 && part4;
 	}
 }

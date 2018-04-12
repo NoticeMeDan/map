@@ -10,10 +10,10 @@ public @Data class KDTreeNode {
 	private KDTreeNode leftChild;
 	private KDTreeNode rightChild;
 	private int depth;
-	private OSMMaterialElement[] points;
+	private OSMMaterialElement[] osmMaterialElements;
 
 	public KDTreeNode(OSMMaterialElement[] points, int depth) {
-		this.points = points;
+		this.osmMaterialElements = points;
 		this.depth = depth;
 	}
 }

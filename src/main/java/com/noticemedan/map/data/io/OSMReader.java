@@ -2,11 +2,12 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
-import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.osm.OSMWay;
+import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
+import com.noticemedan.map.model.utilities.OSMELementProperty;
 import com.noticemedan.map.model.utilities.Rect;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -17,8 +18,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -26,23 +27,21 @@ import java.util.List;
 import java.util.zip.ZipInputStream;
 
 public class OSMReader {
-	private EnumMap<OSMType, List<OSMMaterialElement>> osmMaterialElements = initializeMap();
+	private List<OSMMaterialElement> osmMaterialElements = new LinkedList<>();
 
 	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
 		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);
-		for (OSMType type: OSMType.values()) {
+		for (OSMType type : OSMType.values()) {
 			map.put(type, new ArrayList<>());
 		}
 		return map;
 	}
 
-	public EnumMap<OSMType, List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
+	public List<OSMMaterialElement> getShapesFromFile(FileInputStream fileInputStream) {
 		String filename = ".osm"; // TODO @Simon
-		System.out.println(filename);
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
-		}
-		else if (filename.endsWith(".zip")) {
+		} else if (filename.endsWith(".zip")) {
 			try {
 				ZipInputStream zis = new ZipInputStream(fileInputStream);
 				zis.getNextEntry();
@@ -50,11 +49,10 @@ public class OSMReader {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else if (filename.endsWith(".bin")) {
+		} else if (filename.endsWith(".bin")) {
 			try {
 				ObjectInputStream is = new ObjectInputStream(fileInputStream);
-				osmMaterialElements = (EnumMap<OSMType, List<OSMMaterialElement>>) is.readObject();
+				osmMaterialElements = (List<OSMMaterialElement>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
 				Entities.setMaxLon((double) is.readObject());
@@ -77,18 +75,20 @@ public class OSMReader {
 	}
 
 	public void add(OSMType type, Shape shape) {
-		Rectangle shapeBounds = shape.getBounds();
+		OSMELementProperty osmeLementProperty = new OSMELementProperty();
+		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
 		double y1 = shapeBounds.getY();
-		double x2 = shapeBounds.getWidth();
-		double y2 = shapeBounds.getHeight();
-		Rect rect = new Rect(x1, y1, x2, y2);
+		double xLength = shapeBounds.getWidth();
+		double yLength = shapeBounds.getHeight();
+		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		OSMMaterialElement osmMaterialElement = new OSMMaterialElement();
 		osmMaterialElement.setOsmType(type);
 		osmMaterialElement.setBounds(rect);
 		osmMaterialElement.setAvgPoint(rect.getAveragePoint());
 		osmMaterialElement.setShape(shape);
-		osmMaterialElements.get(type).add(osmMaterialElement);
+		osmMaterialElement.setColor(osmeLementProperty.deriveColorFromType(type));
+		osmMaterialElements.add(osmMaterialElement);
 	}
 
 	public class OSMHandler extends DefaultHandler {
@@ -148,7 +148,17 @@ public class OSMReader {
 						case "natural":
 							if (attributes.getValue("v").equals("water")) {
 								type = OSMType.WATER;
-							} else if (attributes.getValue("v").equals("coastline")) {
+							}
+							else if (attributes.getValue("v").equals("heath")) {
+								type = OSMType.HEATH;
+							}
+							else if (attributes.getValue("v").equals("tree_row")) {
+								type = OSMType.TREE_ROW;
+							}
+							else if (attributes.getValue("v").equals("grassland")) {
+								type = OSMType.GRASSLAND;
+							}
+							else if (attributes.getValue("v").equals("coastline")) {
 								type = OSMType.COASTLINE;
 							}
 							break;
@@ -201,7 +211,7 @@ public class OSMReader {
 					}
 					break;
 				case "relation":
-					for (OSMWay way: relation) {
+					for (OSMWay way : relation) {
 						node = way.get(0);
 						path.moveTo(node.getLon(), node.getLat());
 						for (int i = 1; i < way.size(); i++) {

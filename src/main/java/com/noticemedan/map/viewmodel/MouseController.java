@@ -1,8 +1,5 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.data.OSMManager;
-import com.noticemedan.map.view.CanvasView;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -11,17 +8,15 @@ import java.awt.geom.Point2D;
 import static java.lang.Math.pow;
 
 public class MouseController extends MouseAdapter {
-    private OSMManager model;
     private CanvasView canvas;
     private Point2D lastMousePosition;
 
-    public MouseController(CanvasView c, OSMManager m) {
+    public MouseController(CanvasView c) {
         canvas = c;
-        model = m;
-
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
         canvas.addMouseMotionListener(this);
+        c.toggleAntiAliasing();
     }
 
     @Override
@@ -35,8 +30,14 @@ public class MouseController extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-       lastMousePosition = e.getPoint();
+		canvas.toggleAntiAliasing();
+       	lastMousePosition = e.getPoint();
     }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+		canvas.toggleAntiAliasing();
+	}
 
     public void mouseMoved(MouseEvent e) {
         Point2D modelCoords = canvas.toModelCoords(e.getPoint());
