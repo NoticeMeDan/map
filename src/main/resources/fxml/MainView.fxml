@@ -24,6 +24,11 @@
 					<Image url="@../graphics/searchbar-separator.png" />
 				</ImageView>
 
+				<Pane fx:id="pickedPointContainer" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+
+				</Pane>
+
 				<VBox fx:id="searchPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
 					<HBox prefHeight="55.0" prefWidth="200.0">
 						<Pane prefHeight="100.0" prefWidth="300.0">
