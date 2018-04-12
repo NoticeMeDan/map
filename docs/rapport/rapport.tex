@@ -119,25 +119,36 @@ Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on o
 
 \section{Graphical User Interface}\label{sec:ui}
 
-\begin{figure}
-    \centering
-    \includegraphics[height=.35\textheight]{ui.png}
-    \caption{A screenshot of the user interface.}
-    \label{fig:ui}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[height=.35\textheight]{ui.png}
+%     \caption{A screenshot of the user interface.}
+%     \label{fig:ui}
+% \end{figure}
 
 Figure~\ref{fig:ui} shows our user interface when running the program on the latest OSM dataset for Denmark. We divided our user interface in the following sections: ... . We chose this approach because ....
 
 \section{Algorithmic Considerations}\label{sec:algorithms}
+@Emil --> \\
+We were considering using Quadtrees or KDTrees for our data structure. \\
+---
+
+We chose to use RadixTree for searching through addresses.
+
+@Simon --> @Magnus --> \\
+We chose to use A* for searching through shortest path. We wanted to use A*, because it builds on top of Dijkstra we have been educated in. It functions as an 'informed' Dijkstra, so instead of testing all possible routes, it guesses on the shortest way to the next node and tests.\\
+---
+
+In every iteration of the algorithm, it tries to minimize the function determined by a heuristic, that estimates the lenght of the shortest path, together with the distance from the start node to where you currently are in the algorithm.
 
 \section{Technical Description}\label{sec:technical}
 
-\begin{figure}[t!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{uml.png}
-    \caption{Overview of our Architecture. (Can be created automatically from within IntelliJ!)}
-    \label{fig:uml}
-\end{figure}
+% \begin{figure}[t!]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{uml.png}
+%     \caption{Overview of our Architecture. (Can be created automatically from within IntelliJ!)}
+%     \label{fig:uml}
+% \end{figure}
 
 Figure~\ref{fig:uml} gives a broad overview over our software product in terms of a UML diagram. From this diagram we see that the architecture of our product is split up into ... .
 
@@ -166,6 +177,9 @@ We used both unit testing and system testing to find errors in our implementatio
 \section{Conclusion}\label{sec:conclusion}
 
 \section{Reflection}\label{sec:reflection}
+@Simon --> @Magnus --> \\
+We spent a lot of time implementing drawing the map in JavaFX. We realised after three weeks, that the solution would take too long to find a good solution, so we switched to Swing. That process was of course unfortunate as a lot of time had been spent on code that didn't end up in the final result. We learned a lot during the process.\\
+---
 
 \appendix
 
@@ -202,15 +216,10 @@ We expect to use at least 15 hours a week on it pr. person dependant on the indi
 \paragraph{Meeting time}
 
 \begin{itemize}
-    \item Monday: individuel work
     \item Tuesday: 09:00--16:00
-    \item Wednesday: individuel work
     \item Thursday: 09:00--16:00
-    \item Friday: individuel work
-    \item Saturday: individuel work (Weekend!)
-    \item Sunday: individuel work (Weekend!)
 \end{itemize}
-Magnus and Mathias has special cases on Thursday, as Magnus has to leave at 13, and Mathias some times work from home.
+Magnus and Mathias has special cases on Thursday, as Magnus has to leave at 13, and Mathias some times work from home. \\
 Everybody has accepted the above.
 
 \paragraph{Documentation and tools}
