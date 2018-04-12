@@ -2,20 +2,21 @@ package com.noticemedan.map.model;
 
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.osm.OSMType;
-import javafx.geometry.Point2D;
+import com.noticemedan.map.model.utilities.Coordinate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class OSMMaterialElement implements Comparable<OSMMaterialElement> {
+public class OSMMaterialElement implements Comparable<OSMMaterialElement>, Serializable {
 	private OSMType osmType;
 	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon
-	private Point2D avgPoint;
+	private Coordinate avgPoint;
 	private Rect bounds;
 	private boolean depthEven = true; // Is this object at even depth in KD-Tree?
 

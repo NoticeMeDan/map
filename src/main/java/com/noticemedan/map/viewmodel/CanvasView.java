@@ -175,7 +175,7 @@ public class CanvasView extends JComponent implements Observer{
         repaint();
     }
 
-    public Point2D toModelCoords(Point2D p) {
+			public Point2D toModelCoords(Point2D p) {
         try {
             return transform.inverseTransform(p, null);
         } catch (NoninvertibleTransformException e) {
