@@ -13,6 +13,8 @@ public class ForestCreator {
 	@Getter
 	Forest forest;
 	private final OSMManager osmManager = new OSMManager();
+	@Getter
+	private List<OSMMaterialElement> coastlines = osmManager.getOsmCoastlineElements();
 
 	public ForestCreator() {
 		List<OSMMaterialElement> osmMaterialElements = osmManager.getOsmMaterialElements();

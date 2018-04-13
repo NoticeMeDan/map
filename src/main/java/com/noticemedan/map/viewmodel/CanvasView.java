@@ -18,6 +18,7 @@ import java.util.List;
 public class CanvasView extends JComponent implements Observer{
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
+	ForestCreator forestCreator;
     private double fps = 0.0;
 
     private Forest forest;
@@ -32,7 +33,7 @@ public class CanvasView extends JComponent implements Observer{
 
 
     public CanvasView() {
-		ForestCreator forestCreator = new ForestCreator();
+		forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
 		forestCreator.addObserver(this);
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
@@ -63,12 +64,12 @@ public class CanvasView extends JComponent implements Observer{
             e.printStackTrace();
         }
 
-        if (useAntiAliasing) {
+		if (false /*useAntiAliasing*/) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
-        for (OSMMaterialElement element : forest.rangeSearch(new Rect(-100,-100, 100,100))) {
+		for (OSMMaterialElement element : forestCreator.getCoastlines()) {
 			g.setPaint(element.getColor());
         	if(element.getOsmType() == OSMType.COASTLINE) {
 				g.fill(element.getShape());

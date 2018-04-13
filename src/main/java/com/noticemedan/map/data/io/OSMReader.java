@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.zip.ZipInputStream;
 
 public class OSMReader {
+	private ArrayList<List<OSMMaterialElement>> elements = new ArrayList<>();
 	private List<OSMMaterialElement> osmMaterialElements = new LinkedList<>();
+	private List<OSMMaterialElement> osmCoastlineElements = new LinkedList<>();
 
 	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
 		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);
@@ -37,8 +39,8 @@ public class OSMReader {
 		return map;
 	}
 
-	public List<OSMMaterialElement> getShapesFromFile(FileInputStream fileInputStream) {
-		String filename = ".osm"; // TODO @Simon
+	public ArrayList<List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
+		String filename = ".zip"; // TODO @Simon
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
 		} else if (filename.endsWith(".zip")) {
@@ -53,6 +55,7 @@ public class OSMReader {
 			try {
 				ObjectInputStream is = new ObjectInputStream(fileInputStream);
 				osmMaterialElements = (List<OSMMaterialElement>) is.readObject();
+				osmCoastlineElements = (List<OSMMaterialElement>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
 				Entities.setMaxLon((double) is.readObject());
@@ -61,7 +64,10 @@ public class OSMReader {
 				e.printStackTrace();
 			}
 		}
-		return osmMaterialElements;
+
+		elements.add(osmMaterialElements);
+		elements.add(osmCoastlineElements);
+		return elements;
 	}
 
 	public void readFromOSM(InputSource filename) {
@@ -88,11 +94,13 @@ public class OSMReader {
 		osmMaterialElement.setAvgPoint(rect.getAveragePoint());
 		osmMaterialElement.setShape(shape);
 		osmMaterialElement.setColor(osmeLementProperty.deriveColorFromType(type));
-		osmMaterialElements.add(osmMaterialElement);
+		if (type.equals(OSMType.COASTLINE))
+			osmCoastlineElements.add(osmMaterialElement);
+		else
+			osmMaterialElements.add(osmMaterialElement);
 	}
 
 	public class OSMHandler extends DefaultHandler {
-		private EnumMap<OSMType, List<Shape>> shapes;
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
 		Map<Long, OSMWay> idToWay = new HashMap<>();
 		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
