@@ -23,15 +23,19 @@ public class CanvasView extends JComponent implements Observer{
     private Forest forest;
     private Rect viewArea;
 
+	/**
+	 * FOR TESTING PURPOSES
+	 * Changes this to true to show KD-tree drawing with a 'border'
+	 * This makes it possible to actually see the KD-tree loading objects on the map
+	 */
+	private boolean withBorder = false;
+
+
     public CanvasView() {
 		ForestCreator forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
 		forestCreator.addObserver(this);
-		//Half of bornholm (y-axis)
-		//this.viewArea = new Rect(-100,-55.1, 100, -54);
-
-		//Whole of bornholm
-		this.viewArea = new Rect(-100,-100, 100, 100);
+		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 	}
 
 	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
@@ -45,6 +49,7 @@ public class CanvasView extends JComponent implements Observer{
     @Override
     public void paint(Graphics _g) {
         long t1 = System.nanoTime();
+		this.viewArea = viewPortCoords(new Point2D.Double(getX(), getY()), new Point2D.Double(getX() + getWidth(), getY() + getHeight()));
         Graphics2D g = (Graphics2D) _g;
         g.setStroke(new BasicStroke(Float.MIN_VALUE));
         Rectangle2D viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
@@ -175,7 +180,7 @@ public class CanvasView extends JComponent implements Observer{
         repaint();
     }
 
-			public Point2D toModelCoords(Point2D p) {
+    public Point2D toModelCoords(Point2D p) {
         try {
             return transform.inverseTransform(p, null);
         } catch (NoninvertibleTransformException e) {
@@ -183,4 +188,15 @@ public class CanvasView extends JComponent implements Observer{
         }
         return null;
     }
+
+	public Rect viewPortCoords(Point2D p1, Point2D p2) {
+    	double border = (withBorder) ? 0.02 : 0.0;
+
+		double x1 = toModelCoords(p1).getX() - border;
+		double y1 = toModelCoords(p1).getY() - border;
+		double x2 = toModelCoords(p2).getX() - border;
+		double y2 = toModelCoords(p2).getY() - border;
+
+		return new Rect(x1, y1, x2, y2);
+	}
 }

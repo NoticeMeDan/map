@@ -3,6 +3,12 @@ package com.noticemedan.map.model.osm;
 public enum OSMType {
 	ROAD,
 	HIGHWAY,
+	PRIMARY,
+	SECONDARY,
+	TERTIARY,
+	RESIDENTIAL,
+	MOTORWAY,
+	TRUNK,
 	WATER,
 	TREE,
 	GRASSLAND,
