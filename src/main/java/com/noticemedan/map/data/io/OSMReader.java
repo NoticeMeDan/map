@@ -40,7 +40,7 @@ public class OSMReader {
 	}
 
 	public ArrayList<List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
-		String filename = ".zip"; // TODO @Simon
+		String filename = ".osm"; // TODO @Simon
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
 		} else if (filename.endsWith(".zip")) {

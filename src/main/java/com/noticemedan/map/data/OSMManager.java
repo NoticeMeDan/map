@@ -21,7 +21,7 @@ public class OSMManager extends Observable implements Serializable {
 
     public OSMManager() {
     	try {
-			File file = new File(App.class.getResource("/denmark.zip").getFile());
+			File file = new File(App.class.getResource("/bornholm.osm").getFile());
 			FileInputStream fileInputStream = new FileInputStream(file);
 			OSMReader osmReader = new OSMReader();
 			ArrayList<List<OSMMaterialElement>> elements = osmReader.getShapesFromFile(fileInputStream);
