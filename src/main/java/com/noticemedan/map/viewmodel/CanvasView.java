@@ -24,14 +24,6 @@ public class CanvasView extends JComponent implements Observer{
     private Forest forest;
     private Rect viewArea;
 
-	/**
-	 * FOR TESTING PURPOSES
-	 * Changes this to true to show KD-tree drawing with a 'border'
-	 * This makes it possible to actually see the KD-tree loading objects on the map
-	 */
-	private boolean withBorder = false;
-
-
     public CanvasView() {
 		forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
@@ -191,12 +183,10 @@ public class CanvasView extends JComponent implements Observer{
     }
 
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-    	double border = (withBorder) ? 0.02 : 0.0;
-
-		double x1 = toModelCoords(p1).getX() - border;
-		double y1 = toModelCoords(p1).getY() - border;
-		double x2 = toModelCoords(p2).getX() - border;
-		double y2 = toModelCoords(p2).getY() - border;
+		double x1 = toModelCoords(p1).getX() - 0.02;
+		double y1 = toModelCoords(p1).getY() - 0.02;
+		double x2 = toModelCoords(p2).getX() + 0.02;
+		double y2 = toModelCoords(p2).getY() + 0.02;
 
 		return new Rect(x1, y1, x2, y2);
 	}
