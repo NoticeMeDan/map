@@ -1,0 +1,11 @@
+#FavoritePOIPane {
+	-fx-background-color: #2F9862;
+}
+
+#noFavoritesYetPane {
+	-fx-background-color: white;
+}
+
+#noFavoritesText {
+	-fx-font-size: 16px;
+}

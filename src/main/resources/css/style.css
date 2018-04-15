@@ -145,3 +145,9 @@ ListView .scroll-bar:vertical .thumb {
 #routeCarToggleButton:selected, #routeWalkToggleButton:selected, #routeBicycleToggleButton:selected {
 	-fx-background-color: white;
 }
+
+.paneTitle {
+	-fx-font-size: 20px;
+	-fx-text-fill: white;
+	-fx-padding: 15px 0 0 12px;
+}
