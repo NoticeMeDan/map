@@ -1,6 +1,7 @@
 package com.noticemedan.map.view;
 
 import com.noticemedan.map.model.Entities;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.viewmodel.CanvasView;
 import com.noticemedan.map.viewmodel.MouseController;
 import javafx.collections.FXCollections;
@@ -11,12 +12,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainViewController {
+
 	//Content Pane
 	@FXML Button routeButton;
 	@FXML Pane searchFieldImitator;
@@ -38,6 +41,10 @@ public class MainViewController {
 	@FXML TextField searchEndPointAddressField;
 	@FXML ListView routeSearchResultsListView;
 
+	//Controllers
+	@FXML public POIBoxViewController poiBoxViewController;
+	MouseController mouseController;
+
 	public void initialize() {
 		insertOSMPane();
 		hideComponentsAtStartUp();
@@ -46,14 +53,17 @@ public class MainViewController {
 
 	private void insertOSMPane() {
 		Dimension screenSize = new Dimension(1100, 650);
-
 		SwingNode swingNode = new SwingNode();
 		CanvasView cv = new CanvasView();
+
+		//TODO: Point2D or Coordinate? Save proper coordinates (real lat lon)
+		swingNode.addEventHandler(MouseEvent.ANY, new ClickNotDragHandler(event -> poiBoxViewController.closePOIBox(), event -> poiBoxViewController.openPOIBox(new Coordinate(mouseController.getLastMousePosition().getX(), mouseController.getLastMousePosition().getY()))));
+
 		cv.setSize(screenSize);
 		System.out.println(Entities.writeOut());
 		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());
 		cv.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		new MouseController(cv);
+		this.mouseController = new MouseController(cv);
 		SwingUtilities.invokeLater(() -> {
 			swingNode.setContent(cv);
 		});

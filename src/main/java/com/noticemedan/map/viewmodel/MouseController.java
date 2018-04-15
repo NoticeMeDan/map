@@ -1,5 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
+import com.noticemedan.map.view.MainViewController;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -9,7 +13,8 @@ import static java.lang.Math.pow;
 
 public class MouseController extends MouseAdapter {
     private CanvasView canvas;
-    private Point2D lastMousePosition;
+    @Getter private Point2D lastMousePosition;
+
 
     public MouseController(CanvasView c) {
         canvas = c;
@@ -45,11 +50,9 @@ public class MouseController extends MouseAdapter {
             "Model: [" + modelCoords.getX() + ", " + modelCoords.getY() + "]");*/
     }
 
-
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         double factor = pow(1.1, -e.getWheelRotation());
         canvas.zoom(factor, -e.getX(), -e.getY());
-
     }
 }

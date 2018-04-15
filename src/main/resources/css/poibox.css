@@ -1,0 +1,52 @@
+* {
+	-fx-focus-color: transparent;
+}
+
+#poiBoxContainer {
+	-fx-background-color: white;
+	-fx-pref-width: 220px;
+	-fx-pref-height: 157px;
+	-fx-effect: dropShadow(gaussian, #0000004d, 10, 0.3, 0, 0);
+	-fx-background-radius: 3px;
+}
+
+#poiBoxIcon {
+	-fx-pref-width: 19px;
+	-fx-pref-height: 24px;
+	-fx-background-color: #D0021B;
+	-fx-shape: "M15,2C8.925,2,4,6.925,4,13c0,7.234,7.152,10.697,8.048,11.503c0.915,0.823,1.671,2.668,1.976,3.714 c0.148,0.508,0.564,0.765,0.976,0.776c0.413-0.012,0.828-0.269,0.976-0.776c0.305-1.046,1.061-2.89,1.976-3.714 C18.848,23.697,26,20.234,26,13C26,6.925,21.075,2,15,2z M15,16c-1.657,0-3-1.343-3-3s1.343-3,3-3s3,1.343,3,3S16.657,16,15,16z";
+}
+
+#poiBoxTitleLabel {
+	-fx-font-size: 17px;
+	-fx-text-fill: #4B4B4B;
+}
+
+#closePOIBoxButton {
+	-fx-min-height: 14px;
+	-fx-min-width: 14px;
+	-fx-max-height: 14px;
+	-fx-max-width: 14px;
+	-fx-background-color: #B9B9B9;
+	-fx-shape: "M8.48528137,7.07106781 L14.1421356,12.7279221 L12.7279221,14.1421356 L7.07106781,8.48528137 L1.41421356,14.1421356 L-5.68434189e-14,12.7279221 L5.65685425,7.07106781 L-5.68434189e-14,1.41421356 L1.41421356,0 L7.07106781,5.65685425 L12.7279221,0 L14.1421356,1.41421356 L8.48528137,7.07106781 Z";
+}
+
+#poiCoordinatesLabel {
+	-fx-text-fill: #8B8B8B;
+}
+
+#namePOITextfield {
+	-fx-background-color: white;
+	-fx-border-color: #b5b5b5;
+	-fx-border-width: 1px;
+	-fx-border-radius: 4px;
+}
+
+#savePOIButton {
+	-fx-background-color: #38B475;
+	-fx-text-fill: white;
+}
+
+#savePOIButton:pressed {
+	-fx-background-color: #2E8459;
+}

@@ -15,6 +15,8 @@
 		<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 
+			<fx:include fx:id="poiBoxView" source="POIBox.fxml" AnchorPane.topAnchor="65.0" AnchorPane.leftAnchor="14.0" />
+
 				<Pane fx:id="searchFieldImitator" prefHeight="27.0" prefWidth="165.0" layoutX="14.0" layoutY="14.0" >
 					<Label id="searchFieldImitatorLabel" text="Søg..." />
 				</Pane>
@@ -23,11 +25,6 @@
 				<ImageView id="boxImage" layoutX="158.0" layoutY="21.0">
 					<Image url="@../graphics/searchbar-separator.png" />
 				</ImageView>
-
-				<Pane fx:id="pickedPointContainer" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-
-
-				</Pane>
 
 				<VBox fx:id="searchPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
 					<HBox prefHeight="55.0" prefWidth="200.0">

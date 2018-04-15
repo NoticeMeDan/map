@@ -5,7 +5,20 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" prefHeight="260.0" prefWidth="600.0">
-
+<?import javafx.scene.shape.SVGPath?>
+<AnchorPane fx:id="poiBoxContainer"
+			xmlns="http://javafx.com/javafx/9.0.1"
+			xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="com.noticemedan.map.view.POIBoxViewController">
+	<stylesheets>
+		<URL value="@../css/poibox.css" />
+	</stylesheets>
+	<Pane fx:id="poiBoxIcon" layoutX="12" layoutY="12" />
+	<Label fx:id="poiBoxTitleLabel" text="Valgt punkt" layoutX="40" layoutY="13" />
+	<Button fx:id="closePOIBoxButton" mnemonicParsing="false" layoutX="195" layoutY="12" />
+	<Label fx:id="poiCoordinatesLabel" text="55.6958332, 55.6958332" layoutX="12" layoutY="45" />
+	<TextField fx:id="namePOITextfield" promptText="Navngiv favorit..." layoutX="12.0" layoutY="73" prefHeight="17.0" prefWidth="192.0" />
+	<Button fx:id="savePOIButton" text="Tilføj favorit" mnemonicParsing="false" layoutX="112" layoutY="115" />
 </AnchorPane>
