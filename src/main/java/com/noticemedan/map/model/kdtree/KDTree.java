@@ -6,6 +6,7 @@ import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
+import java.awt.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
