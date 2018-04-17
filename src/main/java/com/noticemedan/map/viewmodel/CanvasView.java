@@ -74,12 +74,12 @@ public class CanvasView extends JComponent implements Observer{
 
 		forest.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
 
-		for (OSMMaterialElement element : osmElements.get(OSMType.UNKNOWN)) {
+		/*for (OSMMaterialElement element : osmElements.get(OSMType.UNKNOWN)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.draw(element.getShape());
 			}
-		}
+		}*/
 		for (OSMMaterialElement element : osmElements.get(OSMType.WATER)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
