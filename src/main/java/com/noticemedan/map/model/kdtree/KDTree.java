@@ -1,6 +1,5 @@
 package com.noticemedan.map.model.kdtree;
 
-import com.noticemedan.map.data.BinaryMapData;
 import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.utilities.Quick;
 import com.noticemedan.map.model.utilities.Rect;
@@ -176,13 +175,5 @@ public class KDTree {
 		boolean part3 = rect.getY1() <= osmMaterialElement.getAvgPoint().getY();
 		boolean part4 = osmMaterialElement.getAvgPoint().getY() <= rect.getY2();
 		return part1 && part2 && part3 && part4;
-	}
-
-	public void kdTreeToBinary() {
-		BinaryMapData.serialize(this.osmMaterialElements, this.binaryID);
-	}
-
-	public KDTree[] elementsFromBinary() {
-		return (OSMMaterialElement[]) BinaryMapData.deserialize(this.binaryID);
 	}
 }

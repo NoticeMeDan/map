@@ -1,15 +1,18 @@
 package com.noticemedan.map.model.kdtree;
 
+import com.noticemedan.map.data.BinaryMapData;
 import com.noticemedan.map.model.OSMMaterialElement;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class Forest implements ForestInterface {
 	private KDTree trees[];
+	private final String binaryID = UUID.randomUUID().toString();
 
 	@Override
 	public List<OSMMaterialElement> rangeSearch(Rect searchQuery, int zoomLevel) {
@@ -28,5 +31,13 @@ public class Forest implements ForestInterface {
 	@Override
 	public OSMMaterialElement nearestNeighbor(double x, double y) {
 		throw new RuntimeException("nearestNeighbor() not implemented yet.");
+	}
+
+	public void kdTreeToBinary() {
+		BinaryMapData.serialize(this.trees, this.binaryID);
+	}
+
+	public KDTree[] kdTreesFromBinary() {
+		return (KDTree[]) BinaryMapData.deserialize(this.binaryID);
 	}
 }

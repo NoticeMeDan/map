@@ -20,7 +20,6 @@ public class BinaryMapData {
 	public static Object deserialize(String binaryID) {
 		return Try.of(() -> new ObjectInputStream(new FileInputStream("./src/main/java/com/noticemedan/map/data/binarydatafiles/" + binaryID + ".dat")))
 				.mapTry(ObjectInputStream::readObject)
-				.onFailure(e -> log.error("Something happened", e))
 				.getOrNull();
 	}
 
