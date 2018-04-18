@@ -9,12 +9,14 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
-public class BinaryConverterTest {
+public class BinaryMapDataTest {
 
 	private KDTreeNode kdTreeNode;
 	private OSMMaterialElement[] osmMaterialElements;
+	private OSMMaterialElement[] before;
+	private OSMMaterialElement[] after;
 
 	@BeforeTest
 	void buildSmallKDTree() {
@@ -38,41 +40,40 @@ public class BinaryConverterTest {
 	@Test
 	void serializeKDTree() {
 		System.out.println("TEST 1 - SERIALIZE WORK");
+
 		this.kdTreeNode.elementsToBinary();
 	}
 
-	@Test
+	@Test(dependsOnMethods = "serializeKDTree")
 	void deserialize() {
 		System.out.println("TEST 2 - DESERIALIZE WORK");
-		this.kdTreeNode.elementsToBinary();
+
 		this.kdTreeNode.setOsmMaterialElements(this.kdTreeNode.elementsFromBinary());
 	}
 
-	@Test
+	@Test(dependsOnMethods = "deserialize")
 	void equalArrays() {
 		System.out.println("TEST 3 - ARRAYS ARE EQUAL");
-		OSMMaterialElement[] before = this.kdTreeNode.getOsmMaterialElements();
-		this.kdTreeNode.elementsToBinary();
+
+		this.before = this.kdTreeNode.getOsmMaterialElements();
 		this.kdTreeNode.setOsmMaterialElements(this.kdTreeNode.elementsFromBinary());
-		assertEquals(before,this.kdTreeNode.getOsmMaterialElements());
+		this.after = this.kdTreeNode.getOsmMaterialElements();
+		assertEquals(this.before,this.after);
 	}
 
-	@Test
+	@Test(dependsOnMethods = "equalArrays")
 	void equalElements() {
 		System.out.println("TEST 4 - ELEMENTS ARE THE SAME");
-		OSMMaterialElement[] before = this.kdTreeNode.getOsmMaterialElements();
-		this.kdTreeNode.elementsToBinary();
-		this.kdTreeNode.setOsmMaterialElements(this.kdTreeNode.elementsFromBinary());
-		OSMMaterialElement[] after = this.kdTreeNode.getOsmMaterialElements();
 
-		for(int i = 0; i < this.kdTreeNode.getOsmMaterialElements().length; i++) {
-			assertEquals(after[i],before[i]);
+		for(int i = 0; i < this.after.length; i++) {
+			assertEquals(this.after[i], this.before[i]);
 		}
 	}
 
 	@AfterTest
 	void clearFiles() {
-		File file = new File("./binaryData/" + this.kdTreeNode.getBinaryID() + ".dat");
+		File file = new File("./src/main/java/com/noticemedan/map/data/binarydatafiles/" + this.kdTreeNode.getBinaryID() + ".dat");
 		if(file.delete()) System.out.println("\nDELETED BINARY-TEST-FILE: " + file.getName());
 	}
+
 }
