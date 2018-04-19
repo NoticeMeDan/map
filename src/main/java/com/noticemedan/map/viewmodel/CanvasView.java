@@ -1,7 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.kdtree.ForestCreator;
+import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.utilities.Rect;
 
@@ -17,14 +17,14 @@ import java.util.List;
 public class CanvasView extends JComponent implements Observer{
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
-	ForestCreator forestCreator;
+	Forest forest;
     private double fps = 0.0;
 
     private Rect viewArea;
 
     public CanvasView() {
-		forestCreator = new ForestCreator();
-		forestCreator.addObserver(this);
+		forest = new Forest();
+		forest.addObserver(this);
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 	}
 
@@ -58,18 +58,18 @@ public class CanvasView extends JComponent implements Observer{
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
-		for (OSMMaterialElement element : forestCreator.getCoastlines()) {
+		for (OSMMaterialElement element : forest.getCoastlines()) {
 			g.setPaint(element.getColor());
         	if(element.getOsmType() == OSMType.COASTLINE) {
 				g.fill(element.getShape());
 			}
         }
 
-		System.out.println("Range size: " + forestCreator.rangeSearch(viewArea).size());
+		System.out.println("Range size: " + forest.rangeSearch(viewArea).size());
 
 		EnumMap<OSMType, List<OSMMaterialElement>> osmElements = initializeMap();
 
-		forestCreator.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
+		forest.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
 
 		for (OSMMaterialElement element : osmElements.get(OSMType.UNKNOWN)) {
 			g.setPaint(element.getColor());

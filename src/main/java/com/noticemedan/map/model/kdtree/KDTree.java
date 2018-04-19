@@ -74,10 +74,11 @@ public class KDTree {
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].isDepthEven()) {	points[i].setDepthEven(false); }
-			else {							points[i].setDepthEven(true);  }
-			if (i < k) 						firstHalf[i] = points[i];
-			if (i >= k) 					secondHalf[j++] = points[i];
+			if (points[i].isDepthEven()) points[i].setDepthEven(false);
+			else points[i].setDepthEven(true);
+
+			if (i < k) firstHalf[i] = points[i];
+			if (i >= k) secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}

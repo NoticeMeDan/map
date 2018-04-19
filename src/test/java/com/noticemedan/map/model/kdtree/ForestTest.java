@@ -37,7 +37,7 @@
 //			mapObjects_smallKDTrees[i] = mapObjectsForSmallKDTree;
 //		}
 //
-//		ForestCreator forestCreator = new ForestCreator(mapObjects_smallKDTrees, maxElementsAtLeaf_smallKDTrees);
+//		Forest forestCreator = new Forest(mapObjects_smallKDTrees, maxElementsAtLeaf_smallKDTrees);
 //		smallForest = forestCreator.getForest();
 //	}
 //
