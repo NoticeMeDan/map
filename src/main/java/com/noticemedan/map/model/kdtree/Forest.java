@@ -1,28 +1,30 @@
 package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.data.BinaryMapData;
-import com.noticemedan.map.data.OSMManager;
-import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.data.OsmMapData;
+import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
 
 import java.util.*;
 
+
+
 public class Forest implements ForestInterface{
 	private KDTree trees[];
-	private final OSMManager osmManager = new OSMManager();
+	private final OsmMapData osmMapData = new OsmMapData();
 	private final String binaryID = UUID.randomUUID().toString();
 	@Getter
-	private List<OSMMaterialElement> coastlines = this.osmManager.getOsmCoastlineElements();
+	private List<OsmElement> coastlines = this.osmMapData.getOsmCoastlineElements().toJavaList();
 
 	public Forest() {
 		int maxNumberOfElementsAtLeaf = 100;
-		List<OSMMaterialElement> osmMaterialElements = this.osmManager.getOsmMaterialElements();
-		OSMMaterialElement[][] osmMaterialElementArray = new OSMMaterialElement[3][];
+		List<OsmElement> osmMaterialElements = this.osmMapData.getOsmElements().toJavaList();
+		OsmElement[][] osmMaterialElementArray = new OsmElement[3][];
 
-		List<OSMMaterialElement> zoom0 = new LinkedList<>();
-		List<OSMMaterialElement> zoom1 = new LinkedList<>();
-		List<OSMMaterialElement> zoom2 = new LinkedList<>();
+		List<OsmElement> zoom0 = new LinkedList<>();
+		List<OsmElement> zoom1 = new LinkedList<>();
+		List<OsmElement> zoom2 = new LinkedList<>();
 
 		osmMaterialElements.forEach(m -> {
 			switch (m.getOsmType()) {
@@ -52,9 +54,9 @@ public class Forest implements ForestInterface{
 			}
 		});
 
-		osmMaterialElementArray[0] = zoom0.toArray(new OSMMaterialElement[0]);
-		osmMaterialElementArray[1] = zoom1.toArray(new OSMMaterialElement[0]);
-		osmMaterialElementArray[2] = zoom2.toArray(new OSMMaterialElement[0]);
+		osmMaterialElementArray[0] = zoom0.toArray(new OsmElement[0]);
+		osmMaterialElementArray[1] = zoom1.toArray(new OsmElement[0]);
+		osmMaterialElementArray[2] = zoom2.toArray(new OsmElement[0]);
 
 		this.trees = new KDTree[osmMaterialElementArray.length];
 
@@ -66,7 +68,7 @@ public class Forest implements ForestInterface{
 	}
 
 	@Override
-	public List<OSMMaterialElement> rangeSearch(Rect searchQuery, int zoomLevel) {
+	public List<OsmElement> rangeSearch(Rect searchQuery, int zoomLevel) {
 		ArrayList searchResults = new ArrayList<>();
 		for (int i = 0; i < zoomLevel+1; i++) {
 			searchResults.addAll(trees[i].rangeSearch(searchQuery));
@@ -75,12 +77,12 @@ public class Forest implements ForestInterface{
 	}
 
 	//Range search as if only having one zoom level.
-	public List<OSMMaterialElement> rangeSearch(Rect searchQuery) {
+	public List<OsmElement> rangeSearch(Rect searchQuery) {
 		return rangeSearch(searchQuery, trees.length-1);
 	}
 
 	@Override
-	public OSMMaterialElement nearestNeighbor(double x, double y) {
+	public OsmElement nearestNeighbor(double x, double y) {
 		throw new RuntimeException("nearestNeighbor() not implemented yet.");
 	}
 
@@ -90,9 +92,5 @@ public class Forest implements ForestInterface{
 
 	public KDTree[] kdTreesFromBinary() {
 		return (KDTree[]) BinaryMapData.deserialize(this.binaryID);
-	}
-
-	public void addObserver(Observer o) {
-		osmManager.addObserver(o);
 	}
 }
