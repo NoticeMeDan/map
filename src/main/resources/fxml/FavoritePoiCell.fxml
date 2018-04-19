@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<Pane fx:id="cell" xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml">
+	<stylesheets>
+		<URL value="@../css/favorite-poi-cell.css" />
+	</stylesheets>
+	<Label fx:id="favoritePoiNameLabel" prefWidth="${favoritePoiNameLabel.parent.width}"/>
+	<Label fx:id="favoritePoiLatLonLabel" prefWidth="${favoritePoiLatLonLabel.parent.width}" layoutY="25" />
+</Pane>

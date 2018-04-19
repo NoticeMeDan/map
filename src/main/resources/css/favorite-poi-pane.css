@@ -1,11 +1,11 @@
-#FavoritePOIPane {
-	-fx-background-color: #2F9862;
-}
-
 #noFavoritesYetPane {
 	-fx-background-color: white;
 }
 
 #noFavoritesText {
 	-fx-font-size: 16px;
+}
+
+#favoritePoiListView .list-cell:selected Label {
+	-fx-text-fill: black;
 }

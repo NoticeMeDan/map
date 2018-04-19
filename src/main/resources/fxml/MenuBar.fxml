@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+
+<MenuBar fx:id="menubar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1">
+	<menus>
+		<Menu mnemonicParsing="false" text="Fil">
+			<items>
+				<MenuItem mnemonicParsing="false" text="Indlæs nyt kort fra fil" />
+				<MenuItem mnemonicParsing="false" text="Indlæs kort" />
+				<MenuItem mnemonicParsing="false" text="Slet kort" />
+				<MenuItem mnemonicParsing="false" disable="true" text="Current map: Bornholm" />
+			</items>
+		</Menu>
+		<Menu mnemonicParsing="false" text="Vindue">
+			<items>
+				<MenuItem mnemonicParsing="false" text="Vis alle kort" />
+				<MenuItem mnemonicParsing="false" text="Vis favoritsteder" />
+				<MenuItem mnemonicParsing="false" text="Vis addressesøgning" />
+				<MenuItem mnemonicParsing="false" text="Vis navigering" />
+
+				<Menu mnemonicParsing="false" text="Farvestil">
+					<items>
+						<MenuItem mnemonicParsing="false" text="Standard" />
+						<MenuItem mnemonicParsing="false" text="Mørk" />
+						<MenuItem mnemonicParsing="false" text="Farveblind" />
+					</items>
+				</Menu>
+			</items>
+		</Menu>
+		<Menu mnemonicParsing="false" text="Udvikler">
+			<items>
+				<MenuItem mnemonicParsing="false" text="Vis FPS" />
+				<MenuItem mnemonicParsing="false" text="Vis KDTree linjer" />
+				<MenuItem mnemonicParsing="false" text="Vis søgeareal for kortelementer" />
+			</items>
+		</Menu>
+	</menus>
+</MenuBar>

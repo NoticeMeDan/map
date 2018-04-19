@@ -5,48 +5,27 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <AnchorPane minWidth="1100" minHeight="650" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.noticemedan.map.view.MainViewController">
 	<stylesheets>
 		<URL value="@../css/style.css" />
 	</stylesheets>
-	<fx:define>
-		<ToggleGroup fx:id="transitMethod"/>
-	</fx:define>
-		<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+	<fx:include source="MenuBar.fxml" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"/>
+	<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
+		<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 
-			<fx:include fx:id="poiBoxView" source="POIBox.fxml" AnchorPane.topAnchor="65.0" AnchorPane.leftAnchor="14.0" />
+		<Pane fx:id="searchFieldImitator" prefHeight="27.0" prefWidth="165.0" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="15">
+			<Label id="searchFieldImitatorLabel" text="Søg..." />
+			<Button fx:id="routeButton" layoutX="185" layoutY="7" mnemonicParsing="false" />
+			<Button fx:id="favoriteButton" layoutX="153" layoutY="7" mnemonicParsing="false" />
+			<ImageView id="boxImage" layoutX="143" layoutY="7">
+				<Image url="@../graphics/searchbar-separator.png" />
+			</ImageView>
+		</Pane>
 
-				<Pane fx:id="searchFieldImitator" prefHeight="27.0" prefWidth="165.0" layoutX="14.0" layoutY="14.0" >
-					<Label id="searchFieldImitatorLabel" text="Søg..." />
-				</Pane>
-				<Button fx:id="routeButton" layoutX="200.0" layoutY="21.0" mnemonicParsing="false" />
-				<Button fx:id="favoriteButton" layoutX="168.0" layoutY="21.0" mnemonicParsing="false" />
-				<ImageView id="boxImage" layoutX="158.0" layoutY="21.0">
-					<Image url="@../graphics/searchbar-separator.png" />
-				</ImageView>
-
-			<fx:include source="FavoritePOIPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-
-				<VBox fx:id="searchPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
-					<HBox prefHeight="55.0" prefWidth="200.0">
-						<Pane prefHeight="100.0" prefWidth="300.0">
-							<TextField fx:id="searchAddressField" styleClass="greenTextField" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="183.0" />
-							<Button fx:id="searchPaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
-						</Pane>
-					</HBox>
-					<ListView fx:id="addressSearchResultsListView" VBox.vgrow="ALWAYS" />
-				</VBox>
-				<VBox fx:id="routePane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="250.0">
-					<Pane prefHeight="135.0" prefWidth="200.0">
-						<Button fx:id="routePaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
-						<TextField fx:id="searchStartPointAddressField" styleClass="greenTextField" promptText="Fra:" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="183.0" />
-						<TextField fx:id="searchEndPointAddressField" styleClass="greenTextField" promptText="Til:" layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="183.0" />
-						<ToggleButton fx:id="routeCarToggleButton" toggleGroup="$transitMethod" selected="true" layoutX="16.0" layoutY="98"/>
-						<ToggleButton fx:id="routeWalkToggleButton" toggleGroup="$transitMethod" layoutX="60" layoutY="95"/>
-						<ToggleButton fx:id="routeBicycleToggleButton" toggleGroup="$transitMethod" layoutX="97" layoutY="96"/>
-					</Pane>
-					<ListView fx:id="routeSearchResultsListView" VBox.vgrow="ALWAYS" />
-				</VBox>
-		</AnchorPane>
+		<fx:include fx:id="poiBoxView" source="PoiBox.fxml" AnchorPane.topAnchor="65.0" AnchorPane.leftAnchor="15.0" />
+		<fx:include fx:id="favoritePoiPane" source="FavoritePoiPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<fx:include fx:id="searchPane" source="SearchPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<fx:include fx:id="routePane" source="RoutePane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+	</AnchorPane>
 </AnchorPane>
