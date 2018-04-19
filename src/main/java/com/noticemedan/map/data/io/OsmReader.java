@@ -1,7 +1,8 @@
 package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
-import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
 import com.noticemedan.map.model.osm.OSMType;
@@ -9,6 +10,8 @@ import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OSMELementProperty;
 import com.noticemedan.map.model.utilities.Rect;
+import io.vavr.collection.List;
+import lombok.NoArgsConstructor;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -23,23 +26,29 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
-import java.util.List;
+import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
-public class OSMReader {
-	private ArrayList<List<OSMMaterialElement>> elements = new ArrayList<>();
-	private List<OSMMaterialElement> osmMaterialElements = new LinkedList<>();
-	private List<OSMMaterialElement> osmCoastlineElements = new LinkedList<>();
+@NoArgsConstructor
+public class OsmReader implements Supplier<List<List<OsmElement>>> {
+	private List<List<OsmElement>> elements = List.empty();
+	private List<OsmElement> osmMaterialElements = List.empty();
+	private List<OsmElement> osmCoastlineElements = List.empty();
+	private FileInputStream inputStream;
 
-	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
-		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);
+	public OsmReader(FileInputStream inputStream) {
+		this.inputStream = inputStream;
+	}
+
+	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
+		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
 		for (OSMType type : OSMType.values()) {
-			map.put(type, new ArrayList<>());
+			map.put(type, List.empty());
 		}
 		return map;
 	}
 
-	public ArrayList<List<OSMMaterialElement>> getShapesFromFile(FileInputStream fileInputStream) {
+	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream) {
 		String filename = ".osm"; // TODO @Simon
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
@@ -54,8 +63,8 @@ public class OSMReader {
 		} else if (filename.endsWith(".bin")) {
 			try {
 				ObjectInputStream is = new ObjectInputStream(fileInputStream);
-				osmMaterialElements = (List<OSMMaterialElement>) is.readObject();
-				osmCoastlineElements = (List<OSMMaterialElement>) is.readObject();
+				osmMaterialElements = (List<OsmElement>) is.readObject();
+				osmCoastlineElements = (List<OsmElement>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
 				Entities.setMaxLon((double) is.readObject());
@@ -65,8 +74,8 @@ public class OSMReader {
 			}
 		}
 
-		elements.add(osmMaterialElements);
-		elements.add(osmCoastlineElements);
+		this.elements = elements.append(osmMaterialElements);
+		this.elements = elements.append(osmCoastlineElements);
 		return elements;
 	}
 
@@ -88,16 +97,22 @@ public class OSMReader {
 		double xLength = shapeBounds.getWidth();
 		double yLength = shapeBounds.getHeight();
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
-		OSMMaterialElement osmMaterialElement = new OSMMaterialElement();
-		osmMaterialElement.setOsmType(type);
-		osmMaterialElement.setBounds(rect);
-		osmMaterialElement.setAvgPoint(rect.getAveragePoint());
-		osmMaterialElement.setShape(shape);
-		osmMaterialElement.setColor(osmeLementProperty.deriveColorFromType(type));
+		OsmElement osmElement = OsmElement.builder()
+				.osmType(type)
+				.bounds(rect)
+				.avgPoint(rect.getAveragePoint())
+				.shape(shape)
+				.color(osmeLementProperty.deriveColorFromType(type))
+				.build();
 		if (type.equals(OSMType.COASTLINE))
-			osmCoastlineElements.add(osmMaterialElement);
+			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
 		else
-			osmMaterialElements.add(osmMaterialElement);
+			this.osmMaterialElements = osmMaterialElements.append(osmElement);
+	}
+
+	@Override
+	public List<List<OsmElement>> get() {
+		return this.getShapesFromFile(this.inputStream);
 	}
 
 	public class OSMHandler extends DefaultHandler {

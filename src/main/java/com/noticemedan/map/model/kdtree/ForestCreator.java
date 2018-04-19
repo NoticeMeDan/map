@@ -1,7 +1,8 @@
 package com.noticemedan.map.model.kdtree;
 
-import com.noticemedan.map.data.OSMManager;
-import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.data.OsmMapData;
+import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OSMType;
 import lombok.Getter;
 
@@ -12,19 +13,19 @@ import java.util.Observer;
 public class ForestCreator {
 	@Getter
 	Forest forest;
-	private final OSMManager osmManager = new OSMManager();
+	private final OsmMapData osmMapData = new OsmMapData();
 	@Getter
-	private List<OSMMaterialElement> coastlines = osmManager.getOsmCoastlineElements();
+	private List<OsmElement> coastlines = osmMapData.getOsmCoastlineElements().toJavaList(); // TODO: Fix lists
 
 	public ForestCreator() {
-		List<OSMMaterialElement> osmMaterialElements = osmManager.getOsmMaterialElements();
-		OSMMaterialElement[][] osmMaterialElementArray = new OSMMaterialElement[3][];
+		List<OsmElement> osmElements = osmMapData.getOsmMaterialElements().toJavaList();
+		OsmElement[][] osmElementArray = new OsmElement[3][];
 
-		List<OSMMaterialElement> zoom0 = new LinkedList<>();
-		List<OSMMaterialElement> zoom1 = new LinkedList<>();
-		List<OSMMaterialElement> zoom2 = new LinkedList<>();
+		List<OsmElement> zoom0 = new LinkedList<>();
+		List<OsmElement> zoom1 = new LinkedList<>();
+		List<OsmElement> zoom2 = new LinkedList<>();
 
-		osmMaterialElements.forEach(m -> {
+		osmElements.forEach(m -> {
 			if (m.getOsmType().equals(OSMType.COASTLINE)) zoom0.add(m);
 			if (m.getOsmType().equals(OSMType.UNKNOWN)) zoom0.add(m);
 			if (m.getOsmType().equals(OSMType.MOTORWAY)) zoom0.add(m);
@@ -44,24 +45,20 @@ public class ForestCreator {
 			if (m.getOsmType().equals(OSMType.ROAD)) zoom2.add(m);
 		});
 
-		osmMaterialElementArray[0] = zoom0.toArray(new OSMMaterialElement[zoom0.size()]);
-		osmMaterialElementArray[1] = zoom1.toArray(new OSMMaterialElement[zoom1.size()]);
-		osmMaterialElementArray[2] = zoom2.toArray(new OSMMaterialElement[zoom2.size()]);
+		osmElementArray[0] = zoom0.toArray(new OsmElement[zoom0.size()]);
+		osmElementArray[1] = zoom1.toArray(new OsmElement[zoom1.size()]);
+		osmElementArray[2] = zoom2.toArray(new OsmElement[zoom2.size()]);
 
-		createForest(osmMaterialElementArray, new int[] {100, 100, 100});
+		createForest(osmElementArray, new int[] {100, 100, 100});
 	}
 
-	private void createForest(OSMMaterialElement[][] osmMaterialElement, int[] maxNumberOfElementsAtLeaf) {
-		if (osmMaterialElement.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
+	private void createForest(OsmElement[][] osmElement, int[] maxNumberOfElementsAtLeaf) {
+		if (osmElement.length != maxNumberOfElementsAtLeaf.length) throw new RuntimeException("Length of parameter arrays are not equal");
 
-		KDTree[] trees = new KDTree[osmMaterialElement.length];
+		KDTree[] trees = new KDTree[osmElement.length];
 
 		for (int i = 0; i < trees.length; i++)
-			trees[i] = new KDTree(osmMaterialElement[i], maxNumberOfElementsAtLeaf[i]);
+			trees[i] = new KDTree(osmElement[i], maxNumberOfElementsAtLeaf[i]);
 		this.forest = new Forest(trees);
-	}
-
-	public void addObserver(Observer o) {
-		osmManager.addObserver(o);
 	}
 }
