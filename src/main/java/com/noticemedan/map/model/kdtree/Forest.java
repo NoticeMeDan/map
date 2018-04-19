@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import java.util.*;
 
-public class Forest {
+public class Forest implements ForestInterface{
 	private KDTree trees[];
 	private final OSMManager osmManager = new OSMManager();
 	private final String binaryID = UUID.randomUUID().toString();
@@ -16,7 +16,7 @@ public class Forest {
 	private List<OSMMaterialElement> coastlines = this.osmManager.getOsmCoastlineElements();
 
 	public Forest() {
-		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100};
+		int maxNumberOfElementsAtLeaf = 100;
 		List<OSMMaterialElement> osmMaterialElements = this.osmManager.getOsmMaterialElements();
 		OSMMaterialElement[][] osmMaterialElementArray = new OSMMaterialElement[3][];
 
@@ -59,13 +59,13 @@ public class Forest {
 		this.trees = new KDTree[osmMaterialElementArray.length];
 
 		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KDTree(osmMaterialElementArray[i], maxNumberOfElementsAtLeaf[i]);
+			this.trees[i] = new KDTree(osmMaterialElementArray[i], maxNumberOfElementsAtLeaf);
 		}
 
 		kdTreesToBinary();
 	}
 
-	//@Override
+	@Override
 	public List<OSMMaterialElement> rangeSearch(Rect searchQuery, int zoomLevel) {
 		ArrayList searchResults = new ArrayList<>();
 		for (int i = 0; i < zoomLevel+1; i++) {
@@ -79,7 +79,7 @@ public class Forest {
 		return rangeSearch(searchQuery, trees.length-1);
 	}
 
-	//@Override
+	@Override
 	public OSMMaterialElement nearestNeighbor(double x, double y) {
 		throw new RuntimeException("nearestNeighbor() not implemented yet.");
 	}
