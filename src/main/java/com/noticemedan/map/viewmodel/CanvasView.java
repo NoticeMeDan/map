@@ -1,7 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OSMMaterialElement;
-import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.kdtree.ForestCreator;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.utilities.Rect;
@@ -21,12 +20,10 @@ public class CanvasView extends JComponent implements Observer{
 	ForestCreator forestCreator;
     private double fps = 0.0;
 
-    private Forest forest;
     private Rect viewArea;
 
     public CanvasView() {
 		forestCreator = new ForestCreator();
-		this.forest = forestCreator.getForest();
 		forestCreator.addObserver(this);
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 	}
@@ -68,11 +65,11 @@ public class CanvasView extends JComponent implements Observer{
 			}
         }
 
-		System.out.println("Range size: " + forest.rangeSearch(viewArea).size());
+		System.out.println("Range size: " + forestCreator.rangeSearch(viewArea).size());
 
 		EnumMap<OSMType, List<OSMMaterialElement>> osmElements = initializeMap();
 
-		forest.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
+		forestCreator.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
 
 		for (OSMMaterialElement element : osmElements.get(OSMType.UNKNOWN)) {
 			g.setPaint(element.getColor());

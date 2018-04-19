@@ -29,23 +29,20 @@ public class KDTree {
 	 * @return 		Root node of kdtree.
 	 */
 	private KDTreeNode buildKDTree(OSMMaterialElement[] points, int depth) {
-		OSMMaterialElement[] firstHalfArray;
-		OSMMaterialElement[] secondHalfArray;
+		Tuple2<OSMMaterialElement[], OSMMaterialElement[]> pointsSplitted = splitPointArrayByMedian(points);
+		OSMMaterialElement[] firstHalfArray = pointsSplitted._1;
+		OSMMaterialElement[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
-		// Define size of osmMaterialElements array in leaf nodes.
+		// Define how many osmMaterialElements there are in a leaf nodes.
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
-		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			Tuple2<OSMMaterialElement[], OSMMaterialElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
+		}
+
+		if (depth % 2 == 0) { // If depth even, split by x-value
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
 		} else { // If depth odd, split by y-value
-			Tuple2<OSMMaterialElement[], OSMMaterialElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
 		}
 
@@ -61,6 +58,8 @@ public class KDTree {
 
 	private Tuple2<OSMMaterialElement[], OSMMaterialElement[]> splitPointArrayByMedian(OSMMaterialElement[] points) {
 		int N = points.length;
+		// k is the index where the array should be split.
+		int k = N/2+1;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
@@ -69,8 +68,6 @@ public class KDTree {
 
 		Quick.select(points, N/2);
 
-		// k is the index where the array should be split.
-		int k = N/2+1;
 		OSMMaterialElement[] firstHalf = new OSMMaterialElement[k];
 		OSMMaterialElement[] secondHalf = new OSMMaterialElement[N - k];
 
