@@ -62,7 +62,7 @@ public class Forest implements ForestInterface{
 		this.trees = new KDTree[osmMaterialElementArray.length];
 
 		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KDTree(osmMaterialElementArray[i], maxNumberOfElementsAtLeaf);
+			this.trees[i] = new KDTree(osmMaterialElementArray[i], maxNumberOfElementsAtLeaf[i]);
 		}
 
 		kdTreesToBinary();
