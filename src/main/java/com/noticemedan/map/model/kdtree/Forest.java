@@ -20,15 +20,15 @@ public class Forest implements ForestInterface{
 	public Forest() {
 		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100};
-		List<OsmElement> osmMaterialElements = this.osmMapData.getOsmElements().toJavaList();
-		OsmElement[][] osmMaterialElementArray = new OsmElement[3][];
+		List<OsmElement> osmElements = this.osmMapData.getOsmElements().toJavaList();
+		OsmElement[][] osmElementArray = new OsmElement[3][];
 
 		List<OsmElement> zoom0 = new LinkedList<>();
 		List<OsmElement> zoom1 = new LinkedList<>();
 		List<OsmElement> zoom2 = new LinkedList<>();
 
-		osmMaterialElements.forEach(m -> {
-			switch (m.getOsmType()) {
+		osmElements.forEach(osmElement -> {
+			switch (osmElement.getOsmType()) {
 				case COASTLINE:
 				case UNKNOWN:
 				case MOTORWAY:
@@ -37,32 +37,32 @@ public class Forest implements ForestInterface{
 				case HEATH:
 				case WATER:
 				case SAND:
-					zoom0.add(m);
+					zoom0.add(osmElement);
 
 				case HIGHWAY:
 				case SECONDARY:
-					zoom1.add(m);
+					zoom1.add(osmElement);
 
 				case TERTIARY:
 				case BUILDING:
 				case TREE_ROW:
 				case PLAYGROUND:
 				case ROAD:
-					zoom2.add(m);
+					zoom2.add(osmElement);
 
 				default:
 					break;
 			}
 		});
 
-		osmMaterialElementArray[0] = zoom0.toArray(new OsmElement[0]);
-		osmMaterialElementArray[1] = zoom1.toArray(new OsmElement[0]);
-		osmMaterialElementArray[2] = zoom2.toArray(new OsmElement[0]);
+		osmElementArray[0] = zoom0.toArray(new OsmElement[0]);
+		osmElementArray[1] = zoom1.toArray(new OsmElement[0]);
+		osmElementArray[2] = zoom2.toArray(new OsmElement[0]);
 
-		this.trees = new KDTree[osmMaterialElementArray.length];
+		this.trees = new KDTree[osmElementArray.length];
 
 		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KDTree(osmMaterialElementArray[i], maxNumberOfElementsAtLeaf[i]);
+			this.trees[i] = new KDTree(osmElementArray[i], maxNumberOfElementsAtLeaf[i]);
 		}
 
 		kdTreesToBinary();
