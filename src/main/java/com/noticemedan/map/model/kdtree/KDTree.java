@@ -30,7 +30,7 @@ public class KDTree {
 	 */
 	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
 		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
-		OsmElement[] firstHalfArray = pointsSplitted._1;;
+		OsmElement[] firstHalfArray = pointsSplitted._1;
 		OsmElement[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
