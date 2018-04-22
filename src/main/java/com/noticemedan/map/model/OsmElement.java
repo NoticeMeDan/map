@@ -1,9 +1,8 @@
 package com.noticemedan.map.model;
 
-import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.utilities.Coordinate;
-import lombok.Builder;
+import com.noticemedan.map.model.utilities.Rect;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,7 @@ import java.awt.*;
 import java.io.Serializable;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class OsmElement implements Comparable<OsmElement>, Serializable {
 	private OSMType osmType;
 	private Shape shape;

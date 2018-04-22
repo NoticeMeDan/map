@@ -2,13 +2,12 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OsmElement;
-import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
-import com.noticemedan.map.model.utilities.OSMELementProperty;
+import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.collection.List;
 import lombok.NoArgsConstructor;
@@ -25,14 +24,16 @@ import java.awt.geom.Rectangle2D;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	private List<List<OsmElement>> elements = List.empty();
-	private List<OsmElement> osmMaterialElements = List.empty();
+	private List<OsmElement> osmElements = List.empty();
 	private List<OsmElement> osmCoastlineElements = List.empty();
 	private FileInputStream inputStream;
 
@@ -63,7 +64,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		} else if (filename.endsWith(".bin")) {
 			try {
 				ObjectInputStream is = new ObjectInputStream(fileInputStream);
-				osmMaterialElements = (List<OsmElement>) is.readObject();
+				osmElements = (List<OsmElement>) is.readObject();
 				osmCoastlineElements = (List<OsmElement>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
@@ -74,7 +75,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 			}
 		}
 
-		this.elements = elements.append(osmMaterialElements);
+		this.elements = elements.append(osmElements);
 		this.elements = elements.append(osmCoastlineElements);
 		return elements;
 	}
@@ -90,24 +91,23 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	}
 
 	public void add(OSMType type, Shape shape) {
-		OSMELementProperty osmeLementProperty = new OSMELementProperty();
+		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
 		double y1 = shapeBounds.getY();
 		double xLength = shapeBounds.getWidth();
 		double yLength = shapeBounds.getHeight();
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
-		OsmElement osmElement = OsmElement.builder()
-				.osmType(type)
-				.bounds(rect)
-				.avgPoint(rect.getAveragePoint())
-				.shape(shape)
-				.color(osmeLementProperty.deriveColorFromType(type))
-				.build();
+		OsmElement osmElement = new OsmElement();
+		osmElement.setOsmType(type);
+		osmElement.setBounds(rect);
+		osmElement.setAvgPoint(rect.getAveragePoint());
+		osmElement.setShape(shape);
+		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
 		if (type.equals(OSMType.COASTLINE))
 			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
 		else
-			this.osmMaterialElements = osmMaterialElements.append(osmElement);
+			this.osmElements = osmElements.append(osmElement);
 	}
 
 	@Override

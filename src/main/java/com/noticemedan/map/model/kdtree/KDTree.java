@@ -1,7 +1,6 @@
 package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.model.OsmElement;
-import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.utilities.Quick;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
@@ -30,23 +29,20 @@ public class KDTree {
 	 * @return 		Root node of kdtree.
 	 */
 	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
-		OsmElement[] firstHalfArray;
-		OsmElement[] secondHalfArray;
+		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
+		OsmElement[] firstHalfArray = pointsSplitted._1;
+		OsmElement[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
-		// Define size of osmMaterialElements array in leaf nodes.
+		// Define how many osmElements there are in a leaf node.
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
-		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			Tuple2<OsmElement[], OsmElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
+		}
+
+		if (depth % 2 == 0) { // If depth even, split by x-value
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
 		} else { // If depth odd, split by y-value
-			Tuple2<OsmElement[], OsmElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
 		}
 
@@ -62,6 +58,8 @@ public class KDTree {
 
 	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] points) {
 		int N = points.length;
+		// k is the index where the array should be split.
+		int k = N/2+1;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
@@ -70,18 +68,18 @@ public class KDTree {
 
 		Quick.select(points, N/2);
 
-		// k is the index where the array should be split.
-		int k = N/2+1;
+
 		OsmElement[] firstHalf = new OsmElement[k];
 		OsmElement[] secondHalf = new OsmElement[N - k];
 
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].isDepthEven()) {	points[i].setDepthEven(false); }
-			else {							points[i].setDepthEven(true);  }
-			if (i < k) 						firstHalf[i] = points[i];
-			if (i >= k) 					secondHalf[j++] = points[i];
+			if (points[i].isDepthEven()) points[i].setDepthEven(false);
+			else points[i].setDepthEven(true);
+
+			if (i < k) firstHalf[i] = points[i];
+			if (i >= k) secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}

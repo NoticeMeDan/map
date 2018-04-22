@@ -1,9 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OsmElement;
-import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
-import com.noticemedan.map.model.kdtree.ForestCreator;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.user.FavoritePoi;
 import com.noticemedan.map.model.utilities.Rect;
@@ -25,17 +23,15 @@ public class CanvasView extends JComponent {
   
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
-	ForestCreator forestCreator;
+	Forest forest;
     private double fps = 0.0;
     @Setter
 	private ObservableList<FavoritePoi> favoritePois;
 
-    private Forest forest;
     private Rect viewArea;
 
     public CanvasView() {
-		forestCreator = new ForestCreator();
-		this.forest = forestCreator.getForest();
+		forest = new Forest();
 		repaint();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 	}
@@ -70,7 +66,7 @@ public class CanvasView extends JComponent {
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
-		for (OsmElement element : forestCreator.getCoastlines()) {
+		for (OsmElement element : forest.getCoastlines()) {
 			g.setPaint(element.getColor());
         	if(element.getOsmType() == OSMType.COASTLINE) {
 				g.fill(element.getShape());
@@ -177,10 +173,10 @@ public class CanvasView extends JComponent {
     }
 
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-		double x1 = toModelCoords(p1).getX() - 0.02;
-		double y1 = toModelCoords(p1).getY() - 0.02;
-		double x2 = toModelCoords(p2).getX() + 0.02;
-		double y2 = toModelCoords(p2).getY() + 0.02;
+		double x1 = toModelCoords(p1).getX() - 0.03;
+		double y1 = toModelCoords(p1).getY() - 0.03;
+		double x2 = toModelCoords(p2).getX() + 0.03;
+		double y2 = toModelCoords(p2).getY() + 0.03;
 
 		return new Rect(x1, y1, x2, y2);
 	}
