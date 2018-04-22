@@ -166,10 +166,10 @@ public class CanvasView extends JComponent {
     }
 
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-		double x1 = toModelCoords(p1).getX() - 0.09;
-		double y1 = toModelCoords(p1).getY() - 0.09;
-		double x2 = toModelCoords(p2).getX() + 0.09;
-		double y2 = toModelCoords(p2).getY() + 0.09;
+		double x1 = toModelCoords(p1).getX() - 0.03;
+		double y1 = toModelCoords(p1).getY() - 0.03;
+		double x2 = toModelCoords(p2).getX() + 0.03;
+		double y2 = toModelCoords(p2).getY() + 0.03;
 
 		return new Rect(x1, y1, x2, y2);
 	}
