@@ -2,9 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import java.net.URL?>
-<Pane fx:id="cell" xmlns="http://javafx.com/javafx"
+<Pane fx:id="cell"
+	  xmlns="http://javafx.com/javafx"
 	  xmlns:fx="http://javafx.com/fxml">
 	<stylesheets>
 		<URL value="@../css/favorite-poi-cell.css" />
