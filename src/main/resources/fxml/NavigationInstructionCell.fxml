@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+
+<Pane fx:id="cell"
+	  xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml">
+	<stylesheets>
+		<URL value="@../css/navigation-instruction-cell.css" />
+	</stylesheets>
+	<Label fx:id="distanceToNextNavigationAction" layoutX="40" />
+	<Text fx:id="navigationActionDescription" styleClass="grey" wrappingWidth="180" layoutX="40" layoutY="35" />
+	<Pane fx:id="navigationActionImageView" prefWidth="30" prefHeight="30" />
+</Pane>

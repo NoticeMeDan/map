@@ -3,7 +3,10 @@ package com.noticemedan.map.viewmodel;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.user.FavoritePoi;
 import com.noticemedan.map.model.utilities.Rect;
+import javafx.collections.ObservableList;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +17,16 @@ import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 
+import static javax.imageio.ImageIO.read;
+
 public class CanvasView extends JComponent {
+  
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
 	Forest forest;
     private double fps = 0.0;
+    @Setter
+	private ObservableList<FavoritePoi> favoritePois;
 
     private Rect viewArea;
 
@@ -122,8 +130,7 @@ public class CanvasView extends JComponent {
 			}
 		}
 
-
-        long t2 = System.nanoTime();
+		long t2 = System.nanoTime();
         fps = (fps + 1e9/ (t2 - t1)) / 2;
         g.setTransform(new AffineTransform());
         g.setColor(Color.WHITE);
@@ -158,7 +165,7 @@ public class CanvasView extends JComponent {
 
     public Point2D toModelCoords(Point2D p) {
         try {
-            return transform.inverseTransform(p, null);
+			return transform.inverseTransform(p, null);
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
         }
