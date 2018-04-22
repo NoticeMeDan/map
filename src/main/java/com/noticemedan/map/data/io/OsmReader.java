@@ -7,7 +7,7 @@ import com.noticemedan.map.model.osm.OSMRelation;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
-import com.noticemedan.map.model.utilities.OSMELementProperty;
+import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.collection.List;
 import lombok.NoArgsConstructor;
@@ -91,7 +91,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	}
 
 	public void add(OSMType type, Shape shape) {
-		OSMELementProperty osmeLementProperty = new OSMELementProperty();
+		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
 		double y1 = shapeBounds.getY();
@@ -103,7 +103,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		osmElement.setBounds(rect);
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
-		osmElement.setColor(osmeLementProperty.deriveColorFromType(type));
+		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
 		if (type.equals(OSMType.COASTLINE))
 			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
 		else
