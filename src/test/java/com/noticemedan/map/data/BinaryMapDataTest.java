@@ -21,15 +21,20 @@ public class BinaryMapDataTest {
 	@BeforeTest
 	void buildSmallKDTree() {
 		osmElements = new OsmElement[8];
+		for(int i = 0; i < 8; i++) {
+			osmElements[i] = new OsmElement();
+		}
+		osmElements[0].setAvgPoint(new Coordinate(1,10));
+		osmElements[1].setAvgPoint(new Coordinate(2,3));
+		osmElements[2].setAvgPoint(new Coordinate(3,8));
+		osmElements[3].setAvgPoint(new Coordinate(4,6));
+		osmElements[4].setAvgPoint(new Coordinate(5,1));
+		osmElements[5].setAvgPoint(new Coordinate(6,7));
+		osmElements[6].setAvgPoint(new Coordinate(7,2));
+		osmElements[7].setAvgPoint(new Coordinate(9,9));
 
-		osmElements[0] = OsmElement.builder().avgPoint(new Coordinate(1,10)).build();
-		osmElements[1] = OsmElement.builder().avgPoint(new Coordinate(2,3)).build();
-		osmElements[2] = OsmElement.builder().avgPoint(new Coordinate(3,8)).build();
-		osmElements[3] = OsmElement.builder().avgPoint(new Coordinate(4,6)).build();
-		osmElements[4] = OsmElement.builder().avgPoint(new Coordinate(5,1)).build();
-		osmElements[5] = OsmElement.builder().avgPoint(new Coordinate(6,7)).build();
-		osmElements[6] = OsmElement.builder().avgPoint(new Coordinate(7,2)).build();
-		osmElements[7] = OsmElement.builder().avgPoint(new Coordinate(9,9)).build();
+		this.kdTreeNode = new KDTreeNode(osmElements, 5);
+
 
 		this.kdTreeNode = new KDTreeNode(osmElements, 5);
 		System.out.println("ID: " + this.kdTreeNode.getBinaryID() + "\n");
