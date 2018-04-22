@@ -1,6 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.kdtree.ForestCreator;
 import com.noticemedan.map.model.osm.OSMType;
@@ -20,7 +21,8 @@ import java.util.List;
 
 import static javax.imageio.ImageIO.read;
 
-public class CanvasView extends JComponent implements Observer{
+public class CanvasView extends JComponent {
+  
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
 	ForestCreator forestCreator;
@@ -34,12 +36,12 @@ public class CanvasView extends JComponent implements Observer{
     public CanvasView() {
 		forestCreator = new ForestCreator();
 		this.forest = forestCreator.getForest();
-		forestCreator.addObserver(this);
+		repaint();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 	}
 
-	private EnumMap<OSMType, List<OSMMaterialElement>> initializeMap() {
-		EnumMap<OSMType, List<OSMMaterialElement>> map = new EnumMap<>(OSMType.class);
+	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
+		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
 		for (OSMType type: OSMType.values()) {
 			map.put(type, new ArrayList<>());
 		}
@@ -68,7 +70,7 @@ public class CanvasView extends JComponent implements Observer{
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
-		for (OSMMaterialElement element : forestCreator.getCoastlines()) {
+		for (OsmElement element : forestCreator.getCoastlines()) {
 			g.setPaint(element.getColor());
         	if(element.getOsmType() == OSMType.COASTLINE) {
 				g.fill(element.getShape());
@@ -77,55 +79,55 @@ public class CanvasView extends JComponent implements Observer{
 
 		System.out.println("Range size: " + forest.rangeSearch(viewArea).size());
 
-		EnumMap<OSMType, List<OSMMaterialElement>> osmElements = initializeMap();
+		EnumMap<OSMType, List<OsmElement>> osmElements = initializeMap();
 
 		forest.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
 
-		for (OSMMaterialElement element : osmElements.get(OSMType.UNKNOWN)) {
+		for (OsmElement element : osmElements.get(OSMType.UNKNOWN)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.draw(element.getShape());
 			}
 		}
-		for (OSMMaterialElement element : osmElements.get(OSMType.WATER)) {
+		for (OsmElement element : osmElements.get(OSMType.WATER)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.fill(element.getShape());
 			}
 		}
-		for (OSMMaterialElement element : osmElements.get(OSMType.GRASSLAND)) {
+		for (OsmElement element : osmElements.get(OSMType.GRASSLAND)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.fill(element.getShape());
 			}
 		}
-		for (OSMMaterialElement element : osmElements.get(OSMType.TREE_ROW)) {
+		for (OsmElement element : osmElements.get(OSMType.TREE_ROW)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.fill(element.getShape());
 			}
 		}
-		for (OSMMaterialElement element : osmElements.get(OSMType.HEATH)) {
+		for (OsmElement element : osmElements.get(OSMType.HEATH)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.fill(element.getShape());
 			}
 		}
 		g.setStroke(new BasicStroke(0.00001f));
-		for (OSMMaterialElement element : osmElements.get(OSMType.ROAD)) {
+		for (OsmElement element : osmElements.get(OSMType.ROAD)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.draw(element.getShape());
 			}
 		}
 		g.setStroke(new BasicStroke(0.0001f));
-		for (OSMMaterialElement element : osmElements.get(OSMType.HIGHWAY)) {
+		for (OsmElement element : osmElements.get(OSMType.HIGHWAY)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.draw(element.getShape());
 			}
 		}
-		for (OSMMaterialElement element : osmElements.get(OSMType.BUILDING)) {
+		for (OsmElement element : osmElements.get(OSMType.BUILDING)) {
 			g.setPaint(element.getColor());
 			if (element.getShape().intersects(viewRect)) {
 				g.fill(element.getShape());
@@ -142,20 +144,6 @@ public class CanvasView extends JComponent implements Observer{
         g.drawRect(getWidth() - 85, 5, 80, 20);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
-    }
-
-    /**
-     * This method is called whenever the observed object is changed. An
-     * application calls an <tt>Observable</tt> object's
-     * <code>notifyObservers</code> method to have all the object's
-     * observers notified of the change.
-     *
-     * @param o   the observable object.
-     * @param arg an argument passed to the <code>notifyObservers</code>
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        repaint();
     }
 
     public void toggleAntiAliasing() {

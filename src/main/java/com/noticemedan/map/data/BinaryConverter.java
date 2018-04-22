@@ -1,7 +1,5 @@
 package com.noticemedan.map.data;
 
-import com.noticemedan.map.model.OSMMaterialElement;
-
 import java.io.*;
 
 public class BinaryConverter {
