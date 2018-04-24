@@ -1,0 +1,7 @@
+#favoritePoiNameLabel {
+	-fx-font-size: 16px;
+}
+
+#favoritePoiLatLonLabel {
+	-fx-text-fill: #ADADAD;
+}

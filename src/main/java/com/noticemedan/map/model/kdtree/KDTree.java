@@ -1,12 +1,11 @@
 package com.noticemedan.map.model.kdtree;
 
-import com.noticemedan.map.model.OSMMaterialElement;
+import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.utilities.Quick;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
-import java.awt.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +15,9 @@ public class KDTree {
 
 	@Getter private KDTreeNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
-	private ArrayList<OSMMaterialElement> rangeSearchQueryResults;
+	private ArrayList<OsmElement> rangeSearchQueryResults;
 
-	public KDTree(OSMMaterialElement[] points, int maxNumberOfElementsAtLeaf) {
+	public KDTree(OsmElement[] points, int maxNumberOfElementsAtLeaf) {
 		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 
@@ -29,24 +28,21 @@ public class KDTree {
 	/**
 	 * @return 		Root node of kdtree.
 	 */
-	private KDTreeNode buildKDTree(OSMMaterialElement[] points, int depth) {
-		OSMMaterialElement[] firstHalfArray;
-		OSMMaterialElement[] secondHalfArray;
+	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
+		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
+		OsmElement[] firstHalfArray = pointsSplitted._1;
+		OsmElement[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
-		// Define size of osmMaterialElements array in leaf nodes.
+		// Define how many osmElements there are in a leaf node.
 		if (points.length <= maxNumberOfElementsAtLeaf ) {
 			return new KDTreeNode(points, depth);
-		} else if (depth % 2 == 0) { // If depth even, split by x-value
-			Tuple2<OSMMaterialElement[], OSMMaterialElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
+		}
+
+		if (depth % 2 == 0) { // If depth even, split by x-value
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
 		} else { // If depth odd, split by y-value
-			Tuple2<OSMMaterialElement[], OSMMaterialElement[]> tuple2 = splitPointArrayByMedian(points);
-			firstHalfArray = tuple2._1;
-			secondHalfArray = tuple2._2;
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
 		}
 
@@ -60,33 +56,35 @@ public class KDTree {
 		return parent;
 	}
 
-	private Tuple2<OSMMaterialElement[], OSMMaterialElement[]> splitPointArrayByMedian(OSMMaterialElement[] points) {
+	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] points) {
 		int N = points.length;
+		// k is the index where the array should be split.
+		int k = N/2+1;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new OSMMaterialElement[]{points[0]}, new OSMMaterialElement[]{points[1]});
+		if (N == 2) return Tuple.of(new OsmElement[]{points[0]}, new OsmElement[]{points[1]});
 
 		Quick.select(points, N/2);
 
-		// k is the index where the array should be split.
-		int k = N/2+1;
-		OSMMaterialElement[] firstHalf = new OSMMaterialElement[k];
-		OSMMaterialElement[] secondHalf = new OSMMaterialElement[N - k];
+
+		OsmElement[] firstHalf = new OsmElement[k];
+		OsmElement[] secondHalf = new OsmElement[N - k];
 
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].isDepthEven()) {	points[i].setDepthEven(false); }
-			else {							points[i].setDepthEven(true);  }
-			if (i < k) 						firstHalf[i] = points[i];
-			if (i >= k) 					secondHalf[j++] = points[i];
+			if (points[i].isDepthEven()) points[i].setDepthEven(false);
+			else points[i].setDepthEven(true);
+
+			if (i < k) firstHalf[i] = points[i];
+			if (i >= k) secondHalf[j++] = points[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public List<OSMMaterialElement> rangeSearch(Rect query) {
+	public List<OsmElement> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		searchTree(rootNode, query, startBoundingBox);
@@ -109,9 +107,9 @@ public class KDTree {
 		}
 
 		// If current node is a leaf, check if point is within query;
-		if (parent.getOsmMaterialElements() != null) {
-			for (int i = 0; i < parent.getOsmMaterialElements().length; i++) {
-				if (pointInRect(parent.getOsmMaterialElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmMaterialElements()[i]);
+		if (parent.getOsmElements() != null) {
+			for (int i = 0; i < parent.getOsmElements().length; i++) {
+				if (pointInRect(parent.getOsmElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmElements()[i]);
 			}
 		} else {
 			// If left bounding box for left child is completely in query, report all osmMaterialElements in this subtree
@@ -154,7 +152,7 @@ public class KDTree {
 	// Using in order traversal (LVR: Left, Visit, Right)
 	public void reportSubtree(KDTreeNode parent) {
 		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getOsmMaterialElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmMaterialElements())); //V
+		if (parent.getOsmElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmElements())); //V
 		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
 	}
 
@@ -170,11 +168,11 @@ public class KDTree {
 	}
 
 	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OSMMaterialElement osmMaterialElement, Rect rect) {
-		boolean part1 = rect.getX1() <= osmMaterialElement.getAvgPoint().getX();
-		boolean part2 = osmMaterialElement.getAvgPoint().getX() <= rect.getX2();
-		boolean part3 = rect.getY1() <= osmMaterialElement.getAvgPoint().getY();
-		boolean part4 = osmMaterialElement.getAvgPoint().getY() <= rect.getY2();
+	static public boolean pointInRect(OsmElement osmElement, Rect rect) {
+		boolean part1 = rect.getX1() <= osmElement.getAvgPoint().getX();
+		boolean part2 = osmElement.getAvgPoint().getX() <= rect.getX2();
+		boolean part3 = rect.getY1() <= osmElement.getAvgPoint().getY();
+		boolean part4 = osmElement.getAvgPoint().getY() <= rect.getY2();
 		return part1 && part2 && part3 && part4;
 	}
 }

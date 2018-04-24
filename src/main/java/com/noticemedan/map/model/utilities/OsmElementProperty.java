@@ -5,10 +5,10 @@ import com.noticemedan.map.model.osm.OSMType;
 import java.awt.*;
 import java.util.EnumMap;
 
-public class OSMELementProperty {
+public class OsmElementProperty {
 	private final EnumMap<OSMType, Color> typeColors = new EnumMap<OSMType, Color>(OSMType.class);
 
-	public OSMELementProperty() {
+	public OsmElementProperty() {
 		typeColors.put(OSMType.COASTLINE, new Color(230, 210, 175));
 		typeColors.put(OSMType.WATER, new Color(30, 70, 230));
 		typeColors.put(OSMType.GRASSLAND, new Color(70, 170, 90));

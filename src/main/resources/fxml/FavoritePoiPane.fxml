@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<?import javafx.scene.text.Text?>
+<VBox xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml"
+	  fx:controller="com.noticemedan.map.view.FavoritePoiPaneController"
+	  prefWidth="250.0"
+	  fx:id="favoritePoiPane">
+	<stylesheets>
+		<URL value="@../css/favorite-poi-pane.css" />
+	</stylesheets>
+	<HBox prefHeight="55.0" prefWidth="200.0">
+		<Pane prefHeight="100.0" prefWidth="300.0">
+			<Label styleClass="paneTitle" text="Favoritsteder" />
+			<Button fx:id="favoritePoiPaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
+		</Pane>
+	</HBox>
+	<HBox fx:id="actionMenu" layoutY="55">
+		<Button fx:id="navigateToFavoritePoiButton" styleClass="actionMenuButton" text="Find vej" />
+		<Button fx:id="removeFavoritePoiButton" styleClass="actionMenuButton" text="Slet favoritsted" />
+	</HBox>
+	<StackPane fx:id="noFavoritesYetPane" VBox.vgrow="ALWAYS">
+			<Text id="noFavoritesText" wrappingWidth="210" textAlignment="CENTER" text="Ingen favoritsteder tilføjet. Klik på kortet for at tilføje et favoritsted."></Text>
+	</StackPane>
+	<ListView fx:id="favoritePoiListView" VBox.vgrow="ALWAYS" />
+</VBox>
