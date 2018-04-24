@@ -11,6 +11,7 @@ import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.collection.List;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
+@Slf4j
 public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	private List<List<OsmElement>> elements = List.empty();
 	private List<OsmElement> osmElements = List.empty();
@@ -44,7 +46,9 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream, String filename) {
 		this.filename = filename;
 		if (filename.endsWith(".osm")) {
+			log.info("Begin reading from OSM");
 			readFromOSM(new InputSource(fileInputStream));
+			log.info("End reading from OSM");
 		} else if (filename.endsWith(".zip")) {
 			try {
 				ZipInputStream zis = new ZipInputStream(fileInputStream);
@@ -63,7 +67,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 				Entities.setMaxLon((double) is.readObject());
 				Entities.setMaxLat((double) is.readObject());
 			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
+				log.error(e.getStackTrace().toString());
 			}
 		}
 
@@ -97,9 +101,9 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
 		if (type.equals(OSMType.COASTLINE))
-			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
+			this.osmCoastlineElements = osmCoastlineElements.prepend(osmElement);
 		else
-			this.osmElements = osmElements.append(osmElement);
+			this.osmElements = osmElements.prepend(osmElement);
 	}
 
 	@Override

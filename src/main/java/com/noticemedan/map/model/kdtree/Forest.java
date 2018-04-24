@@ -5,11 +5,12 @@ import com.noticemedan.map.data.OsmMapData;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
 
-
+@Slf4j
 public class Forest implements ForestInterface{
 	private KDTree trees[];
 	private final OsmMapData osmMapData = new OsmMapData();
@@ -38,18 +39,18 @@ public class Forest implements ForestInterface{
 				case WATER:
 				case SAND:
 					zoom0.add(osmElement);
-
+				break;
 				case HIGHWAY:
 				case SECONDARY:
 					zoom1.add(osmElement);
-
+				break;
 				case TERTIARY:
 				case BUILDING:
 				case TREE_ROW:
 				case PLAYGROUND:
 				case ROAD:
 					zoom2.add(osmElement);
-
+				break;
 				default:
 					break;
 			}
@@ -61,9 +62,12 @@ public class Forest implements ForestInterface{
 
 		this.trees = new KDTree[osmElementArray.length];
 
+		log.debug("Begin forest");
 		for (int i = 0; i < trees.length; i++) {
 			this.trees[i] = new KDTree(osmElementArray[i], maxNumberOfElementsAtLeaf[i]);
 		}
+		log.debug("End forest");
+
 
 		kdTreesToBinary();
 	}
