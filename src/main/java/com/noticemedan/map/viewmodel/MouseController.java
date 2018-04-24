@@ -1,8 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.view.MainViewController;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
