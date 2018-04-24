@@ -1,18 +1,17 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.data.OSMManager;
-import com.noticemedan.map.view.CanvasView;
+import com.noticemedan.map.data.OsmMapData;
 import javafx.scene.layout.Pane;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class KeyboardController extends KeyAdapter {
-    private OSMManager model;
+    private OsmMapData model;
     private Pane p;
     private CanvasView canvas;
 
-    public KeyboardController(Pane p, CanvasView c, OSMManager m) {
+    public KeyboardController(Pane p, CanvasView c, OsmMapData m) {
 		this.p = p;
         canvas = c;
         model = m;

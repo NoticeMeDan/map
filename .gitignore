@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# Binary file
+*.dat
+
 # Log file
 *.log
 
@@ -38,3 +41,4 @@ META_INF
 # OSM stuff
 denmark-latest.osm
 denmark-latest.osm.zip
+denmark.zip
