@@ -6,6 +6,10 @@ import io.vavr.collection.List;
 /**
  * Dijkstra shortest path
  *
+ * This implementation is an abbreviation of Dijkstra's algorithm from algs4 at
+ * http://algs4.cs.princeton.edu/44sp/DijkstraSP.java
+ * Algorithms, 4th Edition by Sedgewick & Wayne.
+ *
  * @author Simon, Magnus
  */
 public class Dijkstra {
@@ -86,5 +90,4 @@ public class Dijkstra {
 			path = path.append(e);
 		return path;
 	}
-
 }

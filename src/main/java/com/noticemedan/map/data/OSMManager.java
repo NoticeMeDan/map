@@ -19,6 +19,7 @@ public class OSMManager extends Observable implements Serializable {
 	@Getter
 	private List<OSMMaterialElement> osmCoastlineElements;
 
+
     public OSMManager() {
     	try {
 			File file = new File(App.class.getResource("/bornholm.osm").getFile());
