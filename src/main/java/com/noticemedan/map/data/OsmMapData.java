@@ -19,10 +19,11 @@ public class OsmMapData implements Serializable {
 
     public OsmMapData() {
     	try {
-			File file = new File(App.class.getResource("/bornholm.osm").getFile());
+			String filename = "bornholm.osm";
+			File file = new File(App.class.getResource("/" + filename).getFile());
 			FileInputStream fileInputStream = new FileInputStream(file);
 			OsmReader osmReader = new OsmReader();
-			List<List<OsmElement>> elements = osmReader.getShapesFromFile(fileInputStream);
+			List<List<OsmElement>> elements = osmReader.getShapesFromFile(fileInputStream, filename);
 			osmElements = elements.get(0);
 			osmCoastlineElements = elements.get(1);
 			System.out.println("Size: " + osmElements.size());
