@@ -14,49 +14,40 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
-import java.util.List;
-
-import static javax.imageio.ImageIO.read;
 
 public class CanvasView extends JComponent {
-  
+
     private boolean useAntiAliasing = false;
     private AffineTransform transform = new AffineTransform();
 	Forest forest;
     private double fps = 0.0;
     @Setter
 	private ObservableList<FavoritePoi> favoritePois;
+    private Rectangle2D viewRect;
+    private Graphics2D g;
 
     private Rect viewArea;
 
     public CanvasView() {
-		forest = new Forest();
-		repaint();
+		this.forest = new Forest();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
-	}
-
-	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
-		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
-		for (OSMType type: OSMType.values()) {
-			map.put(type, new ArrayList<>());
-		}
-		return map;
+		repaint();
 	}
 
     @Override
     public void paint(Graphics _g) {
         long t1 = System.nanoTime();
 		this.viewArea = viewPortCoords(new Point2D.Double(getX(), getY()), new Point2D.Double(getX() + getWidth(), getY() + getHeight()));
-        Graphics2D g = (Graphics2D) _g;
-        g.setStroke(new BasicStroke(Float.MIN_VALUE));
-        Rectangle2D viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+        this.g = (Graphics2D) _g;
+		this.viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+		BasicStroke stroke = new BasicStroke(Float.MIN_VALUE);
 
+		g.setStroke(stroke);
         g.setPaint(new Color(60, 149, 255));
-        g.fill(viewRect);
-        g.transform(transform);
+        g.fill(this.viewRect);
+        g.transform(this.transform);
         try {
-            viewRect = transform.createInverse().createTransformedShape(viewRect).getBounds2D();
+            this.viewRect = this.transform.createInverse().createTransformedShape(viewRect).getBounds2D();
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
         }
@@ -75,58 +66,37 @@ public class CanvasView extends JComponent {
 
 		System.out.println("Range size: " + forest.rangeSearch(viewArea).size());
 
-		EnumMap<OSMType, List<OsmElement>> osmElements = initializeMap();
+		for ( OsmElement osmElement : forest.rangeSearch(viewArea)) {
+			switch (osmElement.getOsmType()) {
+				case HIGHWAY:
+					this.paintOsmElement(new BasicStroke(0.0001f), osmElement, "draw");
+					break;
 
-		forest.rangeSearch(viewArea).forEach(e -> osmElements.get(e.getOsmType()).add(e));
+				case ROAD:
+					this.paintOsmElement(new BasicStroke(0.00001f), osmElement, "draw");
+					break;
 
-		for (OsmElement element : osmElements.get(OSMType.UNKNOWN)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.draw(element.getShape());
-			}
-		}
-		for (OsmElement element : osmElements.get(OSMType.WATER)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.fill(element.getShape());
-			}
-		}
-		for (OsmElement element : osmElements.get(OSMType.GRASSLAND)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.fill(element.getShape());
-			}
-		}
-		for (OsmElement element : osmElements.get(OSMType.TREE_ROW)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.fill(element.getShape());
-			}
-		}
-		for (OsmElement element : osmElements.get(OSMType.HEATH)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.fill(element.getShape());
-			}
-		}
-		g.setStroke(new BasicStroke(0.00001f));
-		for (OsmElement element : osmElements.get(OSMType.ROAD)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.draw(element.getShape());
-			}
-		}
-		g.setStroke(new BasicStroke(0.0001f));
-		for (OsmElement element : osmElements.get(OSMType.HIGHWAY)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.draw(element.getShape());
-			}
-		}
-		for (OsmElement element : osmElements.get(OSMType.BUILDING)) {
-			g.setPaint(element.getColor());
-			if (element.getShape().intersects(viewRect)) {
-				g.fill(element.getShape());
+				case COASTLINE:
+				case UNKNOWN:
+				case MOTORWAY:
+				case TRUNK:
+				case SAND:
+				case SECONDARY:
+				case TERTIARY:
+				case PLAYGROUND:
+					this.paintOsmElement(new BasicStroke(Float.MIN_VALUE), osmElement, "draw");
+					break;
+
+				case GRASSLAND:
+				case BUILDING:
+				case HEATH:
+				case TREE_ROW:
+				case WATER:
+					this.paintOsmElement(new BasicStroke(Float.MIN_VALUE), osmElement, "fill");
+					break;
+
+				default:
+					break;
 			}
 		}
 
@@ -142,6 +112,18 @@ public class CanvasView extends JComponent {
         g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
     }
 
+    public void paintOsmElement(BasicStroke stroke, OsmElement osmElement, String drawMethod) {
+		this.g.setStroke(stroke);
+    	this.g.setPaint(osmElement.getColor());
+		if (osmElement.getShape().intersects(this.viewRect)) {
+			if (drawMethod.equals("draw")) {
+				this.g.draw(osmElement.getShape());
+			} else {
+				this.g.fill(osmElement.getShape());
+			}
+		}
+	}
+
     public void toggleAntiAliasing() {
         useAntiAliasing = !useAntiAliasing;
         repaint();
@@ -152,16 +134,16 @@ public class CanvasView extends JComponent {
         repaint();
     }
 
-    public void zoomToCenter(double factor) {
-        zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
-    }
-
     public void zoom(double factor, double x, double y) {
         pan(x, y);
         transform.preConcatenate(AffineTransform.getScaleInstance(factor, factor));
         pan(-x, -y);
         repaint();
     }
+
+	public void zoomToCenter(double factor) {
+		zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
+	}
 
     public Point2D toModelCoords(Point2D p) {
         try {
