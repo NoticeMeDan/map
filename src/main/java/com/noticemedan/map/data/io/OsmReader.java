@@ -75,7 +75,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	public void readFromOSM(InputSource filename) {
 		try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			xmlReader.setContentHandler(new OSMHandler());
+			xmlReader.setContentHandler(new OsmHandler());
 			xmlReader.parse(filename);
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();
@@ -107,7 +107,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		return this.getShapesFromFile(this.inputStream, this.filename);
 	}
 
-	public class OSMHandler extends DefaultHandler {
+	public class OsmHandler extends DefaultHandler {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
 		Map<Long, OSMWay> idToWay = new HashMap<>();
 		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
