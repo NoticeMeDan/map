@@ -24,7 +24,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -41,13 +40,13 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		this.inputStream = inputStream;
 	}
 
-	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
-		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
-		for (OSMType type : OSMType.values()) {
-			map.put(type, List.empty());
-		}
-		return map;
-	}
+//	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
+//		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
+//		for (OSMType type : OSMType.values()) {
+//			map.put(type, List.empty());
+//		}
+//		return map;
+//	}
 
 	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream) {
 		String filename = ".osm"; // TODO @Simon
@@ -83,7 +82,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	public void readFromOSM(InputSource filename) {
 		try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			xmlReader.setContentHandler(new OSMHandler());
+			xmlReader.setContentHandler(new OsmHandler());
 			xmlReader.parse(filename);
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();
@@ -115,7 +114,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		return this.getShapesFromFile(this.inputStream);
 	}
 
-	public class OSMHandler extends DefaultHandler {
+	public class OsmHandler extends DefaultHandler {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
 		Map<Long, OSMWay> idToWay = new HashMap<>();
 		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
