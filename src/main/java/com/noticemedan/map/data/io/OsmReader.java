@@ -9,7 +9,10 @@ import com.noticemedan.map.model.osm.OSMWay;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
+import com.noticemedan.map.view.Address;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.HashMap;
 import lombok.NoArgsConstructor;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -24,8 +27,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
@@ -109,12 +110,14 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 
 	public class OsmHandler extends DefaultHandler {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
-		Map<Long, OSMWay> idToWay = new HashMap<>();
-		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
+		Map<Long, OSMWay> idToWay = HashMap.empty();
+		Map<OSMNode, OSMWay> coastlines = HashMap.empty();
+		Map<String, Address> addresses = HashMap.empty();
 		OSMWay way;
 		private double lonFactor;
 		private OSMType type;
 		private OSMRelation relation;
+		private Address address;
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -147,7 +150,15 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					type = OSMType.UNKNOWN;
 					break;
 				case "member":
-					OSMWay w = idToWay.get(Long.parseLong(attributes.getValue("ref")));
+					OSMWay w = idToWay
+							.get(Long.parseLong(attributes.getValue("ref")));
+
+					relation = relation.add(idToWay
+							.get(Long.parseLong(attributes.getValue("ref")))
+							.getOrElse(new OSMWay())
+					);
+
+
 					if (w != null) {
 						relation.add(w);
 					}

@@ -1,9 +1,14 @@
 package com.noticemedan.map.model.osm;
 
-import java.util.ArrayList;
+import io.vavr.collection.List;
 
-public class OSMWay extends ArrayList<OSMNode>{
-    public OSMNode from() {
+public class OSMWay extends List<OSMNode> {
+	@Override
+	public int length() {
+		return 0;
+	}
+
+	public OSMNode from() {
         return get(0);
     }
 
