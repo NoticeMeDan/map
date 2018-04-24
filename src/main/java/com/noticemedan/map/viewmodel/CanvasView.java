@@ -112,7 +112,7 @@ public class CanvasView extends JComponent {
         g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
     }
 
-    public void paintOsmElement(BasicStroke stroke, OsmElement osmElement, String drawMethod) {
+    private void paintOsmElement(BasicStroke stroke, OsmElement osmElement, String drawMethod) {
 		this.g.setStroke(stroke);
     	this.g.setPaint(osmElement.getColor());
 		if (osmElement.getShape().intersects(this.viewRect)) {
