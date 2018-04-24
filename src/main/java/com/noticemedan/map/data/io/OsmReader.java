@@ -35,21 +35,14 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	private List<OsmElement> osmElements = List.empty();
 	private List<OsmElement> osmCoastlineElements = List.empty();
 	private FileInputStream inputStream;
+	private String filename;
 
 	public OsmReader(FileInputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 
-//	private EnumMap<OSMType, List<OsmElement>> initializeMap() {
-//		EnumMap<OSMType, List<OsmElement>> map = new EnumMap<>(OSMType.class);
-//		for (OSMType type : OSMType.values()) {
-//			map.put(type, List.empty());
-//		}
-//		return map;
-//	}
-
-	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream) {
-		String filename = ".osm"; // TODO @Simon
+	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream, String filename) {
+		this.filename = filename;
 		if (filename.endsWith(".osm")) {
 			readFromOSM(new InputSource(fileInputStream));
 		} else if (filename.endsWith(".zip")) {
@@ -82,7 +75,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	public void readFromOSM(InputSource filename) {
 		try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			xmlReader.setContentHandler(new OsmHandler());
+			xmlReader.setContentHandler(new OSMHandler());
 			xmlReader.parse(filename);
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();
@@ -111,10 +104,10 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 
 	@Override
 	public List<List<OsmElement>> get() {
-		return this.getShapesFromFile(this.inputStream);
+		return this.getShapesFromFile(this.inputStream, this.filename);
 	}
 
-	public class OsmHandler extends DefaultHandler {
+	public class OSMHandler extends DefaultHandler {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
 		Map<Long, OSMWay> idToWay = new HashMap<>();
 		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
