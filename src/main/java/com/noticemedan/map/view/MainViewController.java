@@ -12,10 +12,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
+
 import java.awt.Dimension;
 import javax.swing.SwingUtilities;
 
 public class MainViewController {
+	@Getter
+	private static CanvasView canvasView = new CanvasView();
 	FavoritePoiManager favoritePoiManager;
 
 	@FXML
@@ -58,16 +62,16 @@ public class MainViewController {
 	private void insertOSMPane() {
 		Dimension screenSize = new Dimension(1100, 650);
 		swingNode = new SwingNode();
-		CanvasView canvas = new CanvasView();
-		canvas.setSize(screenSize);
+		canvasView = new CanvasView();
+		canvasView.setSize(screenSize);
 		System.out.println(Entities.writeOut());
-		canvas.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		canvas.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		canvas.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
-		this.mouseController = new MouseController(canvas);
-		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvas));
+		canvasView.pan(-Entities.getMinLon(), -Entities.getMaxLat());
+		canvasView.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		canvasView.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		this.mouseController = new MouseController(canvasView);
+		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvasView));
 
-		SwingUtilities.invokeLater(() -> swingNode.setContent(canvas));
+		SwingUtilities.invokeLater(() -> swingNode.setContent(canvasView));
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
 
