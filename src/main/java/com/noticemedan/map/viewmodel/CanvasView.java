@@ -15,12 +15,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 public class CanvasView extends JComponent {
-    private boolean useAntiAliasing = false;
+    @Setter @Getter
+	private boolean antiAliasing = false;
     private AffineTransform transform = new AffineTransform();
 	Forest forest;
     private double fps = 0.0;
@@ -37,7 +37,7 @@ public class CanvasView extends JComponent {
 	@Setter @Getter
 	private boolean logRangeSearchSize = false;
 	@Setter @Getter
-	private boolean logZoomLevelSize = false;
+	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 
@@ -68,18 +68,16 @@ public class CanvasView extends JComponent {
             e.printStackTrace();
         }
 
-		if (false /*useAntiAliasing*/) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-        }
+		/*if (antiAliasing) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }*/
 
-		/*for (OsmElement element : forest.getCoastlines()) {
+		for (OsmElement element : forest.getCoastlines()) {
 			g.setPaint(element.getColor());
         	if(element.getOsmType() == OSMType.COASTLINE) {
 				g.fill(element.getShape());
 			}
-        }*/
-
+        }
 
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
 		List<OsmElement> result = forest.rangeSearch(viewArea, zoomLevel);
@@ -90,29 +88,50 @@ public class CanvasView extends JComponent {
 				case HIGHWAY:
 					this.paintOsmElement(new BasicStroke(0.0001f), osmElement, "draw");
 					break;
-
-				case ROAD:
-					this.paintOsmElement(new BasicStroke(0.00001f), osmElement, "draw");
-					break;
-
-				case COASTLINE:
 				case UNKNOWN:
-				case MOTORWAY:
 				case TRUNK:
 				case SAND:
+				case MOTORWAY:
+					if (zoomLevel > 0) stroke = new BasicStroke(0.005f);
+					if (zoomLevel > 1) stroke = new BasicStroke(0.0025f);
+					if (zoomLevel > 2) stroke = new BasicStroke(0.0007f);
+					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
+					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
+					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
+					this.paintOsmElement(stroke, osmElement, "draw");
+					break;
 				case PRIMARY:
-					if (zoomLevel > 0) stroke = new BasicStroke(0.003f);
-					if (zoomLevel > 2.5) stroke = new BasicStroke(0.0007f);
-					if (zoomLevel > 7) stroke = new BasicStroke(0.0003f);
+					if (zoomLevel > 0) stroke = new BasicStroke(0.0025f);
+					if (zoomLevel > 2) stroke = new BasicStroke(0.0007f);
+					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
 					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
 					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
 					this.paintOsmElement(stroke, osmElement, "draw");
 					break;
 				case SECONDARY:
+					stroke = new BasicStroke(0.0007f);
+					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
+					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
+					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
+					this.paintOsmElement(stroke, osmElement, "draw");
+					break;
 				case TERTIARY:
+					stroke = new BasicStroke(0.0007f);
+					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
+					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
+					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
+					this.paintOsmElement(stroke, osmElement, "draw");
+					break;
+				case ROAD:
+					this.paintOsmElement(new BasicStroke(0.00004f), osmElement, "draw");
+					break;
+				case FOOTWAY:
+					this.paintOsmElement(new BasicStroke(0.00002f), osmElement, "draw");
+					break;
 				case PLAYGROUND:
-
-
+				case PARK:
+				case FOREST:
+				case GARDEN:
 				case GRASSLAND:
 				case BUILDING:
 				case HEATH:
@@ -120,7 +139,6 @@ public class CanvasView extends JComponent {
 				case WATER:
 					this.paintOsmElement(new BasicStroke(Float.MIN_VALUE), osmElement, "fill");
 					break;
-
 				default:
 					break;
 			}
@@ -143,7 +161,7 @@ public class CanvasView extends JComponent {
 
 	private void performanceTest() {
 		if (logRangeSearchSize) log.info("Range search size: " + forest.rangeSearch(viewArea).size());
-		if (logZoomLevelSize) log.info("ZoomLevel: " + zoomLevel);
+		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
 
@@ -160,7 +178,7 @@ public class CanvasView extends JComponent {
 	}
 
     public void toggleAntiAliasing() {
-        useAntiAliasing = !useAntiAliasing;
+        antiAliasing = !antiAliasing;
         repaint();
     }
 
@@ -191,10 +209,10 @@ public class CanvasView extends JComponent {
     }
 
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-		double x1 = toModelCoords(p1).getX() - 0.03;
-		double y1 = toModelCoords(p1).getY() - 0.03;
-		double x2 = toModelCoords(p2).getX() + 0.03;
-		double y2 = toModelCoords(p2).getY() + 0.03;
+		double x1 = toModelCoords(p1).getX() - 0.02;
+		double y1 = toModelCoords(p1).getY() - 0.02;
+		double x2 = toModelCoords(p2).getX() + 0.02;
+		double y2 = toModelCoords(p2).getY() + 0.02;
 
 		return new Rect(x1, y1, x2, y2);
 	}

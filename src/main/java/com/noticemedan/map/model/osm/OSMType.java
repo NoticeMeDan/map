@@ -2,6 +2,7 @@ package com.noticemedan.map.model.osm;
 
 public enum OSMType {
 	ROAD,
+	FOOTWAY,
 	HIGHWAY,
 	PRIMARY,
 	SECONDARY,
@@ -10,7 +11,6 @@ public enum OSMType {
 	MOTORWAY,
 	TRUNK,
 	WATER,
-	TREE,
 	GRASSLAND,
 	SAND,
 	BUILDING,
@@ -20,5 +20,6 @@ public enum OSMType {
 	PLAYGROUND,
 	GARDEN,
 	PARK,
+	FOREST,
 	UNKNOWN
 }

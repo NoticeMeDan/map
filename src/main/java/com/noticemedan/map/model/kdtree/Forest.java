@@ -34,26 +34,26 @@ public class Forest implements ForestInterface{
 		osmElements.forEach(osmElement -> {
 			switch (osmElement.getOsmType()) {
 				case MOTORWAY:
-				case PRIMARY:
 					zoom0.add(osmElement);
 					break;
-				case HIGHWAY:
-				case SECONDARY:
-				case TRUNK:
-				case GRASSLAND:
-				case HEATH:
-				case WATER:
-				case SAND:
+				case PRIMARY:
 					zoom1.add(osmElement);
 					break;
+				case SECONDARY:
 				case TERTIARY:
-				case BUILDING:
-				case TREE_ROW:
-				case PLAYGROUND:
 					zoom2.add(osmElement);
 					break;
+				case WATER:
+				case GRASSLAND:
+				case HEATH:
+				case PARK:
 				case ROAD:
-					zoom2.add(osmElement);
+				case FOREST:
+					zoom3.add(osmElement);
+					break;
+				case BUILDING:
+				case PLAYGROUND:
+					zoom4.add(osmElement);
 					break;
 				default:
 					break;
@@ -77,9 +77,11 @@ public class Forest implements ForestInterface{
 	public List<OsmElement> rangeSearch(Rect searchQuery, double zoomLevel) {
 		ArrayList searchResults = new ArrayList<>();
 
-		if (zoomLevel > 150) searchResults.addAll(trees[2].rangeSearch(searchQuery));
+		if (zoomLevel > 50) searchResults.addAll(trees[4].rangeSearch(searchQuery));
+		if (zoomLevel > 15) searchResults.addAll(trees[3].rangeSearch(searchQuery));
+		if (zoomLevel > 1) searchResults.addAll(trees[2].rangeSearch(searchQuery));
+		if (zoomLevel > 0.5) searchResults.addAll(trees[1].rangeSearch(searchQuery));
 		if (zoomLevel > 0) searchResults.addAll(trees[0].rangeSearch(searchQuery));
-
 
 		return searchResults;
 	}

@@ -160,29 +160,27 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					switch (attributes.getValue("k")) {
 						case "highway":
 							type = OSMType.ROAD;
-							if (attributes.getValue("v").equals("primary")) {
-								type = OSMType.PRIMARY;
-							}
+							if (attributes.getValue("v").equals("motorway")) type = OSMType.MOTORWAY;
+							if (attributes.getValue("v").equals("primary")) type = OSMType.PRIMARY;
+							if (attributes.getValue("v").equals("secondary")) type = OSMType.SECONDARY;
+							if (attributes.getValue("v").equals("tertiary")) type = OSMType.TERTIARY;
 							break;
 						case "natural":
-							if (attributes.getValue("v").equals("water")) {
-								type = OSMType.WATER;
-							}
-							else if (attributes.getValue("v").equals("heath")) {
-								type = OSMType.HEATH;
-							}
-							else if (attributes.getValue("v").equals("tree_row")) {
-								type = OSMType.TREE_ROW;
-							}
-							else if (attributes.getValue("v").equals("grassland")) {
-								type = OSMType.GRASSLAND;
-							}
-							else if (attributes.getValue("v").equals("coastline")) {
-								type = OSMType.COASTLINE;
-							}
+							if (attributes.getValue("v").equals("water")) type = OSMType.WATER;
+							else if (attributes.getValue("v").equals("heath")) type = OSMType.HEATH;
+							else if (attributes.getValue("v").equals("tree_row")) type = OSMType.TREE_ROW;
+							else if (attributes.getValue("v").equals("grassland")) type = OSMType.GRASSLAND;
+							else if (attributes.getValue("v").equals("grassland")) type = OSMType.FOREST;
+							else if (attributes.getValue("v").equals("coastline")) type = OSMType.COASTLINE;
+							break;
+						case "leisure":
+							if (attributes.getValue("v").equals("park")) type = OSMType.PARK;
 							break;
 						case "building":
 							type = OSMType.BUILDING;
+							break;
+						case "landuse":
+							if (attributes.getValue("v").equals("forest")) type = OSMType.FOREST;
 							break;
 						default:
 							break;
@@ -249,7 +247,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 							path.setWindingRule(Path2D.WIND_EVEN_ODD);
 							node = way.get(0);
 							path.moveTo(node.getLon(), node.getLat());
-							for (int i = 1; i < way.size(); i++) {
+							for (int i = 1; i < way.size(); i = i + 50) {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
@@ -262,5 +260,4 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 			}
 		}
 	}
-
 }

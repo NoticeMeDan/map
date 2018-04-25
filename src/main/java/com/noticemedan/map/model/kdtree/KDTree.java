@@ -85,6 +85,8 @@ public class KDTree {
 
 	public List<OsmElement> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
+		if (rootNode == null) return this.rangeSearchQueryResults;
+
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		searchTree(rootNode, query, startBoundingBox);
 		return this.rangeSearchQueryResults;

@@ -34,6 +34,14 @@ public class KeyboardHandler implements EventHandler<KeyEvent> {
 				if (canvas.isLogPerformanceTimeDrawVSRangeSearch()) canvas.setLogPerformanceTimeDrawVSRangeSearch(false);
 				else canvas.setLogPerformanceTimeDrawVSRangeSearch(true);
 				break;
+			case "r":
+				if (canvas.isLogRangeSearchSize()) canvas.setLogRangeSearchSize(false);
+				else canvas.setLogRangeSearchSize(true);
+				break;
+			case "z":
+				if (canvas.isLogZoomLevel()) canvas.setLogZoomLevel(false);
+				else canvas.setLogZoomLevel(true);
+				break;
 			case "+":
 				canvas.zoomToCenter(1.1);
 				break;
