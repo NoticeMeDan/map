@@ -18,9 +18,8 @@ public class KDTree {
 	private ArrayList<OsmElement> rangeSearchQueryResults;
 
 	public KDTree(OsmElement[] points, int maxNumberOfElementsAtLeaf) {
-		if (points.length == 0) throw new RuntimeException("Length of passed array to KD Tree is 0");
+		if (points.length == 0) return;
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
-
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
 		this.rootNode = buildKDTree(points, 0);
 	}

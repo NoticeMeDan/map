@@ -161,7 +161,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 						case "highway":
 							type = OSMType.ROAD;
 							if (attributes.getValue("v").equals("primary")) {
-								type = OSMType.HIGHWAY;
+								type = OSMType.PRIMARY;
 							}
 							break;
 						case "natural":

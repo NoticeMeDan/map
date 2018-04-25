@@ -6,12 +6,12 @@ import javafx.scene.input.MouseEvent;
 /**
  * Source: https://stackoverflow.com/questions/41079498/javafx-differentiate-between-click-and-click-dragged
  */
-public class ClickNotDragHandler implements EventHandler<MouseEvent> {
+public class ClickDragHandler implements EventHandler<MouseEvent> {
 	private EventHandler<MouseEvent> onDraggedEventHandler;
 	private EventHandler<MouseEvent> onClickedEventHandler;
 	private boolean dragging = false;
 
-	public ClickNotDragHandler(EventHandler<MouseEvent> onDraggedEventHandler, EventHandler<MouseEvent> onClickedEventHandler) {
+	public ClickDragHandler(EventHandler<MouseEvent> onDraggedEventHandler, EventHandler<MouseEvent> onClickedEventHandler) {
 		this.onDraggedEventHandler = onDraggedEventHandler;
 		this.onClickedEventHandler = onClickedEventHandler;
 	}
