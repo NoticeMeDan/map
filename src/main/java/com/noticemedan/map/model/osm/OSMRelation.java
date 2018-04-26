@@ -1,7 +1,6 @@
 package com.noticemedan.map.model.osm;
 
-import io.vavr.collection.List;
+import java.util.ArrayList;
 
-public class OSMRelation extends List<OSMWay> {
-	imp
+public class OSMRelation extends ArrayList<OSMWay> {
 }
