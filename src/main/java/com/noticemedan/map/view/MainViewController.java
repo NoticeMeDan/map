@@ -8,13 +8,18 @@ import com.noticemedan.map.viewmodel.MouseController;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import java.awt.Dimension;
 import javax.swing.SwingUtilities;
 
 public class MainViewController {
 	FavoritePoiManager favoritePoiManager;
+
+	@FXML
+	AnchorPane mainView;
 
 	//searchFieldImitator
 	@FXML Button routeButton;
@@ -36,7 +41,10 @@ public class MainViewController {
 	@FXML FavoritePoiPaneController favoritePoiPaneController;
 	@FXML SearchPaneController searchPaneController;
 	@FXML RoutePaneController routePaneController;
+
+	//Canvas controllers
 	private MouseController mouseController;
+
 
 	public void initialize() {
 		favoritePoiManager = new FavoritePoiManager();
@@ -50,14 +58,16 @@ public class MainViewController {
 	private void insertOSMPane() {
 		Dimension screenSize = new Dimension(1100, 650);
 		swingNode = new SwingNode();
-		CanvasView cv = new CanvasView();
-		cv.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
-		cv.setSize(screenSize);
+		CanvasView canvas = new CanvasView();
+		canvas.setSize(screenSize);
 		System.out.println(Entities.writeOut());
-		cv.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		cv.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		this.mouseController = new MouseController(cv);
-		SwingUtilities.invokeLater(() -> swingNode.setContent(cv));
+		canvas.pan(-Entities.getMinLon(), -Entities.getMaxLat());
+		canvas.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		canvas.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		this.mouseController = new MouseController(canvas);
+		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvas));
+
+		SwingUtilities.invokeLater(() -> swingNode.setContent(canvas));
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
 
@@ -67,7 +77,7 @@ public class MainViewController {
 		routeButton.setOnAction(event -> routePaneController.openRoutePane());
 
 		//TODO: @Emil Point2D or Coordinate? Save proper coordinates (real lat lon)
-		swingNode.addEventHandler(MouseEvent.ANY, new ClickNotDragHandler(
+		swingNode.addEventHandler(MouseEvent.ANY, new ClickDragHandler(
 				event -> poiBoxViewController.closePoiBox(),
 				event -> poiBoxViewController.openPoiBox(
 						new Coordinate(

@@ -1,6 +1,6 @@
 package com.noticemedan.map.model.utilities;
 
-import com.noticemedan.map.model.osm.OSMNode;
+import com.noticemedan.map.model.osm.OsmNode;
 
 public class LongToOSMNodeMap {
     private Node[] table;
@@ -26,7 +26,7 @@ public class LongToOSMNodeMap {
         return null;
     }
 
-    class Node extends OSMNode {
+    class Node extends OsmNode {
         long id;
         Node next;
 
