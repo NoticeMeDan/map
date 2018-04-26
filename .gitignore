@@ -39,6 +39,4 @@ META_INF
 *.pdf
 
 # OSM stuff
-denmark-latest.osm
-denmark-latest.osm.zip
-denmark.zip
+*.osm
