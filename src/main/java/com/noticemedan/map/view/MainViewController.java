@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 
 public class MainViewController {
 	@Getter
-	private static CanvasView canvasView = new CanvasView();
+	private static CanvasView canvasView;
 	FavoritePoiManager favoritePoiManager;
 
 	@FXML
