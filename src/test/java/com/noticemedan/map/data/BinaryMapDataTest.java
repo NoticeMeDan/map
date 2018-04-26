@@ -63,14 +63,15 @@ public class BinaryMapDataTest {
 		assertEquals(this.before,this.after);
 	}
 
-	@Test(dependsOnMethods = "equalArrays")
+	// Binary file handling will be done differently, so the following test is irrelevant.
+/*	@Test(dependsOnMethods = "equalArrays")
 	void equalElements() {
 		System.out.println("TEST 4 - ELEMENTS ARE THE SAME");
 
 		for(int i = 0; i < this.after.length; i++) {
 			assertEquals(this.after[i], this.before[i]);
 		}
-	}
+	}*/
 
 	@AfterTest
 	void clearFiles() {
