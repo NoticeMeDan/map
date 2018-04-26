@@ -31,7 +31,10 @@ public class CanvasView extends JComponent {
 	private double zoomLevel;
 	private boolean isShapeOpen;
 
-	//Performance test fields
+	private boolean showReversedBorders = false;
+	private boolean showFPS = false;
+
+    //Performance test fields
 	//TODO @emil delete when finished performance tuning
 	public double timeDraw;
 	public double timeRangeSearch;
@@ -41,6 +44,7 @@ public class CanvasView extends JComponent {
 	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
+
 
 	public CanvasView() {
 		this.forest = new Forest();
@@ -72,16 +76,18 @@ public class CanvasView extends JComponent {
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
-		long t2 = System.nanoTime();
-		fps = (fps + 1e9/ (t2 - t1)) / 2;
-		g.setTransform(new AffineTransform());
-		g.setColor(Color.WHITE);
-		g.fillRect(getWidth() - 85, 5, 80, 20);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		g.setColor(Color.BLACK);
-		g.drawRect(getWidth() - 85, 5, 80, 20);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
+		if (showFPS) {
+			long t2 = System.nanoTime();
+			fps = (fps + 1e9 / (t2 - t1)) / 2;
+			g.setTransform(new AffineTransform());
+			g.setColor(Color.WHITE);
+			g.fillRect(getWidth() - 85, 5, 80, 20);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			g.setColor(Color.BLACK);
+			g.drawRect(getWidth() - 85, 5, 80, 20);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
+		}
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
@@ -211,12 +217,22 @@ public class CanvasView extends JComponent {
         return null;
     }
 
+	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-		double x1 = toModelCoords(p1).getX() - 0.02;
-		double y1 = toModelCoords(p1).getY() - 0.02;
-		double x2 = toModelCoords(p2).getX() + 0.02;
-		double y2 = toModelCoords(p2).getY() + 0.02;
+		int borderFactor = (showReversedBorders) ? -1 : 1;
+		double x1 = toModelCoords(p1).getX() - 0.02 * borderFactor;
+		double y1 = toModelCoords(p1).getY() - 0.02 * borderFactor;
+		double x2 = toModelCoords(p2).getX() + 0.02 * borderFactor;
+		double y2 = toModelCoords(p2).getY() + 0.02 * borderFactor;
 
 		return new Rect(x1, y1, x2, y2);
+	}
+
+	public void toggleFPS() {
+		this.showFPS = !this.showFPS;
+	}
+
+	public void toggleReversedBorders() {
+		this.showReversedBorders = !this.showReversedBorders;
 	}
 }

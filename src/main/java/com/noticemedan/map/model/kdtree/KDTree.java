@@ -29,16 +29,14 @@ public class KDTree {
 	 * @return 		Root node of kdtree.
 	 */
 	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
+		// Define how many osmElements there are in a leaf node.
+		if (points.length <= maxNumberOfElementsAtLeaf ) return new KDTreeNode(points, depth);
+
 		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
 		OsmElement[] firstHalfArray = pointsSplitted._1;
 		OsmElement[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
-
-		// Define how many osmElements there are in a leaf node.
-		if (points.length <= maxNumberOfElementsAtLeaf ) {
-			return new KDTreeNode(points, depth);
-		}
 
 		if (depth % 2 == 0) { // If depth even, split by x-value
 			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());

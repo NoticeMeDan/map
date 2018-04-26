@@ -247,7 +247,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 							path.setWindingRule(Path2D.WIND_EVEN_ODD);
 							node = way.get(0);
 							path.moveTo(node.getLon(), node.getLat());
-							for (int i = 1; i < way.size(); i = i + 50) {
+							for (int i = 1; i < way.size(); i++) {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
