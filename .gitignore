@@ -40,3 +40,4 @@ META_INF
 
 # OSM stuff
 *.osm
+*.osm.zip
