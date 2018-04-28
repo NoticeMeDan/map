@@ -38,6 +38,8 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 	@Getter
 	private List<OsmElement> osmElements = List.empty();
 	private List<OsmElement> osmCoastlineElements = List.empty();
+	@Getter
+	private List<Address> addresses = List.empty();
 	private InputStream inputStream;
 	private String filename;
 
@@ -117,7 +119,6 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
 		Map<Long, List<OsmNode>> idToWay = HashMap.empty();
 		Map<OsmNode, List<OsmNode>> coastlines = HashMap.empty();
-		List<Address> addresses = List.empty();
 		Address address = new Address();
 		private double lonFactor;
 		private OsmType type;
@@ -168,11 +169,10 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					break;
 				case "tag":
 					String keyValue = attributes.getValue("k");
-					OsmNode currentNode;
 					if (keyValue.contains("addr:")) {
 						keyValue = keyValue.substring(5);
 						type = OsmType.ADDRESS;
-						currentNode = idToNode.get(currentNodeID);
+						OsmNode currentNode = idToNode.get(currentNodeID);
 						address.setLat(currentNode.getLat());
 						address.setLon(currentNode.getLon());
 					}
