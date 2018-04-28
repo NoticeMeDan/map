@@ -3,6 +3,7 @@ package com.noticemedan.map.viewmodel;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.pathfinding.PathEdge;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import lombok.Getter;
@@ -11,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +20,7 @@ public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
     private AffineTransform transform = new AffineTransform();
-	Forest forest;
+	private Forest forest;
     private double fps = 0.0;
     private Rectangle2D viewRect;
     private Graphics2D g;
@@ -234,5 +232,9 @@ public class CanvasView extends JComponent {
 
 	public void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
+	}
+
+	public void drawShortestPath (io.vavr.collection.List<PathEdge> sp) {
+		sp.forEach(e -> this.g.draw(e.toShape()));
 	}
 }
