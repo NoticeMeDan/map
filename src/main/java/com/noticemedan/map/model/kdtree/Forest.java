@@ -75,7 +75,7 @@ public class Forest implements ForestInterface{
 
 	@Override
 	public List<OsmElement> rangeSearch(Rect searchQuery, double zoomLevel) {
-		ArrayList searchResults = new ArrayList<>();
+		ArrayList<OsmElement> searchResults = new ArrayList<>();
 
 		if (zoomLevel > 50) searchResults.addAll(trees[4].rangeSearch(searchQuery));
 		if (zoomLevel > 15) searchResults.addAll(trees[3].rangeSearch(searchQuery));
