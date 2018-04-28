@@ -2,7 +2,6 @@ package com.noticemedan.map.model;
 
 import com.noticemedan.map.model.utilities.Coordinate;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
@@ -39,21 +38,21 @@ public class CoordinateTests {
 	@Ignore //Returns -0.0!
 	public void testToLat_MinimumCase() {
 		double convertedCanvasLat = Coordinate.lat2CanvasLat(0);
-		double reversedLat = Coordinate.canvasLat2Lan(convertedCanvasLat);
+		double reversedLat = Coordinate.canvasLat2Lat(convertedCanvasLat);
 		assertTrue(0.0000000001 >= reversedLat && reversedLat >= 0 );
 	}
 
 	@Test
 	public void testToLat_AverageCase() {
 		double convertedCanvasLat = Coordinate.lat2CanvasLat(lat);
-		double reversedLat = Coordinate.canvasLat2Lan(convertedCanvasLat);
+		double reversedLat = Coordinate.canvasLat2Lat(convertedCanvasLat);
 		assertTrue(lat > reversedLat && reversedLat > 55.1117608999000 );
 	}
 
 	@Test
 	public void testToLat_MaximumCase() {
 		double convertedCanvasLat = Coordinate.lat2CanvasLat(90);
-		double reversedLat = Coordinate.canvasLat2Lan(convertedCanvasLat);
+		double reversedLat = Coordinate.canvasLat2Lat(convertedCanvasLat);
 		assertTrue(90.0000001 > reversedLat && reversedLat > 89.99999999 );
 	}
 }

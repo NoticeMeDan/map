@@ -13,6 +13,7 @@ public class Coordinate extends Point2D implements Serializable {
 	private double x;
 	private double y;
 
+	// TODO @Magnus why even have this constructor? Can't we just call its parent constructur?
 	public Coordinate(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -47,7 +48,7 @@ public class Coordinate extends Point2D implements Serializable {
 	 * @param canvasLat		The canvas latitude (using mercator projection)
 	 * @return				WGS-84 latitude.
 	 */
-	public static double canvasLat2Lan(double canvasLat) {
+	public static double canvasLat2Lat(double canvasLat) {
 		double canvasLatRad = Math.toRadians(canvasLat);
 		double latInRad = -(2*Math.atan(Math.exp(canvasLatRad))-Math.PI/2);
 		double latInDeg = Math.toDegrees(latInRad);

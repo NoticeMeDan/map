@@ -13,7 +13,7 @@ import static java.lang.Math.pow;
 public class MouseController extends MouseAdapter {
     private CanvasView canvas;
     @Getter private Point2D lastMousePosition;
-    @Getter private Point2D lastMousePositionModelCoords;
+    @Getter private Point2D lastMousePositionCanvasCoords;
 
 
     public MouseController(CanvasView c) {
@@ -38,7 +38,7 @@ public class MouseController extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
 		canvas.toggleAntiAliasing();
        	lastMousePosition = e.getPoint();
-		lastMousePositionModelCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
+		lastMousePositionCanvasCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
     }
 
     @Override
