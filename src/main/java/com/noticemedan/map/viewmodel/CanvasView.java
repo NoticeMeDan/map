@@ -3,6 +3,7 @@ package com.noticemedan.map.viewmodel;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import lombok.Getter;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
+    @Getter
     private AffineTransform transform = new AffineTransform();
 	Forest forest;
     private double fps = 0.0;
@@ -208,22 +210,13 @@ public class CanvasView extends JComponent {
 		zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
 	}
 
-    public Point2D toModelCoords(Point2D p) {
-        try {
-			return transform.inverseTransform(p, null);
-        } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
 		int borderFactor = (showReversedBorders) ? -1 : 1;
-		double x1 = toModelCoords(p1).getX() - 0.02 * borderFactor;
-		double y1 = toModelCoords(p1).getY() - 0.02 * borderFactor;
-		double x2 = toModelCoords(p2).getX() + 0.02 * borderFactor;
-		double y2 = toModelCoords(p2).getY() + 0.02 * borderFactor;
+		double x1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getX() - 0.02 * borderFactor;
+		double y1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getY() - 0.02 * borderFactor;
+		double x2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getX() + 0.02 * borderFactor;
+		double y2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getY() + 0.02 * borderFactor;
 
 		return new Rect(x1, y1, x2, y2);
 	}

@@ -1,5 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
+import com.noticemedan.map.model.utilities.Coordinate;
 import lombok.Getter;
 
 import java.awt.event.MouseAdapter;
@@ -37,17 +38,13 @@ public class MouseController extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
 		canvas.toggleAntiAliasing();
        	lastMousePosition = e.getPoint();
-		lastMousePositionModelCoords = canvas.toModelCoords(lastMousePosition);
+		lastMousePositionModelCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
 		canvas.toggleAntiAliasing();
 	}
-
-    public void mouseMoved(MouseEvent e) {
-        Point2D modelCoords = canvas.toModelCoords(e.getPoint());
-    }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {

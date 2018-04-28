@@ -6,6 +6,7 @@ import com.noticemedan.map.model.osm.OSMNode;
 import com.noticemedan.map.model.osm.OSMRelation;
 import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.osm.OSMWay;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
@@ -128,18 +129,16 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					double minLon = Double.parseDouble(attributes.getValue("minlon"));
 					double maxLat = Double.parseDouble(attributes.getValue("maxlat"));
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
-					double avgLat = minLat + (maxLat - minLat) / 2;
-					lonFactor = Math.cos(avgLat / 180 * Math.PI);
-					Entities.setMinLon(minLon * lonFactor);
-					Entities.setMaxLon(maxLon * lonFactor);
-					Entities.setMaxLat(-maxLat);
-					Entities.setMinLat(-minLat);
+					Entities.setMinLon(minLon);
+					Entities.setMaxLon(maxLon);
+					Entities.setMaxLat(Coordinate.lat2CanvasLat(maxLat));
+					Entities.setMinLat(Coordinate.lat2CanvasLat(minLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
-					idToNode.put(id, lonFactor * lon, -lat);
+					idToNode.put(id, lon, Coordinate.lat2CanvasLat(lat));
 					break;
 				case "way":
 					way = new OSMWay();
