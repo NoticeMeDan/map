@@ -29,6 +29,7 @@ public class CanvasView extends JComponent {
     private Rect viewArea;
     @Setter
 	private double zoomLevel;
+	private boolean isShapeOpen;
 
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
@@ -54,93 +55,27 @@ public class CanvasView extends JComponent {
     @Override
 
     public void paint(Graphics _g) {
+		this.g = (Graphics2D) _g;
+
 		Stopwatch stopwatchDraw = new Stopwatch();
-    	long t1 = System.nanoTime();
-		this.viewArea = viewPortCoords(new Point2D.Double(getX(), getY()), new Point2D.Double(getX() + getWidth(), getY() + getHeight()));
-        this.g = (Graphics2D) _g;
+		long t1 = System.nanoTime();
+		this.viewArea = viewPortCoords(
+				new Point2D.Double(this.getX(), this.getY()),
+				new Point2D.Double(this.getX() + this.getWidth(), this.getY() + this.getHeight())
+		);
+
 		this.viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
-		BasicStroke stroke = new BasicStroke(Float.MIN_VALUE);
 
-        g.setPaint(new Color(179, 227, 245));
-        g.fill(this.viewRect);
+		//Paint background
+        this.g.setPaint(new Color(179, 227, 245));
+        this.g.fill(this.viewRect);
 
-        g.transform(this.transform);
-        try {
-            this.viewRect = this.transform.createInverse().createTransformedShape(viewRect).getBounds2D();
-        } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-        }
+		transformViewRect();
+        drawCoastlines();
+        drawAllElements();
+		performanceTest();
 
-		/*if (antiAliasing) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }*/
-
-		for (OsmElement element : forest.getCoastlines()) {
-			g.setPaint(element.getColor());
-        	if(element.getOsmType() == OsmType.COASTLINE) {
-				g.fill(element.getShape());
-			}
-        }
-
-		Stopwatch stopwatchRangeSearch = new Stopwatch();
-		List<OsmElement> result = forest.rangeSearch(viewArea, zoomLevel);
-		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
-
-		for ( OsmElement osmElement : result) {
-			switch (osmElement.getOsmType()) {
-				case HIGHWAY:
-					this.paintOsmElement(new BasicStroke(0.0001f), osmElement, "draw");
-					break;
-				case UNKNOWN:
-				case TRUNK:
-				case SAND:
-				case MOTORWAY:
-					if (zoomLevel > 0) stroke = new BasicStroke(0.005f);
-					if (zoomLevel > 1) stroke = new BasicStroke(0.0025f);
-					if (zoomLevel > 2) stroke = new BasicStroke(0.0007f);
-					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
-					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
-					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
-					this.paintOsmElement(stroke, osmElement, "draw");
-					break;
-				case PRIMARY:
-					if (zoomLevel > 0) stroke = new BasicStroke(0.0025f);
-					if (zoomLevel > 2) stroke = new BasicStroke(0.0007f);
-					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
-					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
-					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
-					this.paintOsmElement(stroke, osmElement, "draw");
-					break;
-				case SECONDARY:
-				case TERTIARY:
-					stroke = new BasicStroke(0.0007f);
-					if (zoomLevel > 5) stroke = new BasicStroke(0.0003f);
-					if (zoomLevel > 18) stroke = new BasicStroke(0.0001f);
-					if (zoomLevel > 130) stroke = new BasicStroke(0.00005f);
-					this.paintOsmElement(stroke, osmElement, "draw");
-					break;
-				case ROAD:
-					this.paintOsmElement(new BasicStroke(0.00004f), osmElement, "draw");
-					break;
-				case FOOTWAY:
-					this.paintOsmElement(new BasicStroke(0.00002f), osmElement, "draw");
-					break;
-				case PLAYGROUND:
-				case PARK:
-				case FOREST:
-				case GARDEN:
-				case GRASSLAND:
-				case BUILDING:
-				case HEATH:
-				case TREE_ROW:
-				case WATER:
-					this.paintOsmElement(new BasicStroke(Float.MIN_VALUE), osmElement, "fill");
-					break;
-				default:
-					break;
-			}
-		}
-
+		//TODO MOVE FPS COUNTER TO FXML
 		if (showFPS) {
 			long t2 = System.nanoTime();
 			fps = (fps + 1e9 / (t2 - t1)) / 2;
@@ -153,28 +88,103 @@ public class CanvasView extends JComponent {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
 		}
-        timeDraw = stopwatchDraw.elapsedTime();
-
-		performanceTest();
+		timeDraw = stopwatchDraw.elapsedTime();
     }
 
-	private void performanceTest() {
-		if (logRangeSearchSize) log.info("Range search size: " + forest.rangeSearch(viewArea).size());
-		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
-		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
-    }
+	private void transformViewRect() {
+		g.transform(this.transform);
+		try {
+			this.viewRect = this.transform.createInverse().createTransformedShape(this.viewRect).getBounds2D();
+		} catch (NoninvertibleTransformException e) {
+			e.printStackTrace();
+		}
+	}
 
-	private void paintOsmElement(BasicStroke stroke, OsmElement osmElement, String drawMethod) {
+	private void drawCoastlines() {
+		this.forest.getCoastlines().forEach(c -> {
+			this.g.setPaint(c.getColor());
+			this.g.fill(c.getShape());
+		});
+	}
+
+    private void drawAllElements() {
+		Stopwatch stopwatchRangeSearch = new Stopwatch();
+		List<OsmElement> result = forest.rangeSearch(viewArea, zoomLevel);
+		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
+
+		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
+
+		//All open elements
+		this.isShapeOpen = true;
+		paintByType(result,OsmType.UNKNOWN,getLowLevelStroke());
+		paintByType(result,OsmType.TRUNK, getLowLevelStroke());
+		paintByType(result,OsmType.SAND, getLowLevelStroke());
+		paintByType(result,OsmType.FOOTWAY, new BasicStroke(0.00002f));
+		paintByType(result,OsmType.ROAD, new BasicStroke(0.00004f));
+		paintByType(result,OsmType.TERTIARY, getHighLevelStroke());
+		paintByType(result,OsmType.SECONDARY, getHighLevelStroke());
+		paintByType(result,OsmType.PRIMARY, getMediumLevelStroke());
+		paintByType(result,OsmType.HIGHWAY,new BasicStroke(0.0001f));
+		paintByType(result,OsmType.MOTORWAY, getLowLevelStroke());
+	}
+
+	private void paintClosedElements (List<OsmElement> result, BasicStroke stroke) {
+		this.isShapeOpen = false;
+		paintByType(result,OsmType.PARK,stroke);
+		paintByType(result,OsmType.GRASSLAND,stroke);
+		paintByType(result,OsmType.FOREST,stroke);
+		paintByType(result,OsmType.GARDEN,stroke);
+		paintByType(result,OsmType.HEATH,stroke);
+		paintByType(result,OsmType.TREE_ROW,stroke);
+		paintByType(result,OsmType.PLAYGROUND,stroke);
+		paintByType(result,OsmType.WATER,stroke);
+		paintByType(result,OsmType.BUILDING,stroke);
+	}
+
+	private BasicStroke getLowLevelStroke() {
+		if (this.zoomLevel > 2) return getMediumLevelStroke();
+		else if (this.zoomLevel > 1) return new BasicStroke(0.0025f);
+		else if (this.zoomLevel > 0) return new BasicStroke(0.005f);
+		else return new BasicStroke(Float.MIN_VALUE);
+	}
+
+	private BasicStroke getMediumLevelStroke() {
+		if (this.zoomLevel > 5) return getHighLevelStroke();
+		else if (this.zoomLevel > 2) return new BasicStroke(0.0007f);
+		else if (this.zoomLevel > 0) return new BasicStroke(0.0025f);
+		else return new BasicStroke(Float.MIN_VALUE);
+	}
+
+	private BasicStroke getHighLevelStroke() {
+		if (this.zoomLevel > 130) return new BasicStroke(0.00005f);
+		else if (this.zoomLevel > 18) return new BasicStroke(0.0001f);
+		else if (this.zoomLevel > 5) return new BasicStroke(0.0003f);
+		else return new BasicStroke(0.0007f);
+	}
+
+    private void paintByType(List<OsmElement> elements, OsmType type, BasicStroke stroke) {
+		elements.stream()
+				.filter(e -> e.getOsmType() == type)
+				.forEach(e -> paintOsmElement(stroke, e));
+	}
+
+	private void paintOsmElement(BasicStroke stroke, OsmElement osmElement) {
 		this.g.setStroke(stroke);
-    	this.g.setPaint(osmElement.getColor());
+		this.g.setPaint(osmElement.getColor());
 		if (osmElement.getShape().intersects(this.viewRect)) {
-			if (drawMethod.equals("draw")) {
+			if (isShapeOpen) {
 				this.g.draw(osmElement.getShape());
 			} else {
 				this.g.fill(osmElement.getShape());
 			}
 		}
 	}
+
+	private void performanceTest() {
+		if (logRangeSearchSize) log.info("Range search size: " + forest.rangeSearch(viewArea).size());
+		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
+		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
+    }
 
     public void toggleAntiAliasing() {
         antiAliasing = !antiAliasing;
