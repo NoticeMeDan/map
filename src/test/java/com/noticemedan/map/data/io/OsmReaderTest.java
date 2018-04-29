@@ -41,8 +41,9 @@ public class OsmReaderTest {
 		assertEquals(osmElements.length(), 2);
 
 		OsmElement osmElement = osmElements.get(0);
-		assertEquals(osmElement.getAvgPoint(), new Coordinate(0.0, 0.0));
-		assertEquals(osmElement.getBounds(), new Rect(0.0, 0.0, 0.0, 0.0));
+		System.out.println(osmElement);
+		assertEquals(osmElement.getAvgPoint(), new Coordinate(7.089912651806818, -55.6736517));
+		assertEquals(osmElement.getBounds(), new Rect(7.089912651806818, -55.6736517, 7.089912651806818, -55.6736517));
 		assertEquals(osmElement.getOsmType(), OsmType.UNKNOWN);
 		assertTrue(osmElement.isDepthEven());
 	}
