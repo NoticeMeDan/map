@@ -51,14 +51,14 @@ public class KDTreeTest {
 	@Test
 	public void testSmallKDTree_LeafNodeValues_Positive() {
 		//Test some random leaf nodes values
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getOsmElements()[0].getAvgPoint().getX(), 2.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getOsmElements()[0].getAvgPoint().getY(), 3.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getX(), 2.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getY(), 3.0);
 
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getOsmElements()[0].getAvgPoint().getX(), 9.0);
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getOsmElements()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
 
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getOsmElements()[1].getAvgPoint().getX(), 1.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getOsmElements()[1].getAvgPoint().getY(), 10.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getX(), 1.0);
+		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getY(), 10.0);
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class KDTreeTest {
 	@Test
 	public void testSmallKDTree_NodeSplitValues_Negative() {
 		//Test some random node split values
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getOsmElements()[1].getAvgPoint().getX(), 8);
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getOsmElements()[1].getAvgPoint().getY(), 3);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getX(), 8);
+		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getY(), 3);
 
 	}
 
@@ -110,8 +110,8 @@ public class KDTreeTest {
 
 	@Test
 	public void oneElementKDTree_Postive() {
-		assertEquals(oneElementKDTree.getRootNode().getOsmElements()[0].getAvgPoint().getX(),1.0);
-		assertEquals(oneElementKDTree.getRootNode().getOsmElements()[0].getAvgPoint().getY(),10.0);
+		assertEquals(oneElementKDTree.getRootNode().getElements()[0].getAvgPoint().getX(),1.0);
+		assertEquals(oneElementKDTree.getRootNode().getElements()[0].getAvgPoint().getY(),10.0);
 	}
 
 	//Delete test?
@@ -135,7 +135,7 @@ public class KDTreeTest {
 	public void rectCompletelyInRect_Positive_1() {
 		Rect smallRect = new Rect(12,0,14,2);
 		Rect largeRect = new Rect(7,-2,15,2);
-		assertEquals(KDTree.rectCompletelyInRect(smallRect, largeRect), true);
+		assertEquals(Rect.rectCompletelyInRect(smallRect, largeRect), true);
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class KDTreeTest {
 		//If two rects are equal one is contained within the other
 		Rect smallRect = new Rect(7,0,14,2);
 		Rect largeRect = new Rect(7,0,14,2);
-		assertEquals(KDTree.rectCompletelyInRect(smallRect, largeRect), true);
+		assertEquals(Rect.rectCompletelyInRect(smallRect, largeRect), true);
 	}
 
 	@Test
@@ -151,29 +151,29 @@ public class KDTreeTest {
 		//With infinity
 		Rect smallRect = new Rect(7,0,14,2);
 		Rect largeRect = new Rect(Double.NEGATIVE_INFINITY,0,14,2);
-		assertEquals(KDTree.rectCompletelyInRect(smallRect, largeRect), true);
+		assertEquals(Rect.rectCompletelyInRect(smallRect, largeRect), true);
 	}
 
 	@Test
 	public void rectCompletelyInRect_Negative_1() {
 		Rect smallRect = new Rect(7,-2,15,2);
 		Rect largeRect = new Rect(7,0,14,2);
-		assertEquals(KDTree.rectCompletelyInRect(smallRect, largeRect), false);
+		assertEquals(Rect.rectCompletelyInRect(smallRect, largeRect), false);
 	}
 
 	@Test
 	public void rangeIntersectsRange_Positive_1() {
-		assertEquals(KDTree.rangeIntersectsRange(1,3,2,4), true);
+		assertEquals(Rect.rangeIntersectsRange(1,3,2,4), true);
 	}
 
 	@Test
 	public void rangeIntersectsRange_Positive_2_Infinity() {
-		assertEquals(KDTree.rangeIntersectsRange(Double.NEGATIVE_INFINITY,3,2,Double.POSITIVE_INFINITY), true);
+		assertEquals(Rect.rangeIntersectsRange(Double.NEGATIVE_INFINITY,3,2,Double.POSITIVE_INFINITY), true);
 	}
 
 	@Test
 	public void rangeIntersectsRange_Negative_1() {
-		assertEquals(KDTree.rangeIntersectsRange(2,3,4,6), false);
+		assertEquals(Rect.rangeIntersectsRange(2,3,4,6), false);
 	}
 
 	@Test
@@ -181,7 +181,7 @@ public class KDTreeTest {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(3,3));
 		Rect rect = new Rect(2,2,4,4);
-		assertEquals(KDTree.pointInRect(point, rect), true);
+		assertEquals(Rect.pointInRect(point, rect), true);
 	}
 
 	@Test
@@ -189,7 +189,7 @@ public class KDTreeTest {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(2,3));
 		Rect rect = new Rect(2,2,4,4);
-		assertEquals(KDTree.pointInRect(point, rect), true);
+		assertEquals(Rect.pointInRect(point, rect), true);
 	}
 
 	@Ignore @Test //TODO solve this test case in KDTree.pointInRect()
@@ -197,7 +197,7 @@ public class KDTreeTest {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(-3,-3));
 		Rect rect = new Rect(-2,-2,-4,-4);
-		assertEquals(KDTree.pointInRect(point, rect), true);
+		assertEquals(Rect.pointInRect(point, rect), true);
 	}
 
 	@Test
@@ -205,7 +205,7 @@ public class KDTreeTest {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(5,5));
 		Rect rect = new Rect(2,2,4,4);
-		assertEquals(KDTree.pointInRect(point, rect), false);
+		assertEquals(Rect.pointInRect(point, rect), false);
 	}
 
 	@Test
@@ -213,7 +213,7 @@ public class KDTreeTest {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(-5,-5));
 		Rect rect = new Rect(-2,-2,-4,-4);
-		assertEquals(KDTree.pointInRect(point, rect), false);
+		assertEquals(Rect.pointInRect(point, rect), false);
 	}
 
 	@Test

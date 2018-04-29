@@ -9,33 +9,32 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class KDTree {
 
-	@Getter private KDTreeNode rootNode;
+	@Getter private KdNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
 	private ArrayList<OsmElement> rangeSearchQueryResults;
 
-	public KDTree(OsmElement[] points, int maxNumberOfElementsAtLeaf) {
-		if (points.length == 0) return;
+	public KDTree(OsmElement[] elements, int maxNumberOfElementsAtLeaf) {
+		if (elements.length == 0) return;
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
-		this.rootNode = buildKDTree(points, 0);
+		this.rootNode = buildKDTree(elements, 0);
 	}
 
 	/**
 	 * @return 		Root node of kdtree.
 	 */
-	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
+	private KdNode buildKDTree(OsmElement[] elements, int depth) {
 		// Define how many osmElements there are in a leaf node.
-		if (points.length <= maxNumberOfElementsAtLeaf ) return new KDTreeNode(points, depth);
+		if (elements.length <= maxNumberOfElementsAtLeaf ) return new KdNode(elements, depth);
 
-		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
+		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(elements);
 		OsmElement[] firstHalfArray = pointsSplitted._1;
 		OsmElement[] secondHalfArray = pointsSplitted._2;
-		KDTreeNode parent = new KDTreeNode();
+		KdNode parent = new KdNode();
 		parent.setDepth(depth);
 
 		if (depth % 2 == 0) { // If depth even, split by x-value
@@ -45,8 +44,8 @@ public class KDTree {
 		}
 
 		// Recursively find the parent's left and right child.
-		KDTreeNode leftChild = buildKDTree(firstHalfArray, depth+1);
-		KDTreeNode rightChild = buildKDTree(secondHalfArray, depth+1);
+		KdNode leftChild = buildKDTree(firstHalfArray, depth+1);
+		KdNode rightChild = buildKDTree(secondHalfArray, depth+1);
 
 		parent.setLeftChild(leftChild);
 		parent.setRightChild(rightChild);
@@ -54,18 +53,18 @@ public class KDTree {
 		return parent;
 	}
 
-	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] points) {
-		int N = points.length;
+	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] elements) {
+		int N = elements.length;
 		// k is the index where the array should be split.
 		int k = N/2+1;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new OsmElement[]{points[0]}, new OsmElement[]{points[1]});
+		if (N == 2) return Tuple.of(new OsmElement[]{elements[0]}, new OsmElement[]{elements[1]});
 
-		Quick.select(points, N/2);
-
+		//Arrange elements array such that median value is in middle of array.
+		Quick.select(elements, N/2);
 
 		OsmElement[] firstHalf = new OsmElement[k];
 		OsmElement[] secondHalf = new OsmElement[N - k];
@@ -73,11 +72,10 @@ public class KDTree {
 		// Insert elements into two arrays from original array.
 		int j = 0;
 		for (int i = 0; i < N; i++) {
-			if (points[i].isDepthEven()) points[i].setDepthEven(false);
-			else points[i].setDepthEven(true);
-
-			if (i < k) firstHalf[i] = points[i];
-			if (i >= k) secondHalf[j++] = points[i];
+			if (elements[i].isDepthEven()) elements[i].setDepthEven(false);
+			else elements[i].setDepthEven(true);
+			if (i < k) firstHalf[i] = elements[i];
+			if (i >= k) secondHalf[j++] = elements[i];
 		}
 		return Tuple.of(firstHalf, secondHalf);
 	}
@@ -91,88 +89,76 @@ public class KDTree {
 		return this.rangeSearchQueryResults;
 	}
 
-	private void searchTree(KDTreeNode parent, Rect searchQuery, Rect boundingBox) {
-		//Create bounding boxes for search:
-		Rect boundingBoxLeft;
-		Rect boundingBoxRight;
-		KDTreeNode leftChild = parent.getLeftChild();
-		KDTreeNode rightChild = parent.getRightChild();
+	private void searchTree(KdNode parent, Rect searchQuery, Rect region) {
+		Tuple2<Rect, Rect> regionSplitByMedian = createRegions(parent, region);
+		Rect regionA = regionSplitByMedian._1; // The left/bottom search region (A).
+		Rect regionB = regionSplitByMedian._2; // The right/top search region (B).
+		boolean isLeaf = parent.getElements() != null; // Is parent a leaf?
 
-		if (parent.getDepth() % 2 == 0) { //If search depth is even
-			boundingBoxLeft = new Rect(boundingBox.getX1(), boundingBox.getY1(), parent.getSplitValue(), boundingBox.getY2()); //lower
-			boundingBoxRight = new Rect(parent.getSplitValue(), boundingBox.getY1(), boundingBox.getX2(), boundingBox.getY2()); //higher
-		} else {
-			boundingBoxLeft = new Rect(boundingBox.getX1(), boundingBox.getY1(), boundingBox.getX2(), parent.getSplitValue()); //lower
-			boundingBoxRight = new Rect(boundingBox.getX1(), parent.getSplitValue(), boundingBox.getX2(), boundingBox.getY2()); //higher
+		KdNode leftChild = parent.getLeftChild();
+		KdNode rightChild = parent.getRightChild();
+
+		if (isLeaf) addElementsToQueryResults(parent, searchQuery);
+		else {
+			investigateRegion(parent, leftChild, regionA, searchQuery);
+			investigateRegion(parent, rightChild, regionB, searchQuery);
 		}
+	}
 
-		// If current node is a leaf, check if point is within query;
-		if (parent.getOsmElements() != null) {
-			for (int i = 0; i < parent.getOsmElements().length; i++) {
-				if (pointInRect(parent.getOsmElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmElements()[i]);
-			}
-		} else {
-			// If left bounding box for left child is completely in query, report all osmMaterialElements in this subtree
-			if (rectCompletelyInRect(boundingBoxLeft, searchQuery)) {
-				reportSubtree(leftChild);
-			} else {
-				if (parent.getDepth() % 2 == 0) { // Check depth of current search
-					/* Because depth is equal, use x-values for checking if bounding box range intersects query range.
-					 * If they do not intersect, it means that the query is not within the left subtree.
-					 */
-					if (rangeIntersectsRange(boundingBoxLeft.getX1(), boundingBoxLeft.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
-						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, searchQuery, boundingBoxLeft);
-					}
-				} else {
-					// If depth is uneven, use y-values for checking if bounding box range intersects query range.
-					if (rangeIntersectsRange(boundingBoxLeft.getY1(), boundingBoxLeft.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
-						// Because they do intersect, search that subtree further.
-						searchTree(leftChild, searchQuery, boundingBoxLeft);
-					}
-				}
-			}
+	private void investigateRegion(KdNode parent, KdNode child, Rect region, Rect searchQuery) {
+		// Is region completely in search query?
+		boolean regionCompletelyInSearchQuery = Rect.rectCompletelyInRect(region, searchQuery);
+		boolean depthEven = parent.getDepth() % 2 == 0;
 
-			if (rectCompletelyInRect(boundingBoxRight, searchQuery)) {
-				reportSubtree(rightChild);
-			} else {
-				if (parent.getDepth() % 2 == 0) {
-					if (rangeIntersectsRange(boundingBoxRight.getX1(), boundingBoxRight.getX2(), searchQuery.getX1(), searchQuery.getX2())) {
-						searchTree(rightChild, searchQuery, boundingBoxRight);
-					}
-				} else {
-					if (rangeIntersectsRange(boundingBoxRight.getY1(), boundingBoxRight.getY2(), searchQuery.getY1(), searchQuery.getY2())) {
-						searchTree(rightChild, searchQuery, boundingBoxRight);
-					}
-				}
-			}
+		// Do x-ranges for region and query intersect?
+		boolean xRangesIntersect = Rect.rangeIntersectsRange(region.getX1(), region.getX2(), searchQuery.getX1(), searchQuery.getX2());
+		// Do y-ranges for region and query intersect?
+		boolean yRangesIntersect = Rect.rangeIntersectsRange(region.getY1(), region.getY2(), searchQuery.getY1(), searchQuery.getY2());
+
+		if (regionCompletelyInSearchQuery) reportSubtree(child);
+		else if (depthEven && xRangesIntersect) searchTree(child, searchQuery, region);
+		else if (yRangesIntersect) searchTree(child, searchQuery, region);
+	}
+
+	private void addElementsToQueryResults(KdNode parent, Rect searchQuery) {
+		for (int i = 0; i < parent.getElements().length; i++) {
+			if (Rect.pointInRect(parent.getElements()[i], searchQuery)) //Check if elements lie in search query
+				rangeSearchQueryResults.add(parent.getElements()[i]);
 		}
+	}
+
+	private Tuple2<Rect, Rect> createRegions(KdNode parent, Rect region) {
+		Boolean depthEven = parent.getDepth() % 2 == 0;
+		if (depthEven)
+			return Tuple.of(
+				new Rect( // Define left region (A)
+						region.getX1(),
+						region.getY1(),
+						parent.getSplitValue(),
+						region.getY2()),
+				new Rect( // Define right region (B)
+						parent.getSplitValue(),
+						region.getY1(),
+						region.getX2(),
+						region.getY2()));
+		else return Tuple.of(
+				new Rect( //Define bottom region (A)
+						region.getX1(),
+						region.getY1(),
+						region.getX2(),
+						parent.getSplitValue()),
+				new Rect( //Define top region (B)
+						region.getX1(),
+						parent.getSplitValue(),
+						region.getX2(),
+						region.getY2()));
 	}
 
 	// Using in order traversal (LVR: Left, Visit, Right)
-	public void reportSubtree(KDTreeNode parent) {
+	//Adds all elements to query results
+	private void reportSubtree(KdNode parent) {
 		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getOsmElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmElements())); //V
+		if (parent.getElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
 		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
-	}
-
-	static public boolean rectCompletelyInRect(Rect smallRect, Rect largeRect) {
-		boolean smallRectXRangeInLargeRectXRange = largeRect.getX1() <= smallRect.getX1() && smallRect.getX1() <= smallRect.getX2() && smallRect.getX2() <= largeRect.getX2();
-		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY1() && smallRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
-		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
-	}
-
-	static public boolean rangeIntersectsRange(double a, double b, double c, double d) {
-		// Do range a-b and c-d intersect?
-		return a <= d && b >= c;
-	}
-
-	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OsmElement osmElement, Rect rect) {
-		boolean part1 = rect.getX1() <= osmElement.getAvgPoint().getX();
-		boolean part2 = osmElement.getAvgPoint().getX() <= rect.getX2();
-		boolean part3 = rect.getY1() <= osmElement.getAvgPoint().getY();
-		boolean part4 = osmElement.getAvgPoint().getY() <= rect.getY2();
-		return part1 && part2 && part3 && part4;
 	}
 }

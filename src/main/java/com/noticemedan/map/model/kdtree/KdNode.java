@@ -9,21 +9,21 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class KDTreeNode {
+public class KdNode {
 	private double splitValue;
-	private KDTreeNode leftChild;
-	private KDTreeNode rightChild;
+	private KdNode leftChild;
+	private KdNode rightChild;
 	private int depth;
-	private OsmElement[] osmElements;
+	private OsmElement[] elements;
 	private String binaryID = UUID.randomUUID().toString();
 
-	public KDTreeNode(OsmElement[] points, int depth) {
-		this.osmElements = points;
+	public KdNode(OsmElement[] points, int depth) {
+		this.elements = points;
 		this.depth = depth;
 	}
 
 	public void elementsToBinary() {
-		BinaryMapData.serialize(this.osmElements, this.binaryID);
+		BinaryMapData.serialize(this.elements, this.binaryID);
 	}
 
 	public OsmElement[] elementsFromBinary() {

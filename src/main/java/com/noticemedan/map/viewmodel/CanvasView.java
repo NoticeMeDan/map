@@ -213,10 +213,10 @@ public class CanvasView extends JComponent {
 	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
 		int borderFactor = (showReversedBorders) ? -1 : 1;
-		double x1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getX() - 0.02 * borderFactor;
-		double y1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getY() - 0.02 * borderFactor;
-		double x2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getX() + 0.02 * borderFactor;
-		double y2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getY() + 0.02 * borderFactor;
+		double x1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getX() * borderFactor;
+		double y1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getY() * borderFactor;
+		double x2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getX() * borderFactor;
+		double y2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getY() * borderFactor;
 
 		return new Rect(x1, y1, x2, y2);
 	}
