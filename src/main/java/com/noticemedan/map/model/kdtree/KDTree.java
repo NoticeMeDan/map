@@ -128,7 +128,7 @@ public class KDTree {
 	}
 
 	private Tuple2<Rect, Rect> createRegions(KdNode parent, Rect region) {
-		Boolean depthEven = parent.getDepth() % 2 == 0;
+		boolean depthEven = parent.getDepth() % 2 == 0;
 		if (depthEven)
 			return Tuple.of(
 				new Rect( // Define left region (A)
