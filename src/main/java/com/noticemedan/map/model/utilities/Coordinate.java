@@ -1,8 +1,6 @@
 package com.noticemedan.map.model.utilities;
 
-import io.vavr.control.Try;
 import lombok.Data;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -10,8 +8,8 @@ import java.io.Serializable;
 
 @Data
 public class Coordinate extends Point2D implements Serializable {
-	private double x;
-	private double y;
+	private double x; // lon
+	private double y; // lat
 
 	// TODO @Magnus why even have this constructor? Can't we just call its parent constructur?
 	public Coordinate(double x, double y) {
@@ -56,7 +54,6 @@ public class Coordinate extends Point2D implements Serializable {
 	}
 
 	/**
-	 *
 	 * @param viewportPoint 	A coordinate from viewport (e.g. from a mouse click).
 	 * @param transform			The affine transformation.
 	 * @return					The corrosponding point in canvas lat/lon.
@@ -68,5 +65,33 @@ public class Coordinate extends Point2D implements Serializable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Source of maths: https://www.movable-type.co.uk/scripts/latlong.html
+	 * @param a 				First coordinate with WGS-84 lat/lon
+	 * @param b					Second coordinate with WGS-84 lat/lon
+	 * @param R					Radius of the earth (e.g. 6378 km if result should be in km)
+	 * @return					The distance between two points on sphere
+	 */
+	public static double haversineDistance(Coordinate a, Coordinate b, double R) {
+		double lat1 = Math.toRadians(a.getY());
+		double lat2 = Math.toRadians(b.getY());
+		double dLat = Math.toRadians(b.getY() - a.getY());
+		double dLon = Math.toRadians(b.getX() - a.getX());
+		double f = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
+		double c = 2 * Math.atan2(Math.sqrt(f), Math.sqrt(1-f));
+		return R * c;
+	}
+
+	/**
+	 * @param a 				First coordinate with WGS-84 lat/lon
+	 * @param b					Second coordinate with WGS-84 lat/lon
+	 * @return					The distance between two points on a plane.
+	 */
+	public static double euclidianDistance(Coordinate a, Coordinate b) {
+		double dX = b.getX() - a.getX();
+		double dY = b.getY() - a.getY();
+		return Math.sqrt(Math.pow(dX , 2) + Math.pow(dY, 2));
 	}
 }

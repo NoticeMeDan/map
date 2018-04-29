@@ -117,7 +117,6 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		Map<Long, OSMWay> idToWay = new HashMap<>();
 		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
 		OSMWay way;
-		private double lonFactor;
 		private OSMType type;
 		private OSMRelation relation;
 
@@ -131,8 +130,8 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
 					Entities.setMinLon(minLon);
 					Entities.setMaxLon(maxLon);
-					Entities.setMaxLat(Coordinate.lat2CanvasLat(maxLat));
 					Entities.setMinLat(Coordinate.lat2CanvasLat(minLat));
+					Entities.setMaxLat(Coordinate.lat2CanvasLat(maxLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));

@@ -13,17 +13,17 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
-public class KDTreeTest {
+public class KdTreeTest {
 
 	OsmElement[] pointsOneElementKDTree;
 	OsmElement[] pointsForSmallKDTree;
 	OsmElement[] pointsForMultiMedianKDTree;
 
-	KDTree multiMedianKDTree;
-	KDTree oneElementKDTree;
-	KDTree smallKDTree;
+	KdTree multiMedianKdTree;
+	KdTree oneElementKdTree;
+	KdTree smallKdTree;
 
-	KDTree randomBornHolmTree;
+	KdTree randomBornHolmTree;
 
 	@BeforeTest
 	public void buildSmallKDTree() {
@@ -45,40 +45,40 @@ public class KDTreeTest {
 		pointsForSmallKDTree[7] = new OsmElement();
 		pointsForSmallKDTree[7].setAvgPoint(new Coordinate(9,9));
 
-		smallKDTree = new KDTree(pointsForSmallKDTree, 2);
+		smallKdTree = new KdTree(pointsForSmallKDTree, 1);
 	}
 
 	@Test
 	public void testSmallKDTree_LeafNodeValues_Positive() {
 		//Test some random leaf nodes values
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getX(), 2.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getY(), 3.0);
+		assertEquals(smallKdTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getX(), 2.0);
+		assertEquals(smallKdTree.getRootNode().getLeftChild().getLeftChild().getLeftChild().getElements()[0].getAvgPoint().getY(), 3.0);
 
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
-		assertEquals(smallKDTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKdTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
+		assertEquals(smallKdTree.getRootNode().getRightChild().getRightChild().getElements()[0].getAvgPoint().getX(), 9.0);
 
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getX(), 1.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getY(), 10.0);
+		assertEquals(smallKdTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getX(), 1.0);
+		assertEquals(smallKdTree.getRootNode().getLeftChild().getRightChild().getElements()[1].getAvgPoint().getY(), 10.0);
 	}
 
 	@Test
 	public void testSmallKDTree_NodeSplitValues_Positive() {
 		//Test some random node split values
-		assertEquals(smallKDTree.getRootNode().getSplitValue(), 5.0);
-		assertEquals(smallKDTree.getRootNode().getLeftChild().getSplitValue(), 6.0);
+		assertEquals(smallKdTree.getRootNode().getSplitValue(), 5.0);
+		assertEquals(smallKdTree.getRootNode().getLeftChild().getSplitValue(), 6.0);
 	}
 
 	@Test
 	public void testSmallKDTree_LeafNodeValues_Negative() {
 		//Test some random node split values
-		assertNotEquals(smallKDTree.getRootNode().getSplitValue(), 4.5);
+		assertNotEquals(smallKdTree.getRootNode().getSplitValue(), 4.5);
 	}
 
 	@Test
 	public void testSmallKDTree_NodeSplitValues_Negative() {
 		//Test some random node split values
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getX(), 8);
-		assertNotEquals(smallKDTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getY(), 3);
+		assertNotEquals(smallKdTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getX(), 8);
+		assertNotEquals(smallKdTree.getRootNode().getRightChild().getLeftChild().getElements()[1].getAvgPoint().getY(), 3);
 
 	}
 
@@ -95,7 +95,7 @@ public class KDTreeTest {
 	@Ignore @Test //Usually takes 25 seconds
 	public void testVeryLargeKDTreeSpeed() { //10E7 OsmElements, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
-		KDTree veryLargeKDTree = new KDTree(buildRandomPoints(10000000), 1000);
+		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(10000000), 1000);
 		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
 		assertTrue(stopwatch.elapsedTime() < 30);
 	}
@@ -105,13 +105,13 @@ public class KDTreeTest {
 		pointsOneElementKDTree = new OsmElement[1];
 		pointsOneElementKDTree[0] = new OsmElement();
 		pointsOneElementKDTree[0].setAvgPoint(new Coordinate(1,10));
-		oneElementKDTree = new KDTree(pointsOneElementKDTree, 1);
+		oneElementKdTree = new KdTree(pointsOneElementKDTree, 1);
 	}
 
 	@Test
 	public void oneElementKDTree_Postive() {
-		assertEquals(oneElementKDTree.getRootNode().getElements()[0].getAvgPoint().getX(),1.0);
-		assertEquals(oneElementKDTree.getRootNode().getElements()[0].getAvgPoint().getY(),10.0);
+		assertEquals(oneElementKdTree.getRootNode().getElements()[0].getAvgPoint().getX(),1.0);
+		assertEquals(oneElementKdTree.getRootNode().getElements()[0].getAvgPoint().getY(),10.0);
 	}
 
 	//Delete test?
@@ -128,7 +128,7 @@ public class KDTreeTest {
 		pointsForMultiMedianKDTree[3].setAvgPoint(new Coordinate(5,6));
 		pointsForMultiMedianKDTree[4] = new OsmElement();
 		pointsForMultiMedianKDTree[4].setAvgPoint(new Coordinate(9,8));
-		multiMedianKDTree = new KDTree(pointsForMultiMedianKDTree, 1);
+		multiMedianKdTree = new KdTree(pointsForMultiMedianKDTree, 1);
 	}
 
 	@Test
@@ -192,7 +192,7 @@ public class KDTreeTest {
 		assertEquals(Rect.pointInRect(point, rect), true);
 	}
 
-	@Ignore @Test //TODO solve this test case in KDTree.pointInRect()
+	@Ignore @Test //TODO solve this test case in KdTree.pointInRect()
 	public void pointInRect_Positive_3_PointOnEdge_NegativeCoord () {
 		OsmElement point = new OsmElement();
 		point.setAvgPoint(new Coordinate(-3,-3));
@@ -219,7 +219,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Positive_1() {
 		Rect query = new Rect(0.5,7.5,4,10.5);
-		List<OsmElement> result = smallKDTree.rangeSearch(query);
+		List<OsmElement> result = smallKdTree.rangeSearch(query);
 		assertEquals(result.size(), 2);
 
 		//Check a point
@@ -230,7 +230,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Positive_2() {
 		Rect query = new Rect(3.5,0.5,6.5,8.5);
-		List<OsmElement> result = smallKDTree.rangeSearch(query);
+		List<OsmElement> result = smallKdTree.rangeSearch(query);
 		assertEquals(result.size(),3);
 
 		//Check a point
@@ -241,7 +241,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Negative_1() {
 		Rect query = new Rect(8.0,4.0,10,6);
-		List<OsmElement> result = smallKDTree.rangeSearch(query);
+		List<OsmElement> result = smallKdTree.rangeSearch(query);
 		assertTrue(result.size() <= 0);
 	}
 
@@ -262,7 +262,7 @@ public class KDTreeTest {
 			randomGeneratedPoints[i].setAvgPoint(new Coordinate(randomValueX, randomValueY));
 		}
 		//return randomGeneratedPoints;
-		randomBornHolmTree = new KDTree(randomGeneratedPoints, 100);
+		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
 		List results = randomBornHolmTree.rangeSearch(new Rect(14, 54, 15, 55));
 		assertEquals(results.size(), 45000);
 	}
@@ -283,7 +283,7 @@ public class KDTreeTest {
 			randomGeneratedPoints[i].setAvgPoint(new Coordinate(randomValueX, randomValueY));
 		}
 		//return randomGeneratedPoints;
-		randomBornHolmTree = new KDTree(randomGeneratedPoints, 100);
+		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
 		List results = randomBornHolmTree.rangeSearch(new Rect(14.3, 54.8, 15.6, 55.4));
 		assertEquals(results.size(), 45000);
 	}
@@ -304,10 +304,15 @@ public class KDTreeTest {
 			randomGeneratedPoints[i].setAvgPoint(new Coordinate(randomValueX, randomValueY));
 		}
 		//return randomGeneratedPoints;
-		randomBornHolmTree = new KDTree(randomGeneratedPoints, 100);
+		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
 		List results = randomBornHolmTree.rangeSearch(new Rect(14.3, -55.4, 15.6, -54.8));
 
 		assertEquals(results.size(), 45000);
 	}
 
+	@Test
+	public void nearestNeighbor_AverageCase() {
+		Coordinate searchCoordinate = new Coordinate(6.1,7.1);
+		OsmElement nearestNeighbor = smallKdTree.nearestNeighbor(searchCoordinate);
+	}
 }

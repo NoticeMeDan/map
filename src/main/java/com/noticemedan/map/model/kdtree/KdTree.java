@@ -1,6 +1,7 @@
 package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Quick;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
@@ -11,41 +12,39 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KDTree {
-
+public class KdTree {
 	@Getter private KdNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
 	private ArrayList<OsmElement> rangeSearchQueryResults;
 
-	public KDTree(OsmElement[] elements, int maxNumberOfElementsAtLeaf) {
+	public KdTree(OsmElement[] elements, int maxNumberOfElementsAtLeaf) {
 		if (elements.length == 0) return;
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
-		this.rootNode = buildKDTree(elements, 0);
+		this.rootNode = constructKdTree(elements, 0);
 	}
 
 	/**
 	 * @return 		Root node of kdtree.
 	 */
-	private KdNode buildKDTree(OsmElement[] elements, int depth) {
+	private KdNode constructKdTree(OsmElement[] elements, int depth) {
 		// Define how many osmElements there are in a leaf node.
 		if (elements.length <= maxNumberOfElementsAtLeaf ) return new KdNode(elements, depth);
 
-		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(elements);
-		OsmElement[] firstHalfArray = pointsSplitted._1;
-		OsmElement[] secondHalfArray = pointsSplitted._2;
+		Tuple2<OsmElement[], OsmElement[]> splitElements = splitPointArrayByMedian(elements);
+		OsmElement[] firstHalfArray = splitElements._1;
+		OsmElement[] secondHalfArray = splitElements._2;
 		KdNode parent = new KdNode();
 		parent.setDepth(depth);
+		parent.setSplitElement(firstHalfArray[firstHalfArray.length-1]);
 
-		if (depth % 2 == 0) { // If depth even, split by x-value
-			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
-		} else { // If depth odd, split by y-value
-			parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
-		}
+		// If depth even, split by x-value, otherwise by y-value
+		if (depth % 2 == 0) parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
+		else parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
 
 		// Recursively find the parent's left and right child.
-		KdNode leftChild = buildKDTree(firstHalfArray, depth+1);
-		KdNode rightChild = buildKDTree(secondHalfArray, depth+1);
+		KdNode leftChild = constructKdTree(firstHalfArray, depth+1);
+		KdNode rightChild = constructKdTree(secondHalfArray, depth+1);
 
 		parent.setLeftChild(leftChild);
 		parent.setRightChild(rightChild);
@@ -61,7 +60,7 @@ public class KDTree {
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new OsmElement[]{elements[0]}, new OsmElement[]{elements[1]});
+		if (N == 2) return Tuple.of(new OsmElement[]{elements[0]}, new OsmElement[]{elements[1]}); //Two 1 element arrays
 
 		//Arrange elements array such that median value is in middle of array.
 		Quick.select(elements, N/2);
@@ -109,7 +108,6 @@ public class KDTree {
 		// Is region completely in search query?
 		boolean regionCompletelyInSearchQuery = Rect.rectCompletelyInRect(region, searchQuery);
 		boolean depthEven = parent.getDepth() % 2 == 0;
-
 		// Do x-ranges for region and query intersect?
 		boolean xRangesIntersect = Rect.rangeIntersectsRange(region.getX1(), region.getX2(), searchQuery.getX1(), searchQuery.getX2());
 		// Do y-ranges for region and query intersect?
@@ -125,6 +123,14 @@ public class KDTree {
 			if (Rect.pointInRect(parent.getElements()[i], searchQuery)) //Check if elements lie in search query
 				rangeSearchQueryResults.add(parent.getElements()[i]);
 		}
+	}
+
+	// Using in order traversal (LVR: Left, Visit, Right)
+	//Adds all elements to query results
+	private void reportSubtree(KdNode parent) {
+		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
+		if (parent.getElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
+		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
 	}
 
 	private Tuple2<Rect, Rect> createRegions(KdNode parent, Rect region) {
@@ -154,11 +160,33 @@ public class KDTree {
 						region.getY2()));
 	}
 
-	// Using in order traversal (LVR: Left, Visit, Right)
-	//Adds all elements to query results
-	private void reportSubtree(KdNode parent) {
-		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
-		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
+	public OsmElement nearestNeighbor(Coordinate coordinate) {
+		return nearestNeighborSearch(coordinate, rootNode);
+	}
+
+	private OsmElement nearestNeighborSearch(Coordinate coordinate, KdNode currentNode) {
+		boolean isLeaf = currentNode.getElements() != null;
+		boolean depthEven = currentNode.getDepth() % 2 == 0;
+		if (isLeaf) return getNearestElementInArray(coordinate, currentNode);
+		else if (depthEven && coordinate.getX() <= currentNode.getSplitValue())
+			return nearestNeighborSearch(coordinate, currentNode.getLeftChild());
+		else if (depthEven && coordinate.getX() > currentNode.getSplitValue())
+			return nearestNeighborSearch(coordinate, currentNode.getRightChild());
+		else if (!depthEven && coordinate.getY() <= currentNode.getSplitValue())
+			return nearestNeighborSearch(coordinate, currentNode.getLeftChild());
+		else if (!depthEven && coordinate.getY() > currentNode.getSplitValue())
+			return nearestNeighborSearch(coordinate, currentNode.getRightChild());
+		return null;
+	}
+
+	public OsmElement getNearestElementInArray(Coordinate coordinate, KdNode leafNode) {
+		double minDistance = Double.POSITIVE_INFINITY;
+		OsmElement nearestElement = new OsmElement();
+		boolean isCloser;
+		for (int i = 0; i < leafNode.getElements().length; i++) {
+			isCloser = Coordinate.euclidianDistance(coordinate, leafNode.getElements()[i].getAvgPoint()) < minDistance;
+			if (isCloser) nearestElement = leafNode.getElements()[i];
+		}
+		return nearestElement;
 	}
 }

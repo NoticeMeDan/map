@@ -55,4 +55,52 @@ public class CoordinateTests {
 		double reversedLat = Coordinate.canvasLat2Lat(convertedCanvasLat);
 		assertTrue(90.0000001 > reversedLat && reversedLat > 89.99999999 );
 	}
+
+	@Test
+	public void testHaversineDistance_MinimumCase() {
+		Coordinate a = new Coordinate(0, 0);
+		Coordinate b = new Coordinate(0, 0);
+		double distance = Coordinate.haversineDistance(a, b, 6371);
+		assertTrue(distance == 0);
+	}
+
+	@Test
+	public void testHaversineDistance_AverageCase() {
+		Coordinate a = new Coordinate(12.539723, 55.674252);
+		Coordinate b = new Coordinate(12.405602, 55.729174);
+		double distance = Coordinate.haversineDistance(a, b, 6371);
+		assertTrue(10.3885 > distance && distance > 10.3883);
+	}
+
+	@Test
+	public void testHaversineDistance_MaximumCase() {
+		Coordinate a = new Coordinate(-90, -90);
+		Coordinate b = new Coordinate(90, 90);
+		double distance = Coordinate.haversineDistance(a, b, 6371);
+		assertTrue(20015.09 > distance && distance > 20015.07);
+	}
+
+	@Test
+	public void testEuclidianDistance_MinimumCase() {
+		Coordinate a = new Coordinate(0, 0);
+		Coordinate b = new Coordinate(0, 0);
+		double distance = Coordinate.euclidianDistance(a, b);
+		assertTrue(distance == 0);
+	}
+
+	@Test
+	public void testEuclidianDistance_AverageCase() {
+		Coordinate a = new Coordinate(12.539723, 55.674252);
+		Coordinate b = new Coordinate(12.405602, 55.729174);
+		double distance = Coordinate.euclidianDistance(a, b);
+		assertTrue(0.144931 > distance && distance > 0.144930);
+	}
+
+	@Test
+	public void testEuclidianDistance_MaximumCase() {
+		Coordinate a = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Coordinate b = new Coordinate(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		double distance = Coordinate.euclidianDistance(a, b);
+		assertTrue(distance == Double.POSITIVE_INFINITY);
+	}
 }

@@ -12,7 +12,7 @@ import java.util.*;
 
 @Slf4j
 public class Forest implements ForestInterface{
-	private KDTree trees[];
+	private KdTree trees[];
 	private final OsmMapData osmMapData = new OsmMapData();
 	private final String binaryID = UUID.randomUUID().toString();
 	@Getter
@@ -66,9 +66,9 @@ public class Forest implements ForestInterface{
 		osmElementArray[3] = zoom3.toArray(new OsmElement[0]);
 		osmElementArray[4] = zoom4.toArray(new OsmElement[0]);
 
-		this.trees = new KDTree[osmElementArray.length];
+		this.trees = new KdTree[osmElementArray.length];
 		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KDTree(osmElementArray[i], maxNumberOfElementsAtLeaf[i]);
+			this.trees[i] = new KdTree(osmElementArray[i], maxNumberOfElementsAtLeaf[i]);
 		}
 		kdTreesToBinary();
 	}
@@ -100,7 +100,7 @@ public class Forest implements ForestInterface{
 		BinaryMapData.serialize(this.trees, this.binaryID);
 	}
 
-	public KDTree[] kdTreesFromBinary() {
-		return (KDTree[]) BinaryMapData.deserialize(this.binaryID);
+	public KdTree[] kdTreesFromBinary() {
+		return (KdTree[]) BinaryMapData.deserialize(this.binaryID);
 	}
 }

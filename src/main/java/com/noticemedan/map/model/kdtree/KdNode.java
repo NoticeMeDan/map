@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class KdNode {
 	private double splitValue;
+	private OsmElement splitElement;
 	private KdNode leftChild;
 	private KdNode rightChild;
 	private int depth;
