@@ -183,7 +183,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private void performanceTest() {
-		if (logRangeSearchSize) log.info("Range search size: " + forest.rangeSearch(viewArea).size());
+		if (logRangeSearchSize) log.info("Range search size: " + forest.rangeSearch(viewArea, zoomLevel).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
