@@ -1,4 +1,4 @@
-package com.noticemedan.map.view;
+package com.noticemedan.map.model.osm;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,10 @@ public class Address {
 	private double onCanvasLat;
 	private double onCanvasLon;
 
-	public String streetAndHouseToString() {
-		return this.street + " " + this.houseNumber;
+	public String toFullAddress() {
+		return String.format(
+				"%s %s, %s %s",
+				this.street, this.houseNumber, this.city, this.postcode
+		);
 	}
 }

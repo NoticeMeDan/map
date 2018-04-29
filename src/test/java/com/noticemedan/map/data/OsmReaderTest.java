@@ -1,4 +1,4 @@
-package com.noticemedan.map.data.io;
+package com.noticemedan.map.data;
 
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OsmType;

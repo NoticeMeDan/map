@@ -1,7 +1,7 @@
 package com.noticemedan.map.model.kdtree;
 
 import com.noticemedan.map.data.BinaryMapData;
-import com.noticemedan.map.data.OsmMapData;
+import com.noticemedan.map.model.OsmMapData;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
@@ -13,15 +13,15 @@ import java.util.*;
 @Slf4j
 public class Forest implements ForestInterface{
 	private KDTree trees[];
-	private final OsmMapData osmMapData = new OsmMapData();
 	private final String binaryID = UUID.randomUUID().toString();
 	@Getter
-	private List<OsmElement> coastlines = this.osmMapData.getOsmCoastlineElements().toJavaList();
+	private List<OsmElement> coastlines;
 
-	public Forest() {
+	public Forest(OsmMapData mapData) {
 		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
-		List<OsmElement> osmElements = this.osmMapData.getOsmElements().toJavaList();
+		List<OsmElement> osmElements = mapData.getOsmElements().toJavaList();
+		this.coastlines = mapData.getOsmCoastlineElements().toJavaList();
 		OsmElement[][] osmElementArray = new OsmElement[5][];
 
 		List<OsmElement> zoom0 = new LinkedList<>();

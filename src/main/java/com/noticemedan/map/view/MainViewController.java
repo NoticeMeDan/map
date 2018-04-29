@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 public class MainViewController {
 	@Getter
 	private static CanvasView canvasView;
-	FavoritePoiManager favoritePoiManager;
+	private FavoritePoiManager favoritePoiManager;
 
 	@FXML
 	AnchorPane mainView;
@@ -41,14 +41,13 @@ public class MainViewController {
 	@FXML Pane searchPane;
 
 	//Component controllers
-	@FXML PoiBoxViewController poiBoxViewController;
-	@FXML FavoritePoiPaneController favoritePoiPaneController;
-	@FXML SearchPaneController searchPaneController;
-	@FXML RoutePaneController routePaneController;
+	@FXML private PoiBoxViewController poiBoxViewController;
+	@FXML private FavoritePoiPaneController favoritePoiPaneController;
+	@FXML private SearchPaneController searchPaneController;
+	@FXML private RoutePaneController routePaneController;
 
 	//Canvas controllers
 	private MouseController mouseController;
-
 
 	public void initialize() {
 		favoritePoiManager = new FavoritePoiManager();

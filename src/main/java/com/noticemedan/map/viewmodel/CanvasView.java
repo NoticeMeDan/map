@@ -1,6 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.OsmMapData;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Rect;
@@ -47,13 +48,12 @@ public class CanvasView extends JComponent {
 
 
 	public CanvasView() {
-		this.forest = new Forest();
+		this.forest = new Forest(new OsmMapData()); // TODO: Make more dynamic when user can pick their own map
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		repaint();
 	}
 
     @Override
-
     public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 

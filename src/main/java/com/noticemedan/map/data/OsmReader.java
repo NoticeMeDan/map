@@ -1,4 +1,4 @@
-package com.noticemedan.map.data.io;
+package com.noticemedan.map.data;
 
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OsmElement;
@@ -7,7 +7,7 @@ import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
-import com.noticemedan.map.view.Address;
+import com.noticemedan.map.model.osm.Address;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
