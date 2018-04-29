@@ -1,0 +1,26 @@
+package com.noticemedan.map.model.osm;
+
+public enum OsmType {
+	ROAD,
+	FOOTWAY,
+	HIGHWAY,
+	PRIMARY,
+	SECONDARY,
+	TERTIARY,
+	RESIDENTIAL,
+	MOTORWAY,
+	TRUNK,
+	WATER,
+	GRASSLAND,
+	SAND,
+	BUILDING,
+	COASTLINE,
+	TREE_ROW,
+	HEATH,
+	PLAYGROUND,
+	GARDEN,
+	PARK,
+	FOREST,
+	ADDRESS,
+	UNKNOWN
+}

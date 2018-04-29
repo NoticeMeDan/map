@@ -2,14 +2,17 @@ package com.noticemedan.map.data.io;
 
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OsmElement;
-import com.noticemedan.map.model.osm.OSMNode;
-import com.noticemedan.map.model.osm.OSMRelation;
-import com.noticemedan.map.model.osm.OSMType;
-import com.noticemedan.map.model.osm.OSMWay;
+import com.noticemedan.map.model.osm.OsmNode;
+import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
-import io.vavr.collection.List;
+import com.noticemedan.map.view.Address;
+import io.vavr.Tuple2;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
+import io.vavr.collection.Vector;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -22,36 +25,37 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmReader implements Supplier<List<List<OsmElement>>> {
-	private List<List<OsmElement>> elements = List.empty();
-	private List<OsmElement> osmElements = List.empty();
-	private List<OsmElement> osmCoastlineElements = List.empty();
-	private FileInputStream inputStream;
+public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
+	private Vector<Vector<OsmElement>> elements = Vector.empty();
+	@Getter
+	private Vector<OsmElement> osmElements = Vector.empty();
+	private Vector<OsmElement> osmCoastlineElements = Vector.empty();
+	@Getter
+	private Vector<Address> addresses = Vector.empty();
+	private InputStream inputStream;
 	private String filename;
 
-	public OsmReader(FileInputStream inputStream) {
+	public OsmReader(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 
-	public List<List<OsmElement>> getShapesFromFile(FileInputStream fileInputStream, String filename) {
+	public Vector<Vector<OsmElement>> getShapesFromFile(InputStream inputStream, String filename) {
 		this.filename = filename;
 		if (filename.endsWith(".osm")) {
 			log.info("Begin reading from OSM");
-			readFromOSM(new InputSource(fileInputStream));
+			readFromOSM(new InputSource(inputStream));
 			log.info("End reading from OSM");
 		} else if (filename.endsWith(".zip")) {
 			try {
-				ZipInputStream zis = new ZipInputStream(fileInputStream);
+				ZipInputStream zis = new ZipInputStream(inputStream);
 				zis.getNextEntry();
 				readFromOSM(new InputSource(zis));
 			} catch (IOException e) {
@@ -59,9 +63,9 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 			}
 		} else if (filename.endsWith(".bin")) {
 			try {
-				ObjectInputStream is = new ObjectInputStream(fileInputStream);
-				osmElements = (List<OsmElement>) is.readObject();
-				osmCoastlineElements = (List<OsmElement>) is.readObject();
+				ObjectInputStream is = new ObjectInputStream(inputStream);
+				osmElements = (Vector<OsmElement>) is.readObject();
+				osmCoastlineElements = (Vector<OsmElement>) is.readObject();
 				Entities.setMinLon((double) is.readObject());
 				Entities.setMinLat((double) is.readObject());
 				Entities.setMaxLon((double) is.readObject());
@@ -86,7 +90,7 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		}
 	}
 
-	public void add(OSMType type, Shape shape) {
+	public void add(OsmType type, Shape shape) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -100,25 +104,28 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(OSMType.COASTLINE))
-			this.osmCoastlineElements = osmCoastlineElements.prepend(osmElement);
+		if (type.equals(OsmType.COASTLINE))
+			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
 		else
-			this.osmElements = osmElements.prepend(osmElement);
+			this.osmElements = osmElements.append(osmElement);
 	}
 
 	@Override
-	public List<List<OsmElement>> get() {
+	public Vector<Vector<OsmElement>> get() {
 		return this.getShapesFromFile(this.inputStream, this.filename);
 	}
 
 	public class OsmHandler extends DefaultHandler {
 		LongToOSMNodeMap idToNode = new LongToOSMNodeMap(25);
-		Map<Long, OSMWay> idToWay = new HashMap<>();
-		HashMap<OSMNode, OSMWay> coastlines = new HashMap<>();
-		OSMWay way;
+		Map<Long, Vector<OsmNode>> idToWay = HashMap.empty();
+		Map<OsmNode, Vector<OsmNode>> coastlines = HashMap.empty();
+		Address address = new Address();
 		private double lonFactor;
-		private OSMType type;
-		private OSMRelation relation;
+		private OsmType type;
+		private long currentNodeID;
+
+		private Vector<OsmNode> osmWay;
+		private Vector<Vector<OsmNode>> osmRelation;
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -139,57 +146,83 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
+					currentNodeID = id;
 					idToNode.put(id, lonFactor * lon, -lat);
 					break;
 				case "way":
-					way = new OSMWay();
-					type = OSMType.UNKNOWN;
-					idToWay.put(Long.parseLong(attributes.getValue("id")), way);
+					this.osmWay = Vector.empty();
+					type = OsmType.UNKNOWN;
+					idToWay.put(Long.parseLong(attributes.getValue("id")), osmWay);
 					break;
 				case "relation":
-					relation = new OSMRelation();
-					type = OSMType.UNKNOWN;
+					this.osmRelation = Vector.empty();
+					type = OsmType.UNKNOWN;
 					break;
 				case "member":
-					OSMWay w = idToWay.get(Long.parseLong(attributes.getValue("ref")));
-					if (w != null) {
-						relation.add(w);
+					Vector<OsmNode> way = idToWay
+							.get(Long.parseLong(attributes.getValue("ref")))
+							.getOrNull();
+
+					if (way != null) {
+						this.osmRelation = osmRelation.append(way);
 					}
 					break;
 				case "tag":
-					switch (attributes.getValue("k")) {
+					String keyValue = attributes.getValue("k");
+					if (keyValue.contains("addr:")) {
+						keyValue = keyValue.substring(5);
+						type = OsmType.ADDRESS;
+						OsmNode currentNode = idToNode.get(currentNodeID);
+						address.setLat(currentNode.getLat());
+						address.setLon(currentNode.getLon());
+					}
+
+					switch (keyValue) {
 						case "highway":
-							type = OSMType.ROAD;
-							if (attributes.getValue("v").equals("primary")) {
-								type = OSMType.HIGHWAY;
-							}
+							type = OsmType.ROAD;
+							if (attributes.getValue("v").equals("motorway")) type = OsmType.MOTORWAY;
+							if (attributes.getValue("v").equals("primary")) type = OsmType.PRIMARY;
+							if (attributes.getValue("v").equals("secondary")) type = OsmType.SECONDARY;
+							if (attributes.getValue("v").equals("tertiary")) type = OsmType.TERTIARY;
 							break;
 						case "natural":
-							if (attributes.getValue("v").equals("water")) {
-								type = OSMType.WATER;
-							}
-							else if (attributes.getValue("v").equals("heath")) {
-								type = OSMType.HEATH;
-							}
-							else if (attributes.getValue("v").equals("tree_row")) {
-								type = OSMType.TREE_ROW;
-							}
-							else if (attributes.getValue("v").equals("grassland")) {
-								type = OSMType.GRASSLAND;
-							}
-							else if (attributes.getValue("v").equals("coastline")) {
-								type = OSMType.COASTLINE;
-							}
+							if (attributes.getValue("v").equals("water")) type = OsmType.WATER;
+							else if (attributes.getValue("v").equals("heath")) type = OsmType.HEATH;
+							else if (attributes.getValue("v").equals("tree_row")) type = OsmType.TREE_ROW;
+							else if (attributes.getValue("v").equals("grassland")) type = OsmType.GRASSLAND;
+							else if (attributes.getValue("v").equals("grassland")) type = OsmType.FOREST;
+							else if (attributes.getValue("v").equals("coastline")) type = OsmType.COASTLINE;
+							break;
+						case "leisure":
+							if (attributes.getValue("v").equals("park")) type = OsmType.PARK;
 							break;
 						case "building":
-							type = OSMType.BUILDING;
+							type = OsmType.BUILDING;
+							break;
+						case "landuse":
+							if (attributes.getValue("v").equals("forest")) type = OsmType.FOREST;
+							break;
+						case "housenumber":
+							address.setHouseNumber(attributes.getValue("v"));
+							break;
+						case "street":
+							address.setStreet(attributes.getValue("v"));
+							break;
+						case "name":
+							address.setName(attributes.getValue("v"));
+							break;
+						case "postcode":
+							address.setPostcode(attributes.getValue("v"));
+							break;
+						case "city":
+							address.setCity(attributes.getValue("v"));
 							break;
 						default:
 							break;
 					}
 					break;
 				case "nd":
-					way.add(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
+					this.osmWay = osmWay.append(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
 					break;
 				default:
 					break;
@@ -199,38 +232,52 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 			Path2D path = new Path2D.Double();
-			OSMNode node;
+			OsmNode node;
 			switch (qName) {
 				case "way":
-					if (type == OSMType.COASTLINE) {
+					if (type == OsmType.COASTLINE) {
 						// stitch coastlines together
-						// search for coastlines that can be merged with current way
-						OSMWay before = coastlines.remove(way.from());
-						OSMWay after = coastlines.remove(way.to());
-						OSMWay merged = new OSMWay();
+						// search for coastlines that can be merged with current osmWay
+						OsmNode from = null;
+						OsmNode to = null;
+						Vector<OsmNode> before = null;
+						Vector<OsmNode> after = null;
+						Vector<OsmNode> merged = Vector.empty();
 
+						if(this.osmWay.size() > 0) {
+							from = this.osmWay.get(0);
+							to = this.osmWay.get(osmWay.size() - 1);
+						}
+						before = coastlines.get(from).getOrNull();
+						this.coastlines = coastlines.remove(from);
+						after = coastlines.get(to).getOrNull();
+						this.coastlines = coastlines.remove(to);
 						// add these three paths together
 						if (before != null) {
-							merged.addAll(before.subList(0, before.size() - 1));
+							merged = merged.appendAll(before.subSequence(0, before.size() - 1));
 						}
-						merged.addAll(way);
+						merged = merged.appendAll(osmWay);
 						if (after != null && after != before) {
-							merged.addAll(after.subList(1, after.size()));
+							merged = merged.appendAll(after.subSequence(1, after.size()));
 						}
-						coastlines.put(merged.to(), merged);
-						coastlines.put(merged.from(), merged);
+						if(merged.size() > 0) {
+							this.coastlines = coastlines.put(merged.get(merged.size() - 1), merged);
+							this.coastlines = coastlines.put(merged.get(0), merged);
+						}
 					} else {
-						node = way.get(0);
-						path.moveTo(node.getLon(), node.getLat());
-						for (int i = 1; i < way.size(); i++) {
-							node = way.get(i);
-							path.lineTo(node.getLon(), node.getLat());
+						if(this.osmWay.size() > 0) {
+							node = this.osmWay.get(0);
+							path.moveTo(node.getLon(), node.getLat());
+							for (int i = 1; i < osmWay.size(); i++) {
+								node = this.osmWay.get(i);
+								path.lineTo(node.getLon(), node.getLat());
+							}
+							add(type, path);
 						}
-						add(type, path);
 					}
 					break;
 				case "relation":
-					for (OSMWay way : relation) {
+					for (Vector<OsmNode> way : osmRelation) {
 						node = way.get(0);
 						path.moveTo(node.getLon(), node.getLat());
 						for (int i = 1; i < way.size(); i++) {
@@ -242,25 +289,31 @@ public class OsmReader implements Supplier<List<List<OsmElement>>> {
 					break;
 				case "osm":
 					// convert all coastlines found to paths
-					for (Map.Entry<OSMNode, OSMWay> coastline : coastlines.entrySet()) {
-						OSMWay way = coastline.getValue();
-						if (coastline.getKey() == way.from()) {
-							path = new Path2D.Double();
-							path.setWindingRule(Path2D.WIND_EVEN_ODD);
+					for (Tuple2<OsmNode, Vector<OsmNode>> coastline : coastlines) {
+						path = new Path2D.Double();
+						path.setWindingRule(Path2D.WIND_EVEN_ODD);
+						Vector<OsmNode> way = coastline._2;
+						OsmNode key = coastline._1;
+
+						if (key == way.get(way.size() - 1)) {
 							node = way.get(0);
 							path.moveTo(node.getLon(), node.getLat());
 							for (int i = 1; i < way.size(); i++) {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(OSMType.COASTLINE, path);
+							add(OsmType.COASTLINE, path);
 						}
 					}
 					break;
+
+				case "node":
+					if (type == OsmType.ADDRESS) {
+						addresses = addresses.append(address);
+					}
 				default:
 					break;
 			}
 		}
 	}
-
 }
