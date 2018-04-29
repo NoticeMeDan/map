@@ -105,9 +105,9 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
 		if (type.equals(OsmType.COASTLINE))
-			this.osmCoastlineElements = osmCoastlineElements.prepend(osmElement);
+			this.osmCoastlineElements = osmCoastlineElements.append(osmElement);
 		else
-			this.osmElements = osmElements.prepend(osmElement);
+			this.osmElements = osmElements.append(osmElement);
 	}
 
 	@Override
@@ -309,7 +309,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 
 				case "node":
 					if (type == OsmType.ADDRESS) {
-						addresses = addresses.prepend(address);
+						addresses = addresses.append(address);
 					}
 				default:
 					break;
