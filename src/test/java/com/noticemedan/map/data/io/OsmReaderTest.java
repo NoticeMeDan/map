@@ -4,7 +4,7 @@ import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
-import io.vavr.collection.List;
+import io.vavr.collection.Vector;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -37,7 +37,7 @@ public class OsmReaderTest {
 	@Test
 	public void testGetShapesFromFile() {
 		this.osmReader.getShapesFromFile(osmStream, ".osm");
-		List<OsmElement> osmElements = this.osmReader.getOsmElements();
+		Vector<OsmElement> osmElements = this.osmReader.getOsmElements();
 		assertEquals(osmElements.length(), 2);
 
 		OsmElement osmElement = osmElements.get(0);
