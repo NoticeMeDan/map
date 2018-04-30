@@ -6,6 +6,7 @@ import com.noticemedan.map.model.osm.OSMType;
 import com.noticemedan.map.model.pathfinding.PathEdge;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
+import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,8 @@ public class CanvasView extends JComponent {
     @Setter
 	private double zoomLevel;
 	private boolean isShapeOpen;
-
+	private Shape poi;
+	private Point2D poiPos;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
 
@@ -71,6 +73,7 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
+        if (poiPos!=null) drawPoi();
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
@@ -206,15 +209,6 @@ public class CanvasView extends JComponent {
 		zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
 	}
 
-    public Point2D toModelCoords(Point2D p) {
-        try {
-			return transform.inverseTransform(p, null);
-        } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
 		int borderFactor = (showReversedBorders) ? -1 : 1;
@@ -236,5 +230,45 @@ public class CanvasView extends JComponent {
 
 	public void drawShortestPath (io.vavr.collection.List<PathEdge> sp) {
 		sp.forEach(e -> this.g.draw(e.toShape()));
+	}
+
+	private void drawPoi() {
+		this.poi = createPoiShape();
+		this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		//Background color
+		this.g.setPaint(Color.decode("#D0021B"));
+		this.g.fill(this.poi);
+		//Outline color
+		this.g.setPaint(Color.WHITE);
+		this.g.draw(this.poi);
+	}
+
+	private Shape createPoiShape() {
+		double size = this.viewRect.getWidth() * 0.05;
+		double xPos = this.poiPos.getX() - size/2;
+		double yPos = this.poiPos.getY() - size * 1.2;
+
+		Shape oval = new Ellipse2D.Double(xPos, yPos, size, size);
+		Shape inner = new Ellipse2D.Double(xPos + size/2.7, yPos + size/2.7, size/4, size/4);
+
+		Path2D pointer = new Path2D.Double();
+		pointer.moveTo(xPos, yPos + size/1.5);
+		pointer.lineTo(poiPos.getX(), poiPos.getY());
+		pointer.lineTo(xPos + size, yPos + size/1.5);
+		pointer.closePath();
+
+		Area area = new Area(oval);
+		area.add(new Area(pointer));
+		area.subtract(new Area(inner));
+		return area;
+	}
+
+	public void setPoiPos(Point2D p) {
+		this.poiPos = toModelCoords(p);
+	}
+
+	public Point2D toModelCoords(Point2D p) {
+		return Try.of( () -> transform.inverseTransform(p, null))
+				.getOrNull();
 	}
 }
