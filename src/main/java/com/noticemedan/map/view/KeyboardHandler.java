@@ -42,6 +42,10 @@ public class KeyboardHandler implements EventHandler<KeyEvent> {
 				if (canvas.isLogZoomLevel()) canvas.setLogZoomLevel(false);
 				else canvas.setLogZoomLevel(true);
 				break;
+			case "n":
+				if (canvas.isLogNearestNeighbor()) canvas.setLogNearestNeighbor(false);
+				else canvas.setLogNearestNeighbor(true);
+				break;
 			case "+":
 				canvas.zoomToCenter(1.1);
 				break;

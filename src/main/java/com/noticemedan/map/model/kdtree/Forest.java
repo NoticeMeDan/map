@@ -3,6 +3,7 @@ package com.noticemedan.map.model.kdtree;
 import com.noticemedan.map.data.BinaryMapData;
 import com.noticemedan.map.data.OsmMapData;
 import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -86,14 +87,25 @@ public class Forest implements ForestInterface{
 		return searchResults;
 	}
 
-	//Range search as if only having one zoom level.
-	public List<OsmElement> rangeSearch(Rect searchQuery) {
-		return rangeSearch(searchQuery, trees.length-1);
-	}
-
 	@Override
-	public OsmElement nearestNeighbor(double x, double y) {
-		throw new RuntimeException("nearestNeighbor() not implemented yet.");
+	public OsmElement nearestNeighbor(Coordinate queryPoint, double zoomLevel) {
+		int excludeTrees = 0;
+
+		if (zoomLevel > 0) excludeTrees = 4;
+		if (zoomLevel > 0.5) excludeTrees = 3;
+		if (zoomLevel > 1) excludeTrees = 2;
+		if (zoomLevel > 15) excludeTrees = 1;
+		if (zoomLevel > 50) excludeTrees = 0;
+
+		OsmElement currentNN = new OsmElement();
+		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+		for (int i = 0; i < trees.length-excludeTrees; i++) {
+			OsmElement candidate = trees[i].nearestNeighbor(queryPoint);
+			double distanceCurrentNNToQueryPoint = Coordinate.euclidianDistance(currentNN.getAvgPoint(), queryPoint);
+			double distanceCandidateToQueryPoint = Coordinate.euclidianDistance(candidate.getAvgPoint(), queryPoint);
+			if (distanceCandidateToQueryPoint < distanceCurrentNNToQueryPoint) currentNN = candidate;
+		}
+		return currentNN;
 	}
 
 	public void kdTreesToBinary() {

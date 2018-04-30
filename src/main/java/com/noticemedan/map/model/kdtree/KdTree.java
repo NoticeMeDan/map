@@ -167,8 +167,8 @@ public class KdTree {
 	public OsmElement nearestNeighbor(Coordinate coordinate) {
 		nearestNeighbor = new OsmElement();
 		nearestNeighbor.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
-		if (rootNode == null) nearestNeighbor = null;
-		nearestNeighborSearch(coordinate, rootNode);
+		if (rootNode == null) return nearestNeighbor;
+		else nearestNeighborSearch(coordinate, rootNode);
 		return nearestNeighbor;
 	}
 

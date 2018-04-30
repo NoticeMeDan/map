@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 import static java.lang.Math.pow;
@@ -40,6 +41,14 @@ public class MouseController extends MouseAdapter {
        	lastMousePosition = e.getPoint();
 		lastMousePositionCanvasCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
     }
+
+	public void mouseMoved(MouseEvent e) {
+		//TODO @email should viewportPoint2canvasPoint return Coordinate instead?
+    	Point2D currentHoverPoint = Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform());
+		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
+    	canvas.logNearestNeighbor(currentHoverCoordinate);
+	}
+
 
     @Override
     public void mouseReleased(MouseEvent e) {

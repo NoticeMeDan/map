@@ -16,7 +16,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +46,8 @@ public class CanvasView extends JComponent {
 	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
+	@Setter @Getter
+	private boolean logNearestNeighbor = false;
 
 
 	public CanvasView() {
@@ -188,6 +189,10 @@ public class CanvasView extends JComponent {
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
+
+    public void logNearestNeighbor(Coordinate querypoint) {
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + forest.nearestNeighbor(querypoint, zoomLevel));
+	}
 
     public void toggleAntiAliasing() {
         antiAliasing = !antiAliasing;
