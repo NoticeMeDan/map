@@ -94,4 +94,17 @@ public class Coordinate extends Point2D implements Serializable {
 		double dY = b.getY() - a.getY();
 		return Math.sqrt(Math.pow(dX , 2) + Math.pow(dY, 2));
 	}
+
+	/**
+	 * @Param query 			The query coordinate
+	 * @param a 				First coordinate
+	 * @param b					Second coordinate
+	 * @return					The closest coordinate
+	 */
+	public static Coordinate closest(Coordinate query, Coordinate a, Coordinate b) {
+		double distanceQA = euclidianDistance(query, a);
+		double distanceQB = euclidianDistance(query, b);
+		if (distanceQA < distanceQB) return  a;
+		else return b;
+	}
 }

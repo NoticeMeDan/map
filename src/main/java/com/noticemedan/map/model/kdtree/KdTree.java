@@ -13,38 +13,41 @@ import java.util.Arrays;
 import java.util.List;
 
 public class KdTree {
-	@Getter private KdNode rootNode;
+	@Getter
+	private KdNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
 	private ArrayList<OsmElement> rangeSearchQueryResults;
+	private OsmElement nearestNeighbor;
 
 	public KdTree(OsmElement[] elements, int maxNumberOfElementsAtLeaf) {
 		if (elements.length == 0) return;
-		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
+		if (maxNumberOfElementsAtLeaf < 1)
+			throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
 		this.rootNode = constructKdTree(elements, 0);
 	}
 
 	/**
-	 * @return 		Root node of kdtree.
+	 * @return Root node of kdtree.
 	 */
 	private KdNode constructKdTree(OsmElement[] elements, int depth) {
 		// Define how many osmElements there are in a leaf node.
-		if (elements.length <= maxNumberOfElementsAtLeaf ) return new KdNode(elements, depth);
+		if (elements.length <= maxNumberOfElementsAtLeaf) return new KdNode(elements, depth);
 
 		Tuple2<OsmElement[], OsmElement[]> splitElements = splitPointArrayByMedian(elements);
 		OsmElement[] firstHalfArray = splitElements._1;
 		OsmElement[] secondHalfArray = splitElements._2;
 		KdNode parent = new KdNode();
 		parent.setDepth(depth);
-		parent.setSplitElement(firstHalfArray[firstHalfArray.length-1]);
+		parent.setSplitElement(firstHalfArray[firstHalfArray.length - 1]);
 
 		// If depth even, split by x-value, otherwise by y-value
-		if (depth % 2 == 0) parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getX());
-		else parent.setSplitValue(firstHalfArray[firstHalfArray.length-1].getAvgPoint().getY());
+		if (depth % 2 == 0) parent.setSplitValue(firstHalfArray[firstHalfArray.length - 1].getAvgPoint().getX());
+		else parent.setSplitValue(firstHalfArray[firstHalfArray.length - 1].getAvgPoint().getY());
 
 		// Recursively find the parent's left and right child.
-		KdNode leftChild = constructKdTree(firstHalfArray, depth+1);
-		KdNode rightChild = constructKdTree(secondHalfArray, depth+1);
+		KdNode leftChild = constructKdTree(firstHalfArray, depth + 1);
+		KdNode rightChild = constructKdTree(secondHalfArray, depth + 1);
 
 		parent.setLeftChild(leftChild);
 		parent.setRightChild(rightChild);
@@ -55,15 +58,16 @@ public class KdTree {
 	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] elements) {
 		int N = elements.length;
 		// k is the index where the array should be split.
-		int k = N/2+1;
+		int k = N / 2 + 1;
 
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new OsmElement[]{elements[0]}, new OsmElement[]{elements[1]}); //Two 1 element arrays
+		if (N == 2)
+			return Tuple.of(new OsmElement[]{elements[0]}, new OsmElement[]{elements[1]}); //Two 1 element arrays
 
 		//Arrange elements array such that median value is in middle of array.
-		Quick.select(elements, N/2);
+		Quick.select(elements, N / 2);
 
 		OsmElement[] firstHalf = new OsmElement[k];
 		OsmElement[] secondHalf = new OsmElement[N - k];
@@ -128,25 +132,25 @@ public class KdTree {
 	// Using in order traversal (LVR: Left, Visit, Right)
 	//Adds all elements to query results
 	private void reportSubtree(KdNode parent) {
-		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
-		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
+		if (parent.getLeftChild() != null) reportSubtree(parent.getLeftChild()); //L
+		if (parent.getElements() != null) rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
+		if (parent.getRightChild() != null) reportSubtree(parent.getRightChild());//R
 	}
 
 	private Tuple2<Rect, Rect> createRegions(KdNode parent, Rect region) {
 		boolean depthEven = parent.getDepth() % 2 == 0;
 		if (depthEven)
 			return Tuple.of(
-				new Rect( // Define left region (A)
-						region.getX1(),
-						region.getY1(),
-						parent.getSplitValue(),
-						region.getY2()),
-				new Rect( // Define right region (B)
-						parent.getSplitValue(),
-						region.getY1(),
-						region.getX2(),
-						region.getY2()));
+					new Rect( // Define left region (A)
+							region.getX1(),
+							region.getY1(),
+							parent.getSplitValue(),
+							region.getY2()),
+					new Rect( // Define right region (B)
+							parent.getSplitValue(),
+							region.getY1(),
+							region.getX2(),
+							region.getY2()));
 		else return Tuple.of(
 				new Rect( //Define bottom region (A)
 						region.getX1(),
@@ -161,32 +165,57 @@ public class KdTree {
 	}
 
 	public OsmElement nearestNeighbor(Coordinate coordinate) {
-		return nearestNeighborSearch(coordinate, rootNode);
+		nearestNeighbor = new OsmElement();
+		nearestNeighbor.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+		if (rootNode == null) nearestNeighbor = null;
+		nearestNeighborSearch(coordinate, rootNode);
+		return nearestNeighbor;
 	}
 
-	private OsmElement nearestNeighborSearch(Coordinate coordinate, KdNode currentNode) {
-		boolean isLeaf = currentNode.getElements() != null;
-		boolean depthEven = currentNode.getDepth() % 2 == 0;
-		if (isLeaf) return getNearestElementInArray(coordinate, currentNode);
-		else if (depthEven && coordinate.getX() <= currentNode.getSplitValue())
-			return nearestNeighborSearch(coordinate, currentNode.getLeftChild());
-		else if (depthEven && coordinate.getX() > currentNode.getSplitValue())
-			return nearestNeighborSearch(coordinate, currentNode.getRightChild());
-		else if (!depthEven && coordinate.getY() <= currentNode.getSplitValue())
-			return nearestNeighborSearch(coordinate, currentNode.getLeftChild());
-		else if (!depthEven && coordinate.getY() > currentNode.getSplitValue())
-			return nearestNeighborSearch(coordinate, currentNode.getRightChild());
-		return null;
-	}
+	private void nearestNeighborSearch(Coordinate queryPoint, KdNode root) {
+		boolean isLeaf = root.getElements() != null;
+		boolean depthEven = root.getDepth() % 2 == 0;
 
-	public OsmElement getNearestElementInArray(Coordinate coordinate, KdNode leafNode) {
-		double minDistance = Double.POSITIVE_INFINITY;
-		OsmElement nearestElement = new OsmElement();
-		boolean isCloser;
-		for (int i = 0; i < leafNode.getElements().length; i++) {
-			isCloser = Coordinate.euclidianDistance(coordinate, leafNode.getElements()[i].getAvgPoint()) < minDistance;
-			if (isCloser) nearestElement = leafNode.getElements()[i];
+		KdNode nextBranch = null;
+		KdNode oppositeBranch = null;
+
+		if (isLeaf) searchForNNInArray(queryPoint, root);
+		else if (depthEven && queryPoint.getX() <= root.getSplitValue() || !depthEven && queryPoint.getY() <= root.getSplitValue()) {
+			nextBranch = root.getLeftChild();
+			oppositeBranch = root.getRightChild();
+		} else if (depthEven && queryPoint.getX() > root.getSplitValue() || !depthEven && queryPoint.getY() > root.getSplitValue()) {
+			nextBranch = root.getRightChild();
+			oppositeBranch = root.getLeftChild();
 		}
-		return nearestElement;
+
+		if(!isLeaf) {
+			nearestNeighborSearch(queryPoint, nextBranch);
+			lookInOppositeBranch(queryPoint, root, oppositeBranch);
+		}
+	}
+
+	private void lookInOppositeBranch(Coordinate queryPoint, KdNode root, KdNode oppositeBranch) {
+		boolean depthEven = root.getSplitValue() % 2 == 0;
+
+		//Check various distances
+		double currentNNRadius = Coordinate.euclidianDistance(queryPoint, nearestNeighbor.getAvgPoint());
+		double distanceToXSplitValue = Math.abs(queryPoint.getX() - root.getSplitValue());
+		double distanceToYSplitValue = Math.abs(queryPoint.getY() - root.getSplitValue());
+
+		boolean currentNNRadiusOverlapsXSplitValue = depthEven && currentNNRadius > distanceToXSplitValue;
+		boolean currentNNRadiusOverlapsYSplitValue = !depthEven && currentNNRadius > distanceToYSplitValue;
+
+		//Look in opposite branches
+		if (currentNNRadiusOverlapsXSplitValue) nearestNeighborSearch(queryPoint, oppositeBranch);
+		if (currentNNRadiusOverlapsYSplitValue) nearestNeighborSearch(queryPoint, oppositeBranch);
+	}
+
+	private void searchForNNInArray(Coordinate queryPoint, KdNode leafNode) {
+		for (int i = 0; i < leafNode.getElements().length; i++) {
+			boolean newPointIsCloserThanCurrentNN =
+					  Coordinate.euclidianDistance(queryPoint, leafNode.getElements()[i].getAvgPoint())
+					< Coordinate.euclidianDistance(queryPoint, nearestNeighbor.getAvgPoint());
+			if (newPointIsCloserThanCurrentNN) nearestNeighbor = leafNode.getElements()[i];
+		}
 	}
 }

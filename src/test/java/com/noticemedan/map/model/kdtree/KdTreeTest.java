@@ -45,7 +45,7 @@ public class KdTreeTest {
 		pointsForSmallKDTree[7] = new OsmElement();
 		pointsForSmallKDTree[7].setAvgPoint(new Coordinate(9,9));
 
-		smallKdTree = new KdTree(pointsForSmallKDTree, 1);
+		smallKdTree = new KdTree(pointsForSmallKDTree, 2);
 	}
 
 	@Test
@@ -311,8 +311,26 @@ public class KdTreeTest {
 	}
 
 	@Test
-	public void nearestNeighbor_AverageCase() {
-		Coordinate searchCoordinate = new Coordinate(6.1,7.1);
+	public void nearestNeighbor_AverageCase1() {
+		Coordinate searchCoordinate = new Coordinate(3.1,8.1);
 		OsmElement nearestNeighbor = smallKdTree.nearestNeighbor(searchCoordinate);
+		assertEquals(3.0, nearestNeighbor.getAvgPoint().getX());
+		assertEquals(8.0, nearestNeighbor.getAvgPoint().getY());
+	}
+
+	@Test
+	public void nearestNeighbor_AverageCase2() {
+		Coordinate searchCoordinate = new Coordinate(5,4);
+		OsmElement nearestNeighbor = smallKdTree.nearestNeighbor(searchCoordinate);
+		assertEquals(4.0, nearestNeighbor.getAvgPoint().getX());
+		assertEquals(6.0, nearestNeighbor.getAvgPoint().getY());
+	}
+
+	@Test
+	public void nearestNeighbor_AverageCase3() {
+		Coordinate searchCoordinate = new Coordinate(-2,-2);
+		OsmElement nearestNeighbor = smallKdTree.nearestNeighbor(searchCoordinate);
+		assertEquals(2.0, nearestNeighbor.getAvgPoint().getX());
+		assertEquals(3.0, nearestNeighbor.getAvgPoint().getY());
 	}
 }

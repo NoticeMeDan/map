@@ -103,4 +103,20 @@ public class CoordinateTests {
 		double distance = Coordinate.euclidianDistance(a, b);
 		assertTrue(distance == Double.POSITIVE_INFINITY);
 	}
+
+	@Test
+	public void testClosest_AverageCase_1() {
+		Coordinate a = new Coordinate(10, 10);
+		Coordinate b = new Coordinate(9, 9);
+		Coordinate query = new Coordinate(1,1);
+		assertTrue(b.equals(Coordinate.closest(query, a, b)));
+	}
+
+	@Test
+	public void testClosest_AverageCase_2() {
+		Coordinate a = new Coordinate(10, 10);
+		Coordinate b = new Coordinate(-2, 3);
+		Coordinate query = new Coordinate(0,0);
+		assertTrue(b.equals(Coordinate.closest(query, a, b)));
+	}
 }
