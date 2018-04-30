@@ -1,5 +1,6 @@
 package com.noticemedan.map.view;
 
+import com.noticemedan.map.model.DomainFacade;
 import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.user.FavoritePoiManager;
 import com.noticemedan.map.model.utilities.Coordinate;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Pane;
 import lombok.Getter;
 
 import java.awt.Dimension;
+import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 
 public class MainViewController {
@@ -49,6 +51,14 @@ public class MainViewController {
 	//Canvas controllers
 	private MouseController mouseController;
 
+	// Model Facade
+	private DomainFacade domain;
+
+	@Inject
+	public MainViewController(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+	}
+
 	public void initialize() {
 		favoritePoiManager = new FavoritePoiManager();
 		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
@@ -61,7 +71,7 @@ public class MainViewController {
 	private void insertOSMPane() {
 		Dimension screenSize = new Dimension(1100, 650);
 		swingNode = new SwingNode();
-		canvasView = new CanvasView();
+		canvasView = new CanvasView(this.domain);
 		canvasView.setSize(screenSize);
 		System.out.println(Entities.writeOut());
 		canvasView.pan(-Entities.getMinLon(), -Entities.getMaxLat());

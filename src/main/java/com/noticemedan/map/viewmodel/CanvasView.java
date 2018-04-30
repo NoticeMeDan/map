@@ -1,8 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
+import com.noticemedan.map.model.DomainFacade;
 import com.noticemedan.map.model.osm.Element;
-import com.noticemedan.map.model.OsmMapData;
-import com.noticemedan.map.model.kdtree.Forest;
+import com.noticemedan.map.model.MapData;
+import com.noticemedan.map.model.service.Forest;
 import com.noticemedan.map.model.osm.Type;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
@@ -45,10 +46,12 @@ public class CanvasView extends JComponent {
 	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
+	private DomainFacade domain;
 
 
-	public CanvasView() {
-		this.forest = new Forest(new OsmMapData()); // TODO: Make more dynamic when user can pick their own map
+	public CanvasView(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+		this.forest = new Forest(this.domain.mapData.getOsmElements().toJavaList(), this.domain.mapData.getOsmCoastlineElements().toJavaList()); // TODO: Make more dynamic when user can pick their own map
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		repaint();
 	}

@@ -1,25 +1,27 @@
-package com.noticemedan.map.model.kdtree;
+package com.noticemedan.map.model.service;
 
-import com.noticemedan.map.model.OsmMapData;
+import com.noticemedan.map.model.TestMapData;
+import com.noticemedan.map.model.kdtree.ForestInterface;
+import com.noticemedan.map.model.kdtree.KDTree;
 import com.noticemedan.map.model.osm.Element;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Slf4j
-public class Forest implements ForestInterface{
+public class Forest implements ForestInterface {
 	private KDTree trees[];
-	private final String binaryID = UUID.randomUUID().toString();
 	@Getter
 	private List<Element> coastlines;
 
-	public Forest(OsmMapData mapData) {
+	public Forest(List<Element> elements, List<Element> coastlineElements) {
 		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
-		List<Element> elements = mapData.getOsmElements().toJavaList();
-		this.coastlines = mapData.getOsmCoastlineElements().toJavaList();
+		this.coastlines = coastlineElements;
 		Element[][] elementArray = new Element[5][];
 
 		List<Element> zoom0 = new LinkedList<>();
