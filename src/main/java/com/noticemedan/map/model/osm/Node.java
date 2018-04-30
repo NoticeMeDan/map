@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OsmNode {
+public class Node {
     private double lon, lat;
 }

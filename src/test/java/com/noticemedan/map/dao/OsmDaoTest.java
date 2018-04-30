@@ -1,7 +1,7 @@
-package com.noticemedan.map.data;
+package com.noticemedan.map.dao;
 
-import com.noticemedan.map.model.OsmElement;
-import com.noticemedan.map.model.osm.OsmType;
+import com.noticemedan.map.model.osm.Element;
+import com.noticemedan.map.model.osm.Type;
 import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.collection.Vector;
@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class OsmReaderTest {
-	private OsmReader osmReader = new OsmReader();
+public class OsmDaoTest {
+	private OsmDao osmDao = new OsmDao();
 	private String osmString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<osm>\n" +
 			" <bounds minlat=\"55.6631000\" minlon=\"12.5730000\" maxlat=\"55.6804000\" maxlon=\"12.6031000\"/>\n" +
@@ -36,14 +36,14 @@ public class OsmReaderTest {
 
 	@Test
 	public void testGetShapesFromFile() {
-		this.osmReader.getShapesFromFile(osmStream, ".osm");
-		Vector<OsmElement> osmElements = this.osmReader.getOsmElements();
+		this.osmDao.getShapesFromFile(osmStream, ".osm");
+		Vector<Element> osmElements = this.osmDao.getOsmElements();
 		assertEquals(osmElements.length(), 2);
 
-		OsmElement osmElement = osmElements.get(0);
-		assertEquals(osmElement.getAvgPoint(), new Coordinate(7.089912651806818, -55.6736517));
-		assertEquals(osmElement.getBounds(), new Rect(7.089912651806818, -55.6736517, 7.089912651806818, -55.6736517));
-		assertEquals(osmElement.getOsmType(), OsmType.UNKNOWN);
-		assertTrue(osmElement.isDepthEven());
+		Element element = osmElements.get(0);
+		assertEquals(element.getAvgPoint(), new Coordinate(7.089912651806818, -55.6736517));
+		assertEquals(element.getBounds(), new Rect(7.089912651806818, -55.6736517, 7.089912651806818, -55.6736517));
+		assertEquals(element.getType(), Type.UNKNOWN);
+		assertTrue(element.isDepthEven());
 	}
 }

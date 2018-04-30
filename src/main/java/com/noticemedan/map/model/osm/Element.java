@@ -1,6 +1,5 @@
-package com.noticemedan.map.model;
+package com.noticemedan.map.model.osm;
 
-import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
 import lombok.Data;
@@ -11,8 +10,8 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class OsmElement implements Comparable<OsmElement>, Serializable {
-	private OsmType osmType;
+public class Element implements Comparable<Element>, Serializable {
+	private Type type;
 	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon
@@ -21,7 +20,7 @@ public class OsmElement implements Comparable<OsmElement>, Serializable {
 	private boolean depthEven = true; // Is this object at even depth in KD-Tree?
 
 	@Override
-	public int compareTo(OsmElement that) {
+	public int compareTo(Element that) {
 		if (depthEven) {
 			if (this.avgPoint.getX() > that.avgPoint.getX()) return 1;
 			if (this.avgPoint.getX() == that.avgPoint.getX()) return 0;

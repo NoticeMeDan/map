@@ -1,9 +1,9 @@
 package com.noticemedan.map.viewmodel;
 
-import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.osm.Element;
 import com.noticemedan.map.model.OsmMapData;
 import com.noticemedan.map.model.kdtree.Forest;
-import com.noticemedan.map.model.osm.OsmType;
+import com.noticemedan.map.model.osm.Type;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import lombok.Getter;
@@ -109,36 +109,36 @@ public class CanvasView extends JComponent {
 
     private void drawAllElements() {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
-		List<OsmElement> result = forest.rangeSearch(viewArea, zoomLevel);
+		List<Element> result = forest.rangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
 
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
 
 		//All open elements
 		this.isShapeOpen = true;
-		paintByType(result,OsmType.UNKNOWN,getLowLevelStroke());
-		paintByType(result,OsmType.TRUNK, getLowLevelStroke());
-		paintByType(result,OsmType.SAND, getLowLevelStroke());
-		paintByType(result,OsmType.FOOTWAY, new BasicStroke(0.00002f));
-		paintByType(result,OsmType.ROAD, new BasicStroke(0.00004f));
-		paintByType(result,OsmType.TERTIARY, getHighLevelStroke());
-		paintByType(result,OsmType.SECONDARY, getHighLevelStroke());
-		paintByType(result,OsmType.PRIMARY, getMediumLevelStroke());
-		paintByType(result,OsmType.HIGHWAY,new BasicStroke(0.0001f));
-		paintByType(result,OsmType.MOTORWAY, getLowLevelStroke());
+		paintByType(result,Type.UNKNOWN,getLowLevelStroke());
+		paintByType(result,Type.TRUNK, getLowLevelStroke());
+		paintByType(result,Type.SAND, getLowLevelStroke());
+		paintByType(result,Type.FOOTWAY, new BasicStroke(0.00002f));
+		paintByType(result,Type.ROAD, new BasicStroke(0.00004f));
+		paintByType(result,Type.TERTIARY, getHighLevelStroke());
+		paintByType(result,Type.SECONDARY, getHighLevelStroke());
+		paintByType(result,Type.PRIMARY, getMediumLevelStroke());
+		paintByType(result,Type.HIGHWAY,new BasicStroke(0.0001f));
+		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
 	}
 
-	private void paintClosedElements (List<OsmElement> result, BasicStroke stroke) {
+	private void paintClosedElements (List<Element> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
-		paintByType(result,OsmType.PARK,stroke);
-		paintByType(result,OsmType.GRASSLAND,stroke);
-		paintByType(result,OsmType.FOREST,stroke);
-		paintByType(result,OsmType.GARDEN,stroke);
-		paintByType(result,OsmType.HEATH,stroke);
-		paintByType(result,OsmType.TREE_ROW,stroke);
-		paintByType(result,OsmType.PLAYGROUND,stroke);
-		paintByType(result,OsmType.WATER,stroke);
-		paintByType(result,OsmType.BUILDING,stroke);
+		paintByType(result,Type.PARK,stroke);
+		paintByType(result,Type.GRASSLAND,stroke);
+		paintByType(result,Type.FOREST,stroke);
+		paintByType(result,Type.GARDEN,stroke);
+		paintByType(result,Type.HEATH,stroke);
+		paintByType(result,Type.TREE_ROW,stroke);
+		paintByType(result,Type.PLAYGROUND,stroke);
+		paintByType(result,Type.WATER,stroke);
+		paintByType(result,Type.BUILDING,stroke);
 	}
 
 	private BasicStroke getLowLevelStroke() {
@@ -162,20 +162,20 @@ public class CanvasView extends JComponent {
 		else return new BasicStroke(0.0007f);
 	}
 
-    private void paintByType(List<OsmElement> elements, OsmType type, BasicStroke stroke) {
+    private void paintByType(List<Element> elements, Type type, BasicStroke stroke) {
 		elements.stream()
-				.filter(e -> e.getOsmType() == type)
+				.filter(e -> e.getType() == type)
 				.forEach(e -> paintOsmElement(stroke, e));
 	}
 
-	private void paintOsmElement(BasicStroke stroke, OsmElement osmElement) {
+	private void paintOsmElement(BasicStroke stroke, Element element) {
 		this.g.setStroke(stroke);
-		this.g.setPaint(osmElement.getColor());
-		if (osmElement.getShape().intersects(this.viewRect)) {
+		this.g.setPaint(element.getColor());
+		if (element.getShape().intersects(this.viewRect)) {
 			if (isShapeOpen) {
-				this.g.draw(osmElement.getShape());
+				this.g.draw(element.getShape());
 			} else {
-				this.g.fill(osmElement.getShape());
+				this.g.fill(element.getShape());
 			}
 		}
 	}

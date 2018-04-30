@@ -13,14 +13,14 @@ package com.noticemedan.map.model.kdtree;
 
 		double[] x = new double[] {1, 2, 3, 4, 5, 6, 7, 9};
 		double[] y = new double[] {10, 3, 8, 6, 1, 7, 2, 9};
-		OsmType[] enums = new OsmType[] {ROAD, WATER, TREE};
+		Type[] enums = new Type[] {ROAD, WATER, TREE};
 
 		for (int i = 0; i < mapObjects_smallKDTrees.length; i++) {
 			OSMMaterialElement[] osmElementsForSmallKDTree = new OSMMaterialElement[8];
 			for (int j = 0; j < osmElementsForSmallKDTree.length; j++ ) {
 				osmElementsForSmallKDTree[j] = new OSMMaterialElement();
 				osmElementsForSmallKDTree[j].setAvgPoint(new Coordinate(x[j], y[j]));
-				osmElementsForSmallKDTree[j].setOsmType(enums[i]);
+				osmElementsForSmallKDTree[j].setType(enums[i]);
 			}
 			mapObjects_smallKDTrees[i] = osmElementsForSmallKDTree;
 		}
@@ -34,7 +34,7 @@ package com.noticemedan.map.model.kdtree;
 		Rect query = new Rect(0.5,7.5,3.5, 10.5);
 		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 0);
 		assertEquals(results.size(), 2);
-		assertEquals(results.getListOfOSMMaterialElements(0).getOsmType(), ROAD);
+		assertEquals(results.getListOfOSMMaterialElements(0).getType(), ROAD);
 		assertEquals(results.getListOfOSMMaterialElements(0).getAvgPoint().getX(), 3.0);
 		assertEquals(results.getListOfOSMMaterialElements(0).getAvgPoint().getY(), 8.0);
 	}
@@ -44,7 +44,7 @@ package com.noticemedan.map.model.kdtree;
 		Rect query = new Rect(4.5,0.5,10, 10);
 		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 1);
 		assertEquals(results.size(), 8);
-		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getOsmType(), OsmType.WATER);
+		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getType(), Type.WATER);
 		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getX(), 9.0);
 		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getY(), 9.0);
 	}
@@ -54,7 +54,7 @@ package com.noticemedan.map.model.kdtree;
 		Rect query = new Rect(0.5,5.5,9.5, 10.5);
 		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 2);
 		assertEquals(results.size(), 15);
-		assertEquals(results.getListOfOSMMaterialElements(2).getOsmType(), ROAD);
+		assertEquals(results.getListOfOSMMaterialElements(2).getType(), ROAD);
 		assertEquals(results.getListOfOSMMaterialElements(2).getAvgPoint().getX(), 1.0);
 		assertEquals(results.getListOfOSMMaterialElements(2).getAvgPoint().getY(), 10.0);
 	}

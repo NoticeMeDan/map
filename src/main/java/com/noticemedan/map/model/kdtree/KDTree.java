@@ -1,6 +1,7 @@
 package com.noticemedan.map.model.kdtree;
 
-import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.model.osm.Element;
+import com.noticemedan.map.model.osm.Element;
 import com.noticemedan.map.model.utilities.Quick;
 import com.noticemedan.map.model.utilities.Rect;
 import io.vavr.Tuple;
@@ -9,16 +10,15 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class KDTree {
 
 	@Getter private KDTreeNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
-	private ArrayList<OsmElement> rangeSearchQueryResults;
+	private ArrayList<Element> rangeSearchQueryResults;
 
-	public KDTree(OsmElement[] points, int maxNumberOfElementsAtLeaf) {
+	public KDTree(Element[] points, int maxNumberOfElementsAtLeaf) {
 		if (points.length == 0) return;
 		if (maxNumberOfElementsAtLeaf < 1 ) throw new RuntimeException("The maximum number of elements at a leaf cannot be less than 1");
 		this.maxNumberOfElementsAtLeaf = maxNumberOfElementsAtLeaf;
@@ -28,13 +28,13 @@ public class KDTree {
 	/**
 	 * @return 		Root node of kdtree.
 	 */
-	private KDTreeNode buildKDTree(OsmElement[] points, int depth) {
+	private KDTreeNode buildKDTree(Element[] points, int depth) {
 		// Define how many osmElements there are in a leaf node.
 		if (points.length <= maxNumberOfElementsAtLeaf ) return new KDTreeNode(points, depth);
 
-		Tuple2<OsmElement[], OsmElement[]> pointsSplitted = splitPointArrayByMedian(points);
-		OsmElement[] firstHalfArray = pointsSplitted._1;
-		OsmElement[] secondHalfArray = pointsSplitted._2;
+		Tuple2<Element[], Element[]> pointsSplitted = splitPointArrayByMedian(points);
+		Element[] firstHalfArray = pointsSplitted._1;
+		Element[] secondHalfArray = pointsSplitted._2;
 		KDTreeNode parent = new KDTreeNode();
 		parent.setDepth(depth);
 
@@ -54,7 +54,7 @@ public class KDTree {
 		return parent;
 	}
 
-	private Tuple2<OsmElement[], OsmElement[]> splitPointArrayByMedian(OsmElement[] points) {
+	private Tuple2<Element[], Element[]> splitPointArrayByMedian(Element[] points) {
 		int N = points.length;
 		// k is the index where the array should be split.
 		int k = N/2+1;
@@ -62,13 +62,13 @@ public class KDTree {
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2) return Tuple.of(new OsmElement[]{points[0]}, new OsmElement[]{points[1]});
+		if (N == 2) return Tuple.of(new Element[]{points[0]}, new Element[]{points[1]});
 
 		Quick.select(points, N/2);
 
 
-		OsmElement[] firstHalf = new OsmElement[k];
-		OsmElement[] secondHalf = new OsmElement[N - k];
+		Element[] firstHalf = new Element[k];
+		Element[] secondHalf = new Element[N - k];
 
 		// Insert elements into two arrays from original array.
 		int j = 0;
@@ -82,7 +82,7 @@ public class KDTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public List<OsmElement> rangeSearch(Rect query) {
+	public List<Element> rangeSearch(Rect query) {
 		rangeSearchQueryResults = new ArrayList<>();
 		if (rootNode == null) return this.rangeSearchQueryResults;
 
@@ -107,9 +107,9 @@ public class KDTree {
 		}
 
 		// If current node is a leaf, check if point is within query;
-		if (parent.getOsmElements() != null) {
-			for (int i = 0; i < parent.getOsmElements().length; i++) {
-				if (pointInRect(parent.getOsmElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getOsmElements()[i]);
+		if (parent.getElements() != null) {
+			for (int i = 0; i < parent.getElements().length; i++) {
+				if (pointInRect(parent.getElements()[i], searchQuery)) rangeSearchQueryResults.add(parent.getElements()[i]);
 			}
 		} else {
 			// If left bounding box for left child is completely in query, report all osmMaterialElements in this subtree
@@ -152,7 +152,7 @@ public class KDTree {
 	// Using in order traversal (LVR: Left, Visit, Right)
 	public void reportSubtree(KDTreeNode parent) {
 		if (parent.getLeftChild() != null) 		reportSubtree(parent.getLeftChild()); //L
-		if (parent.getOsmElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getOsmElements())); //V
+		if (parent.getElements() != null) 		rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V
 		if (parent.getRightChild() != null) 	reportSubtree(parent.getRightChild());//R
 	}
 
@@ -168,11 +168,11 @@ public class KDTree {
 	}
 
 	//TODO: Not so pretty code with 'part1', 'part2'...
-	static public boolean pointInRect(OsmElement osmElement, Rect rect) {
-		boolean part1 = rect.getX1() <= osmElement.getAvgPoint().getX();
-		boolean part2 = osmElement.getAvgPoint().getX() <= rect.getX2();
-		boolean part3 = rect.getY1() <= osmElement.getAvgPoint().getY();
-		boolean part4 = osmElement.getAvgPoint().getY() <= rect.getY2();
+	static public boolean pointInRect(Element element, Rect rect) {
+		boolean part1 = rect.getX1() <= element.getAvgPoint().getX();
+		boolean part2 = element.getAvgPoint().getX() <= rect.getX2();
+		boolean part3 = rect.getY1() <= element.getAvgPoint().getY();
+		boolean part4 = element.getAvgPoint().getY() <= rect.getY2();
 		return part1 && part2 && part3 && part4;
 	}
 }

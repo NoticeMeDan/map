@@ -1,5 +1,5 @@
 
-package com.noticemedan.map.viewmodel;
+package com.noticemedan.map.model.service;
 
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.RadixTree;

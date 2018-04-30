@@ -1,7 +1,7 @@
 package com.noticemedan.map.model.kdtree;
 
-import com.noticemedan.map.data.BinaryMapData;
-import com.noticemedan.map.model.OsmElement;
+import com.noticemedan.map.dao.MapDao;
+import com.noticemedan.map.model.osm.Element;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,19 +14,11 @@ public class KDTreeNode {
 	private KDTreeNode leftChild;
 	private KDTreeNode rightChild;
 	private int depth;
-	private OsmElement[] osmElements;
+	private Element[] elements;
 	private String binaryID = UUID.randomUUID().toString();
 
-	public KDTreeNode(OsmElement[] points, int depth) {
-		this.osmElements = points;
+	public KDTreeNode(Element[] points, int depth) {
+		this.elements = points;
 		this.depth = depth;
-	}
-
-	public void elementsToBinary() {
-		BinaryMapData.serialize(this.osmElements, this.binaryID);
-	}
-
-	public OsmElement[] elementsFromBinary() {
-		return (OsmElement[]) BinaryMapData.deserialize(this.binaryID);
 	}
 }

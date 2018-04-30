@@ -67,7 +67,7 @@ public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer
 	}
 
 	/**
-	 * Unit tests the {@code IndexMinPQ} data type.
+	 * Unit tests the {@code IndexMinPQ} dao type.
 	 *
 	 * @param args the command-line arguments
 	 */

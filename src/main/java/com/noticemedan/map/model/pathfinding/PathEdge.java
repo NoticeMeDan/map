@@ -1,13 +1,13 @@
 package com.noticemedan.map.model.pathfinding;
 
-import com.noticemedan.map.model.osm.OsmType;
+import com.noticemedan.map.model.osm.Type;
 import lombok.Data;
 
 @Data
 public class PathEdge {
 	private double weight;
 	private double speedLimit;
-	private OsmType roadType;
+	private Type roadType;
 	private PathNode v;
 	private PathNode w;
 
