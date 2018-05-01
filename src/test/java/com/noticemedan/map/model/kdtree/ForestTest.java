@@ -13,7 +13,7 @@ package com.noticemedan.map.model.kdtree;
 
 		double[] x = new double[] {1, 2, 3, 4, 5, 6, 7, 9};
 		double[] y = new double[] {10, 3, 8, 6, 1, 7, 2, 9};
-		OSMType[] enums = new OSMType[] {ROAD, WATER, TREE};
+		OsmType[] enums = new OsmType[] {ROAD, WATER, TREE};
 
 		for (int i = 0; i < mapObjects_smallKDTrees.length; i++) {
 			OSMMaterialElement[] osmElementsForSmallKDTree = new OSMMaterialElement[8];
@@ -44,7 +44,7 @@ package com.noticemedan.map.model.kdtree;
 		Rect query = new Rect(4.5,0.5,10, 10);
 		List<OSMMaterialElement> results = smallForest.rangeSearch(query, 1);
 		assertEquals(results.size(), 8);
-		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getOsmType(), OSMType.WATER);
+		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getOsmType(), OsmType.WATER);
 		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getX(), 9.0);
 		assertEquals(results.getListOfOSMMaterialElements(results.size()-1).getAvgPoint().getY(), 9.0);
 	}

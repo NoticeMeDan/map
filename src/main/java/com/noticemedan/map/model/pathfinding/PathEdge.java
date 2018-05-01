@@ -1,6 +1,6 @@
 package com.noticemedan.map.model.pathfinding;
 
-import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.osm.OsmType;
 import lombok.Data;
 
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.geom.Line2D;
 public class PathEdge {
 	private double weight;
 	private double speedLimit;
-	private OSMType roadType;
+	private OsmType roadType;
 	private PathNode v;
 	private PathNode w;
 
