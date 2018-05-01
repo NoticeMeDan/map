@@ -24,7 +24,7 @@ public class LongToOSMNodeMap {
         return null;
     }
 
-    class Node extends com.noticemedan.mappr.model.osm.Node {
+    class Node extends com.noticemedan.mappr.model.map.Node {
         long id;
         Node next;
 

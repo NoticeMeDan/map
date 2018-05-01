@@ -1,8 +1,8 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.osm.Element;
-import com.noticemedan.mappr.model.osm.Type;
+import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import lombok.Getter;

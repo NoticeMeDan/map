@@ -1,4 +1,4 @@
-package com.noticemedan.mappr.model.osm;
+package com.noticemedan.mappr.model.map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

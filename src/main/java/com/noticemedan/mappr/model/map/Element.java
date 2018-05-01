@@ -1,4 +1,4 @@
-package com.noticemedan.mappr.model.osm;
+package com.noticemedan.mappr.model.map;
 
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;

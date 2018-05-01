@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model;
 
-import com.noticemedan.mappr.model.osm.Element;
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.service.Forest;
 import com.noticemedan.mappr.model.service.TextSearch;
 import com.noticemedan.mappr.model.util.Rect;

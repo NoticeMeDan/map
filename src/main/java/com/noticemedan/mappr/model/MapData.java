@@ -2,8 +2,8 @@ package com.noticemedan.mappr.model;
 
 import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.dao.OsmDao;
-import com.noticemedan.mappr.model.osm.Address;
-import com.noticemedan.mappr.model.osm.Element;
+import com.noticemedan.mappr.model.map.Address;
+import com.noticemedan.mappr.model.map.Element;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

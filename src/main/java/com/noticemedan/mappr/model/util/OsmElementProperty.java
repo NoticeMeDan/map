@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model.util;
 
-import com.noticemedan.mappr.model.osm.Type;
+import com.noticemedan.mappr.model.map.Type;
 
 import java.awt.*;
 import java.util.EnumMap;

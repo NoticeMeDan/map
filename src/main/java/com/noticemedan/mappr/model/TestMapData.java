@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.model;
 
-import com.noticemedan.mappr.model.osm.Address;
-import com.noticemedan.mappr.model.osm.Element;
+import com.noticemedan.mappr.model.map.Address;
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import io.vavr.collection.List;
 import io.vavr.collection.Vector;

@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.dao;
 
-import com.noticemedan.mappr.model.osm.Element;
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.kdtree.KDTreeNode;
 import com.noticemedan.mappr.model.util.Coordinate;
 import org.testng.annotations.AfterTest;
@@ -74,7 +74,7 @@ public class MapDaoTest {
 
 	@AfterTest
 	void clearFiles() {
-		File file = new File("./src/main/java/com/noticemedan/osm/dao/binarydatafiles/" + this.kdTreeNode.getBinaryID() + ".dat");
+		File file = new File("./src/main/java/com/noticemedan/map/dao/binarydatafiles/" + this.kdTreeNode.getBinaryID() + ".dat");
 		if(file.delete()) System.out.println("\nDELETED BINARY-TEST-FILE: " + file.getName());
 	}
 }

@@ -2,13 +2,13 @@ package com.noticemedan.mappr.dao;
 
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.TestMapData;
-import com.noticemedan.mappr.model.osm.Element;
-import com.noticemedan.mappr.model.osm.Node;
-import com.noticemedan.mappr.model.osm.Type;
+import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.map.Node;
+import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
-import com.noticemedan.mappr.model.osm.Address;
+import com.noticemedan.mappr.model.map.Address;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;

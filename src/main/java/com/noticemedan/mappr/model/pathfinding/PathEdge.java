@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model.pathfinding;
 
-import com.noticemedan.mappr.model.osm.Type;
+import com.noticemedan.mappr.model.map.Type;
 import lombok.Data;
 
 @Data

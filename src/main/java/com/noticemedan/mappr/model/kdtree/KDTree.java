@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model.kdtree;
 
-import com.noticemedan.mappr.model.osm.Element;
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.util.Quick;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple;
