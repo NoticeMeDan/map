@@ -3,7 +3,6 @@ package com.noticemedan.map.viewmodel;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
-import com.noticemedan.map.model.pathfinding.PathEdge;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import io.vavr.control.Try;
@@ -224,10 +223,6 @@ public class CanvasView extends JComponent {
 
 	public void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
-	}
-
-	public void drawShortestPath (io.vavr.collection.List<PathEdge> sp) {
-		sp.forEach(e -> this.g.draw(e.toShape()));
 	}
 
 	private void drawPoi() {
