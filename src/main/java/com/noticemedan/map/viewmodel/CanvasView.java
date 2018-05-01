@@ -2,7 +2,7 @@ package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
-import com.noticemedan.map.model.osm.OSMType;
+import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import io.vavr.control.Try;
@@ -114,29 +114,29 @@ public class CanvasView extends JComponent {
 
 		//All open elements
 		this.isShapeOpen = true;
-		paintByType(result,OSMType.UNKNOWN,getLowLevelStroke());
-		paintByType(result,OSMType.TRUNK, getLowLevelStroke());
-		paintByType(result,OSMType.SAND, getLowLevelStroke());
-		paintByType(result,OSMType.FOOTWAY, new BasicStroke(0.00002f));
-		paintByType(result,OSMType.ROAD, new BasicStroke(0.00004f));
-		paintByType(result,OSMType.TERTIARY, getHighLevelStroke());
-		paintByType(result,OSMType.SECONDARY, getHighLevelStroke());
-		paintByType(result,OSMType.PRIMARY, getMediumLevelStroke());
-		paintByType(result,OSMType.HIGHWAY,new BasicStroke(0.0001f));
-		paintByType(result,OSMType.MOTORWAY, getLowLevelStroke());
+		paintByType(result,OsmType.UNKNOWN,getLowLevelStroke());
+		paintByType(result,OsmType.TRUNK, getLowLevelStroke());
+		paintByType(result,OsmType.SAND, getLowLevelStroke());
+		paintByType(result,OsmType.FOOTWAY, new BasicStroke(0.00002f));
+		paintByType(result,OsmType.ROAD, new BasicStroke(0.00004f));
+		paintByType(result,OsmType.TERTIARY, getHighLevelStroke());
+		paintByType(result,OsmType.SECONDARY, getHighLevelStroke());
+		paintByType(result,OsmType.PRIMARY, getMediumLevelStroke());
+		paintByType(result,OsmType.HIGHWAY,new BasicStroke(0.0001f));
+		paintByType(result,OsmType.MOTORWAY, getLowLevelStroke());
 	}
 
 	private void paintClosedElements (List<OsmElement> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
-		paintByType(result,OSMType.PARK,stroke);
-		paintByType(result,OSMType.GRASSLAND,stroke);
-		paintByType(result,OSMType.FOREST,stroke);
-		paintByType(result,OSMType.GARDEN,stroke);
-		paintByType(result,OSMType.HEATH,stroke);
-		paintByType(result,OSMType.TREE_ROW,stroke);
-		paintByType(result,OSMType.PLAYGROUND,stroke);
-		paintByType(result,OSMType.WATER,stroke);
-		paintByType(result,OSMType.BUILDING,stroke);
+		paintByType(result,OsmType.PARK,stroke);
+		paintByType(result,OsmType.GRASSLAND,stroke);
+		paintByType(result,OsmType.FOREST,stroke);
+		paintByType(result,OsmType.GARDEN,stroke);
+		paintByType(result,OsmType.HEATH,stroke);
+		paintByType(result,OsmType.TREE_ROW,stroke);
+		paintByType(result,OsmType.PLAYGROUND,stroke);
+		paintByType(result,OsmType.WATER,stroke);
+		paintByType(result,OsmType.BUILDING,stroke);
 	}
 
 	private BasicStroke getLowLevelStroke() {
@@ -160,7 +160,7 @@ public class CanvasView extends JComponent {
 		else return new BasicStroke(0.0007f);
 	}
 
-    private void paintByType(List<OsmElement> elements, OSMType type, BasicStroke stroke) {
+    private void paintByType(List<OsmElement> elements, OsmType type, BasicStroke stroke) {
 		elements.stream()
 				.filter(e -> e.getOsmType() == type)
 				.forEach(e -> paintOsmElement(stroke, e));
