@@ -85,7 +85,7 @@
                     <archive>
                         <index>true</index>
                         <manifest>
-                            <mainClass>com.noticemedan.map.App</mainClass>
+                            <mainClass>com.noticemedan.mappr.App</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
