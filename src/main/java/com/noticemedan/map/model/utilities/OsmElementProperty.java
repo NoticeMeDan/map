@@ -1,14 +1,38 @@
 package com.noticemedan.map.model.utilities;
 
 import com.noticemedan.map.model.osm.OsmType;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.util.EnumMap;
 
+@NoArgsConstructor
 public class OsmElementProperty {
-	private final EnumMap<OsmType, Color> typeColors = new EnumMap<OsmType, Color>(OsmType.class);
+	private static EnumMap<OsmType, Color> typeColors = new EnumMap<>(OsmType.class);
 
-	public OsmElementProperty() {
+	public static void colorBlind() {
+		typeColors.put(OsmType.COASTLINE, new Color(249, 245, 237));
+		typeColors.put(OsmType.WATER, new Color(79, 237, 245));
+
+		typeColors.put(OsmType.GRASSLAND, new Color(168, 236, 122));
+		typeColors.put(OsmType.HEATH, new Color(139, 236, 125));
+		typeColors.put(OsmType.PARK, new Color(137, 236, 160));
+		typeColors.put(OsmType.GARDEN, new Color(14, 236, 15));
+		typeColors.put(OsmType.FOREST, new Color(38, 220, 97));
+
+		typeColors.put(OsmType.BUILDING, new Color(238, 110, 59));
+
+		typeColors.put(OsmType.MOTORWAY, new Color(255, 226, 0));
+		typeColors.put(OsmType.PRIMARY, new Color(242, 255, 59));
+		typeColors.put(OsmType.SECONDARY, new Color(192, 78,201));
+		typeColors.put(OsmType.TERTIARY, new Color(230,230,230));
+		typeColors.put(OsmType.ROAD, new Color(212, 63, 149));
+		typeColors.put(OsmType.FOOTWAY, new Color(174, 53, 255));
+
+		typeColors.put(OsmType.UNKNOWN, new Color(230,0,160));
+	}
+
+	public static void standardColour() {
 		typeColors.put(OsmType.COASTLINE, new Color(249, 245, 237));
 		typeColors.put(OsmType.WATER, new Color(179, 227, 245));
 
@@ -17,7 +41,6 @@ public class OsmElementProperty {
 		typeColors.put(OsmType.PARK, new Color(209, 236, 188));
 		typeColors.put(OsmType.GARDEN, new Color(209, 236, 188));
 		typeColors.put(OsmType.FOREST, new Color(171, 220, 160));
-
 
 		typeColors.put(OsmType.BUILDING, new Color(238,234,226));
 
@@ -31,9 +54,9 @@ public class OsmElementProperty {
 		typeColors.put(OsmType.UNKNOWN, new Color(230,0,160));
 	}
 
-	public Color deriveColorFromType(OsmType osmType) {
-		Color color = this.typeColors.get(OsmType.UNKNOWN);
-		if (typeColors.get(osmType) != null) color = this.typeColors.get(osmType);
+	public static Color deriveColorFromType(OsmType osmType) {
+		Color color = typeColors.get(OsmType.UNKNOWN);
+		if (typeColors.get(osmType) != null) color = typeColors.get(osmType);
 		return color;
 	}
 }

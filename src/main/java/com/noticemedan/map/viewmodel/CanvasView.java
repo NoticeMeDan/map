@@ -3,6 +3,7 @@ package com.noticemedan.map.viewmodel;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OsmType;
+import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class CanvasView extends JComponent {
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
 
-    //Performance test fields
+	//Performance test fields
 	//TODO @emil delete when finished performance tuning
 	public double timeDraw;
 	public double timeRangeSearch;
@@ -49,11 +50,12 @@ public class CanvasView extends JComponent {
 	public CanvasView() {
 		this.forest = new Forest();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		OsmElementProperty.standardColour();
+
 		repaint();
 	}
 
     @Override
-
     public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 
@@ -102,7 +104,7 @@ public class CanvasView extends JComponent {
 
 	private void drawCoastlines() {
 		this.forest.getCoastlines().forEach(c -> {
-			this.g.setPaint(c.getColor());
+			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getOsmType()));
 			this.g.fill(c.getShape());
 		});
 	}
@@ -170,7 +172,7 @@ public class CanvasView extends JComponent {
 
 	private void paintOsmElement(BasicStroke stroke, OsmElement osmElement) {
 		this.g.setStroke(stroke);
-		this.g.setPaint(osmElement.getColor());
+		this.g.setPaint(OsmElementProperty.deriveColorFromType(osmElement.getOsmType()));
 		if (osmElement.getShape().intersects(this.viewRect)) {
 			if (isShapeOpen) {
 				this.g.draw(osmElement.getShape());
