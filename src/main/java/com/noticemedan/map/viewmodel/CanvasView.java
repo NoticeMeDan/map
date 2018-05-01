@@ -45,7 +45,6 @@ public class CanvasView extends JComponent {
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 
-
 	public CanvasView() {
 		this.forest = new Forest();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
@@ -53,7 +52,6 @@ public class CanvasView extends JComponent {
 	}
 
     @Override
-
     public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 
@@ -73,7 +71,7 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
-        if (poiPos!=null) drawPoi();
+        drawPoi();
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
@@ -233,6 +231,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPoi() {
+		if (poiPos == null) return;
 		this.poi = createPoiShape();
 		this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		//Background color
