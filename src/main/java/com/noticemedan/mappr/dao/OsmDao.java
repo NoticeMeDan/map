@@ -170,6 +170,7 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
+					type = Type.UNKNOWN;
 					currentNodeID = id;
 					idToNode.put(id, lonFactor * lon, -lat);
 					break;
@@ -228,18 +229,23 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 							break;
 						case "housenumber":
 							address.setHouseNumber(attributes.getValue("v"));
+							type = Type.ADDRESS;
 							break;
 						case "street":
 							address.setStreet(attributes.getValue("v"));
+							type = Type.ADDRESS;
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
+							type = Type.ADDRESS;
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));
+							type = Type.ADDRESS;
 							break;
 						case "city":
 							address.setCity(attributes.getValue("v"));
+							type = Type.ADDRESS;
 							break;
 						default:
 							break;
@@ -334,6 +340,7 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 				case "node":
 					if (type == Type.ADDRESS) {
 						addresses = addresses.append(address);
+						address = new Address();
 					}
 				default:
 					break;
