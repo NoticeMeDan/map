@@ -244,7 +244,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 						Vector<OsmNode> after = null;
 						Vector<OsmNode> merged = Vector.empty();
 
-						if(this.osmWay.size() > 0) {
+						if(!this.osmWay.isEmpty()) {
 							from = this.osmWay.get(0);
 							to = this.osmWay.get(osmWay.size() - 1);
 						}
@@ -260,12 +260,12 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 						if (after != null && after != before) {
 							merged = merged.appendAll(after.subSequence(1, after.size()));
 						}
-						if(merged.size() > 0) {
+						if(!merged.isEmpty()) {
 							this.coastlines = coastlines.put(merged.get(merged.size() - 1), merged);
 							this.coastlines = coastlines.put(merged.get(0), merged);
 						}
 					} else {
-						if(this.osmWay.size() > 0) {
+						if(!this.osmWay.isEmpty()) {
 							node = this.osmWay.get(0);
 							path.moveTo(node.getLon(), node.getLat());
 							for (int i = 1; i < osmWay.size(); i++) {
