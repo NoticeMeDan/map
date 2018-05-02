@@ -21,7 +21,7 @@ public class Forest implements ForestInterface{
 
 	public Forest() {
 		//TODO create different amounts of leafs for zoom levels
-		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
+		int[] maxNumberOfElementsAtLeaf = new int[] {1000, 1000, 1000, 1000, 1000};
 		List<OsmElement> osmElements = this.osmMapData.getOsmElements().toJavaList();
 		OsmElement[][] osmElementArray = new OsmElement[5][];
 

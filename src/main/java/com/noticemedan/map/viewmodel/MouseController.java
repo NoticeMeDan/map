@@ -1,6 +1,7 @@
 package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.utilities.Coordinate;
+import com.noticemedan.map.view.MainViewController;
 import lombok.Getter;
 
 import java.awt.event.MouseAdapter;
@@ -13,16 +14,18 @@ import static java.lang.Math.pow;
 
 public class MouseController extends MouseAdapter {
     private CanvasView canvas;
+    private MainViewController mainViewController;
     @Getter private Point2D lastMousePosition;
     @Getter private Point2D lastMousePositionCanvasCoords;
 
 
-    public MouseController(CanvasView c) {
-        canvas = c;
+    public MouseController(CanvasView canvas, MainViewController mainViewController) {
+        this.canvas = canvas;
+        this.mainViewController = mainViewController;
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
         canvas.addMouseMotionListener(this);
-        c.toggleAntiAliasing();
+        canvas.toggleAntiAliasing();
     }
 
     @Override
@@ -31,7 +34,6 @@ public class MouseController extends MouseAdapter {
         double dx = currentMousePosition.getX() - lastMousePosition.getX();
         double dy = currentMousePosition.getY() - lastMousePosition.getY();
         canvas.pan(dx, dy);
-
         lastMousePosition = currentMousePosition;
     }
 
@@ -42,13 +44,13 @@ public class MouseController extends MouseAdapter {
 		lastMousePositionCanvasCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
     }
 
+    @Override
 	public void mouseMoved(MouseEvent e) {
-		//TODO @email should viewportPoint2canvasPoint return Coordinate instead?
     	Point2D currentHoverPoint = Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform());
 		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
     	canvas.logNearestNeighbor(currentHoverCoordinate);
+		mainViewController.updateScalaBar();
 	}
-
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -59,5 +61,5 @@ public class MouseController extends MouseAdapter {
     public void mouseWheelMoved(MouseWheelEvent e) {
         double factor = pow(1.1, -e.getWheelRotation());
         canvas.zoom(factor, -e.getX(), -e.getY());
-    }
+	}
 }

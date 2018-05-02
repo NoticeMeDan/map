@@ -1,6 +1,7 @@
 package com.noticemedan.map.view;
 
 import com.noticemedan.map.model.NavigationAction;
+import com.noticemedan.map.model.utilities.TextFormatter;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,17 +36,13 @@ public class NavigationInstructionCellController {
 	}
 
 	private void setInformation() {
-		setDistance();
-		setTextualDescription();
+		setTextDescription();
 		setIcon();
 	}
 
-	private void setDistance() {
-		if(navigationInstruction.getDistance() > 1) distanceToNextNavigationAction.setText(String.valueOf(navigationInstruction.getDistance() + " km"));
-		else										distanceToNextNavigationAction.setText(String.valueOf(navigationInstruction.getDistance() * 1000) + " m");
-	}
+	private void setTextDescription() {
+		distanceToNextNavigationAction.setText(TextFormatter.formatDistance(navigationInstruction.getDistance(), 1));
 
-	private void setTextualDescription() {
 		if (navigationInstruction.getType() == NavigationAction.TURN_LEFT)
 			navigationActionDescription.setText("Drej til venstre ind på " + navigationInstruction.getRoad());
 		if (navigationInstruction.getType() == NavigationAction.TURN_RIGHT)

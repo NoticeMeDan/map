@@ -29,8 +29,8 @@
 	<Pane fx:id="routeInfoPane" prefHeight="55.0" prefWidth="200.0">
 		<Label fx:id="timeLabel" text="TID" layoutX="14.0" layoutY="10.0" />
 		<Label fx:id="distanceLabel" text="AFSTAND" layoutX="120.0" layoutY="10.0" />
-		<Label fx:id="estimatedTimeLabel" text="1t 15m" layoutX="14.0" layoutY="27.0" />
-		<Label fx:id="estimatedDistanceLabel" text="200km" layoutX="120.0" layoutY="27.0" />
+		<Label fx:id="estimatedTimeLabel" text="1 t 15 min" layoutX="14.0" layoutY="27.0" />
+		<Label fx:id="estimatedDistanceLabel" text="200 km" layoutX="120.0" layoutY="27.0" />
 	</Pane>
 	<ListView fx:id="navigationInstructionsListView" VBox.vgrow="ALWAYS" />
 	<ListView fx:id="routeSearchResultsListView" VBox.vgrow="ALWAYS" />

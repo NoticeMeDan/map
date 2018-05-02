@@ -70,7 +70,7 @@ public class RoutePaneController {
 		@Getter
 		NavigationAction type;
 		@Getter
-		Double distance; //TODO @emil is this distance universally in meters or km? Or should we have a field for this? A double?
+		Double distance; //In km
 		@Getter
 		String road;
 		@Getter

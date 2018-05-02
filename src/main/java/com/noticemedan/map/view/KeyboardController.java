@@ -5,10 +5,10 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-public class KeyboardHandler implements EventHandler<KeyEvent> {
+public class KeyboardController implements EventHandler<KeyEvent> {
 	CanvasView canvas;
 
-	public KeyboardHandler(CanvasView canvas) {
+	public KeyboardController(CanvasView canvas) {
 		this.canvas = canvas;
 	}
 

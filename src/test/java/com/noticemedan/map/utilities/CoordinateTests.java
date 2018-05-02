@@ -1,4 +1,4 @@
-package com.noticemedan.map.model;
+package com.noticemedan.map.utilities;
 
 import com.noticemedan.map.model.utilities.Coordinate;
 import lombok.extern.slf4j.Slf4j;
