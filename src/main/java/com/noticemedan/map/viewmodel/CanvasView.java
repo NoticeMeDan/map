@@ -52,12 +52,15 @@ public class CanvasView extends JComponent {
 
 	public CanvasView() {
 		this.forest = new Forest();
-		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+	}
+
+	public void resizeCanvasToSceneSize(int x, int y) {
+		this.setSize(new Dimension(x, y));
+		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(x, y));
 		repaint();
 	}
 
     @Override
-
     public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 

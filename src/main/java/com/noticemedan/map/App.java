@@ -18,8 +18,8 @@ public class App extends Application {
 		Image icon = new Image(App.class.getResourceAsStream("/media/icon.png"));
 		primaryStage.setTitle("Mappr");
 		primaryStage.getIcons().add(icon);
-		primaryStage.setWidth(1100);
-		primaryStage.setHeight(650);
+		primaryStage.setWidth(1000);
+		primaryStage.setHeight(700);
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
     }

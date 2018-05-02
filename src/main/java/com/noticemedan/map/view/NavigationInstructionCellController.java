@@ -26,18 +26,14 @@ public class NavigationInstructionCellController {
 	public NavigationInstructionCellController(RoutePaneController.NavigationInstruction navigationInstruction) {
 		this.navigationInstruction = navigationInstruction;
 		initialiseCell();
-		setInformation();
+		setTextDescription();
+		setIcon();
 	}
 
 	private void initialiseCell() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NavigationInstructionCell.fxml"));
 		fxmlLoader.setController(this);
 		Try.of(fxmlLoader::load);
-	}
-
-	private void setInformation() {
-		setTextDescription();
-		setIcon();
 	}
 
 	private void setTextDescription() {

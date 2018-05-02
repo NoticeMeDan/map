@@ -5,8 +5,8 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-
 <?import javafx.scene.text.Text?>
+
 <AnchorPane fx:id="mainView" minWidth="1100" minHeight="650" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.noticemedan.map.view.MainViewController">
 	<stylesheets>
 		<URL value="@../css/style.css" />
