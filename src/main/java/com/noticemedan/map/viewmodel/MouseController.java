@@ -45,6 +45,7 @@ public class MouseController extends MouseAdapter {
 		canvas.toggleAntiAliasing();
 	}
 
+	@Override
     public void mouseMoved(MouseEvent e) {
         Point2D modelCoords = canvas.toModelCoords(e.getPoint());
     }
@@ -54,4 +55,10 @@ public class MouseController extends MouseAdapter {
         double factor = pow(1.1, -e.getWheelRotation());
         canvas.zoom(factor, -e.getX(), -e.getY());
     }
+
+    @Override
+	public void mouseClicked(MouseEvent e) {
+		this.canvas.setPoiPos(e.getPoint());
+		this.canvas.repaint();
+	}
 }

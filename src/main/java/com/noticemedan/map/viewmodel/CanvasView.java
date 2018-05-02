@@ -5,16 +5,14 @@ import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Rect;
 import com.noticemedan.map.model.utilities.Stopwatch;
+import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +20,7 @@ public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
     private AffineTransform transform = new AffineTransform();
-	Forest forest;
+	private Forest forest;
     private double fps = 0.0;
     private Rectangle2D viewRect;
     private Graphics2D g;
@@ -30,7 +28,8 @@ public class CanvasView extends JComponent {
     @Setter
 	private double zoomLevel;
 	private boolean isShapeOpen;
-
+	private Shape poi;
+	private Point2D poiPos;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
 
@@ -45,7 +44,6 @@ public class CanvasView extends JComponent {
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 
-
 	public CanvasView() {
 		this.forest = new Forest();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
@@ -53,7 +51,6 @@ public class CanvasView extends JComponent {
 	}
 
     @Override
-
     public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 
@@ -73,6 +70,7 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
+        drawPoi();
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
@@ -208,15 +206,6 @@ public class CanvasView extends JComponent {
 		zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
 	}
 
-    public Point2D toModelCoords(Point2D p) {
-        try {
-			return transform.inverseTransform(p, null);
-        } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
 		int borderFactor = (showReversedBorders) ? -1 : 1;
@@ -234,5 +223,46 @@ public class CanvasView extends JComponent {
 
 	public void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
+	}
+
+	private void drawPoi() {
+		if (poiPos == null) return;
+		this.poi = createPoiShape();
+		this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		//Background color
+		this.g.setPaint(Color.decode("#D0021B"));
+		this.g.fill(this.poi);
+		//Outline color
+		this.g.setPaint(Color.WHITE);
+		this.g.draw(this.poi);
+	}
+
+	private Shape createPoiShape() {
+		double size = this.viewRect.getWidth() * 0.05;
+		double xPos = this.poiPos.getX() - size/2;
+		double yPos = this.poiPos.getY() - size * 1.2;
+
+		Shape oval = new Ellipse2D.Double(xPos, yPos, size, size);
+		Shape inner = new Ellipse2D.Double(xPos + size/2.7, yPos + size/2.7, size/4, size/4);
+
+		Path2D pointer = new Path2D.Double();
+		pointer.moveTo(xPos, yPos + size/1.5);
+		pointer.lineTo(poiPos.getX(), poiPos.getY());
+		pointer.lineTo(xPos + size, yPos + size/1.5);
+		pointer.closePath();
+
+		Area area = new Area(oval);
+		area.add(new Area(pointer));
+		area.subtract(new Area(inner));
+		return area;
+	}
+
+	public void setPoiPos(Point2D p) {
+		this.poiPos = toModelCoords(p);
+	}
+
+	public Point2D toModelCoords(Point2D p) {
+		return Try.of( () -> transform.inverseTransform(p, null))
+				.getOrNull();
 	}
 }
