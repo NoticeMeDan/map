@@ -120,6 +120,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 		Map<Long, Vector<OsmNode>> idToWay = HashMap.empty();
 		Map<OsmNode, Vector<OsmNode>> coastlines = HashMap.empty();
 		Address address = new Address();
+		int path2DSize = 1;
 		private double lonFactor;
 		private OsmType type;
 		private long currentNodeID;
@@ -223,6 +224,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 					break;
 				case "nd":
 					this.osmWay = osmWay.append(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
+					this.path2DSize++;
 					break;
 				default:
 					break;
@@ -231,7 +233,8 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
-			Path2D path = new Path2D.Double();
+			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+			this.path2DSize = 1;
 			OsmNode node;
 			switch (qName) {
 				case "way":
