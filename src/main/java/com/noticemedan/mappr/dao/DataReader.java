@@ -1,7 +1,10 @@
 package com.noticemedan.mappr.dao;
 
-import java.io.InputStream;
+import com.noticemedan.mappr.model.TestMapData;
 
-public interface DataReader <T> {
-	T read(InputStream inputStream) throws Exception;
+import java.io.IOException;
+import java.nio.file.Path;
+
+public interface DataReader {
+	TestMapData read(Path input) throws IOException;
 }

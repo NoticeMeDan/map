@@ -1,7 +1,10 @@
 package com.noticemedan.mappr.dao;
 
-import java.io.OutputStream;
+import com.noticemedan.mappr.model.TestMapData;
 
-public interface DataWriter <T> {
-	OutputStream write(OutputStream outputStream, T data) throws Exception;
+import java.io.IOException;
+import java.nio.file.Path;
+
+public interface DataWriter {
+	TestMapData write(Path output, TestMapData data) throws IOException;
 }
