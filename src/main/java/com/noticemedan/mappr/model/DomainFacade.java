@@ -32,4 +32,7 @@ public class DomainFacade {
 	public List<Element> getCoastLines() { return this.forest.getCoastlines(); }
 	public List<Element> doRangeSearch(Rect area) { return this.forest.rangeSearch(area); }
 	public List<Element> doRangeSearch(Rect area, double zoom) { return this.forest.rangeSearch(area, zoom); }
+
+	// TextSearch
+	public io.vavr.collection.List searchAddress(String search) { return addressSearch.search(search); }
 }
