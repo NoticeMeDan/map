@@ -1,20 +1,21 @@
 package com.noticemedan.mappr.dao;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import com.noticemedan.mappr.model.TestMapData;
 
-public class MapDao implements DataReader<byte[]>, DataWriter<byte[]> {
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Path;
+
+public class MapDao implements DataReader, DataWriter {
 	@Override
-	public byte[] read(InputStream inputStream) throws Exception {
-		return new ObjectInputStream(inputStream).readAllBytes();
+	public TestMapData read(Path input) throws IOException {
+		// Read data bla bla bla
+		return TestMapData.builder().build(); // Magic
 	}
 
 	@Override
-	public OutputStream write(OutputStream outputStream, byte[] data) throws Exception {
-		ObjectOutputStream writer = new ObjectOutputStream(outputStream);
-		writer.writeObject(data);
-		return writer;
+	public TestMapData write(Path output, TestMapData data) throws IOException {
+		// Magic Magic
+		return TestMapData.builder().build();
 	}
 }

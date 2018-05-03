@@ -9,10 +9,11 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
-import java.util.zip.ZipInputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
-public class MapData implements Serializable {
+class MapData implements Serializable {
     @Getter
 	private Vector<Element> osmElements;
 	@Getter
@@ -20,14 +21,12 @@ public class MapData implements Serializable {
 	@Getter
 	private Vector<Address> addresses;
 
-    public MapData() {
+    MapData() {
     	try {
 			String filename = "fyn.osm.zip";
-			File file = new File(App.class.getResource("/" + filename).getFile());
-			ZipInputStream inputStream = new ZipInputStream(new FileInputStream(file));
-			inputStream.getNextEntry();
+			Path file = Paths.get(App.class.getResource("/" + filename).toURI());
 			OsmDao osmDao = new OsmDao();
-			TestMapData data = osmDao.read(inputStream);
+			TestMapData data = osmDao.read(file);
 
 			osmElements = data.getElements();
 			osmCoastlineElements = data.getCoastlineElements();

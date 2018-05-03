@@ -26,32 +26,48 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.nio.channels.spi.AbstractInterruptibleChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
+public class OsmDao implements DataReader, Supplier<TestMapData> {
 	private Vector<Vector<Element>> elements = Vector.empty();
 	@Getter
 	private Vector<Element> osmElements = Vector.empty();
 	private Vector<Element> osmCoastlineElements = Vector.empty();
 	@Getter
 	private Vector<Address> addresses = Vector.empty();
-	private InputStream inputStream;
+	private Path input;
 	private String filename;
 
-	public OsmDao(InputStream inputStream) {
-		this.inputStream = inputStream;
+	public OsmDao(Path input) {
+		this.input = input;
 	}
 
 	@Override
-	public TestMapData read(InputStream inputStream) throws Exception {
+	public TestMapData read(Path input) throws IOException {
+		String[] splitName = input.getFileName().toString().split(Pattern.quote("."));
+		String type = splitName[splitName.length - 1];
 		log.info("Begin reading from OSM");
-		readFromOSM(new InputSource(inputStream));
+
+		// TODO: Fix me i suck (strategy pattern)
+		if (type.equals("osm")) {
+			readFromOSM(new InputSource(new ByteArrayInputStream(Files.readAllBytes(input))));
+		} else if (type.equals("zip")) {
+			ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(Files.readAllBytes(input)));
+			zip.getNextEntry();
+			readFromOSM(new InputSource(zip));
+		}
+
 		log.info("End reading from OSM");
 		log.info("Coastlines: " + osmCoastlineElements.length());
 
@@ -62,40 +78,7 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 				.build();
 	}
 
-	public Vector<Vector<Element>> getShapesFromFile(InputStream inputStream, String filename) {
-		this.filename = filename;
-		if (filename.endsWith(".osm")) {
-			log.info("Begin reading from OSM");
-			readFromOSM(new InputSource(inputStream));
-			log.info("End reading from OSM");
-		} else if (filename.endsWith(".zip")) {
-			try {
-				ZipInputStream zis = new ZipInputStream(inputStream);
-				zis.getNextEntry();
-				readFromOSM(new InputSource(zis));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (filename.endsWith(".bin")) {
-			try {
-				ObjectInputStream is = new ObjectInputStream(inputStream);
-				osmElements = (Vector<Element>) is.readObject();
-				osmCoastlineElements = (Vector<Element>) is.readObject();
-				Entities.setMinLon((double) is.readObject());
-				Entities.setMinLat((double) is.readObject());
-				Entities.setMaxLon((double) is.readObject());
-				Entities.setMaxLat((double) is.readObject());
-			} catch (IOException | ClassNotFoundException e) {
-				log.error(e.getStackTrace().toString());
-			}
-		}
-
-		this.elements = elements.append(osmElements);
-		this.elements = elements.append(osmCoastlineElements);
-		return elements;
-	}
-
-	public void readFromOSM(InputSource filename) {
+	private void readFromOSM(InputSource filename) {
 		try {
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(new OsmHandler());
@@ -120,7 +103,6 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 		element.setShape(shape);
 		element.setColor(osmElementProperty.deriveColorFromType(type));
 		if (type.equals(Type.COASTLINE)) {
-			log.info("WEEEEEEEEE");
 			this.osmCoastlineElements = osmCoastlineElements.append(element);
 		}
 		else {
@@ -132,7 +114,7 @@ public class OsmDao implements DataReader<TestMapData>, Supplier<TestMapData> {
 	public TestMapData get() {
 		TestMapData data = TestMapData.builder().build();
 		try {
-			data = this.read(this.inputStream);
+			data = this.read(this.input);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
