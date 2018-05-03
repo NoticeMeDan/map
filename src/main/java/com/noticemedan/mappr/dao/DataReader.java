@@ -1,10 +1,10 @@
 package com.noticemedan.mappr.dao;
 
-import com.noticemedan.mappr.model.TestMapData;
+import com.noticemedan.mappr.model.MapData;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 public interface DataReader {
-	TestMapData read(Path input) throws IOException;
+	MapData read(Path input) throws IOException;
 }

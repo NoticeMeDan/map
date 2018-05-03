@@ -12,12 +12,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-public class Forest implements ForestInterface {
+public class ForestService implements ForestInterface {
 	private KDTree trees[];
 	@Getter
 	private List<Element> coastlines;
 
-	public Forest(List<Element> elements, List<Element> coastlineElements) {
+	public ForestService(List<Element> elements, List<Element> coastlineElements) {
 		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;

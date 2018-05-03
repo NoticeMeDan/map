@@ -4,7 +4,7 @@ package com.noticemedan.mappr.model.kdtree;
 
 	OSMMaterialElement[][] mapObjects_smallKDTrees;
 	int maxElementsAtLeaf_smallKDTrees;
-	Forest smallForest;
+	ForestService smallForest;
 
 	@BeforeTest
 	public void buildSmallKDTrees() {
@@ -25,7 +25,7 @@ package com.noticemedan.mappr.model.kdtree;
 			mapObjects_smallKDTrees[i] = osmElementsForSmallKDTree;
 		}
 
-		this.smallForest = new Forest(mapObjects_smallKDTrees, maxElementsAtLeaf_smallKDTrees);
+		this.smallForest = new ForestService(mapObjects_smallKDTrees, maxElementsAtLeaf_smallKDTrees);
 	}
 
 	// Test some random rangeSearches with multiple tree forests.

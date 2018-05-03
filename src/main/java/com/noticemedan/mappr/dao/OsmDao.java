@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.dao;
 
 import com.noticemedan.mappr.model.Entities;
-import com.noticemedan.mappr.model.TestMapData;
+import com.noticemedan.mappr.model.MapData;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Node;
 import com.noticemedan.mappr.model.map.Type;
@@ -28,9 +28,6 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.nio.channels.spi.AbstractInterruptibleChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -39,7 +36,7 @@ import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader, Supplier<TestMapData> {
+public class OsmDao implements DataReader, Supplier<MapData> {
 	private Vector<Vector<Element>> elements = Vector.empty();
 	@Getter
 	private Vector<Element> osmElements = Vector.empty();
@@ -54,7 +51,7 @@ public class OsmDao implements DataReader, Supplier<TestMapData> {
 	}
 
 	@Override
-	public TestMapData read(Path input) throws IOException {
+	public MapData read(Path input) throws IOException {
 		String[] splitName = input.getFileName().toString().split(Pattern.quote("."));
 		String type = splitName[splitName.length - 1];
 		log.info("Begin reading from OSM");
@@ -71,7 +68,7 @@ public class OsmDao implements DataReader, Supplier<TestMapData> {
 		log.info("End reading from OSM");
 		log.info("Coastlines: " + osmCoastlineElements.length());
 
-		return TestMapData.builder()
+		return MapData.builder()
 				.elements(this.osmElements)
 				.coastlineElements(this.osmCoastlineElements)
 				.addresses(this.addresses)
@@ -111,8 +108,8 @@ public class OsmDao implements DataReader, Supplier<TestMapData> {
 	}
 
 	@Override
-	public TestMapData get() {
-		TestMapData data = TestMapData.builder().build();
+	public MapData get() {
+		MapData data = MapData.builder().build();
 		try {
 			data = this.read(this.input);
 		} catch (Exception e) {

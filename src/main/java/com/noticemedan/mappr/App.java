@@ -3,6 +3,7 @@ package com.noticemedan.mappr;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import com.noticemedan.mappr.model.DomainFacade;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +37,7 @@ public class App extends Application {
     private class MapModule extends AbstractModule {
 		@Override
 		protected void configure() {
-			bind(DomainFacade.class);
+			bind(DomainFacade.class).in(Singleton.class);
 		}
 	}
 }

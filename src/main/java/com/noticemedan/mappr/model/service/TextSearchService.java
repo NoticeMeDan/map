@@ -11,10 +11,10 @@ import io.vavr.collection.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TextSearch <T> {
+public class TextSearchService<T> {
 	private RadixTree<Tuple2> radixTree;
 
-	public TextSearch(Map<String, T> searchMap) {
+	public TextSearchService(Map<String, T> searchMap) {
 		this.radixTree = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 		searchMap.forEach((k, v) -> this.radixTree.put(k.toLowerCase(), Tuple.of(k, v)));
 		log.info("Radix size: " + this.radixTree.size());
