@@ -3,6 +3,9 @@ package com.noticemedan.mappr.model.pathfinding;
 import com.noticemedan.mappr.model.map.Type;
 import lombok.Data;
 
+import java.awt.*;
+import java.awt.geom.Line2D;
+
 @Data
 public class PathEdge {
 	private double weight;
@@ -21,6 +24,14 @@ public class PathEdge {
 		double deltaLon = w.getLon() - v.getLon();
 		double deltaLat = w.getLat() - v.getLat();
 		return Math.sqrt(Math.pow(deltaLon, 2) + Math.pow(deltaLat, 2));
+	}
+
+	public Shape toShape() {
+		double x1 = this.v.getLon();
+		double y1 = this.v.getLat();
+		double x2 = this.w.getLon();
+		double y2 = this.w.getLat();
+		return new Line2D.Double(x1,y1,x2,y2);
 	}
 
 	public String toString() {

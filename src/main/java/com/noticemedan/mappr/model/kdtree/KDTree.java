@@ -7,6 +7,7 @@ import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import lombok.Getter;
 
+//TODO USE COLLECTIONS VAVR INSTEAD
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
