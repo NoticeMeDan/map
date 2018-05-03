@@ -1,8 +1,6 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
-import com.google.inject.Inject;
 import com.noticemedan.mappr.model.user.FavoritePoi;
-import com.noticemedan.mappr.viewmodel.CanvasView;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,10 +20,6 @@ public class FavoritePoiPaneController {
 	@FXML StackPane noFavoritesYetPane;
 	@Setter
 	ObservableList<FavoritePoi> favoritePois;
-	CanvasView canvas;
-
-	@Inject
-	public FavoritePoiPaneController(CanvasView canvas) { this.canvas = canvas; }
 
 	public void initialize() {
 		closeFavoritePoiPane();
