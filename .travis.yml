@@ -6,8 +6,6 @@ addons:
     organization: noticemedan
     token:
       secure: "AlRzuLAvULLacMPhj7qgDt4GS6BSXrv7yBxXxhB3rwxx7IpGd9L+DaDTMUnXVnnXK/ry83sufV2cA0HPbn3Vx+Dv5xj5KlYYii4/UDrtQsCOLJqcVe/og6+dXJJIaQRT0k/kCKdb+Gq2dZtA0Oue71X39z5lFV6kE2HKW9WkIDCrCxao62U2IKBhlNRQXxtUypbUT2w5r5CnQ93iCrBlKYooDDFY2n5VPLI3Ll7o3jQLNfEss9avg3fQuBOOUOG4wLvp6UMFmNkTybxCX1d5NoDzwgOxbV+iayi66XZl5EnojpbFGF9TB9rhZIe69EcrmDiGMAVzE9YgOg2bH6J5g45X5hRg4pDQjndlGJS4Vw0QOb+e/VhywgA0XSz2ltk2bgHW38pUlXT5kOyu1D8U7qxHGqZVqEy/pu6vP7v/LPE1upvhTMQtZZKR5A6ORPkUPjPC8AOHFKAyNCxWxjTe2XhwKb0Ommr43DfunuH2oenijyRS8XdjiZKUgPRHKdoEC+CW03fV4QZhKRBmLpnGuGw6rJXPZAKLPnn/aRGEt4DtUfiGdLjx/e0mPGf/7saroJCyhfkJega4lIs3n2nwKfFbM3YKgw3rG1S2kyhz7clyU6aGutjy+uI/JYYKrRmo+ifEKEBWCoI0fuV4lYJPtDL/exFeJauZN8I+JqQOuxs="
-    branches:
-      - dev
 
 jdk:
 - oraclejdk9
