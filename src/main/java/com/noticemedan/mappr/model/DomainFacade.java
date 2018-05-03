@@ -9,11 +9,11 @@ import java.util.List;
 
 public class DomainFacade {
 	// Domain data
-	public MapData mapData; // Do something better
+	public MapData mapData; // TODO Do something better
 
 	// Services
 	private TextSearch addressSearch;
-	private Forest forest; // Come up with a better name
+	private Forest forest; // TODO Come up with a better name
 
 	public DomainFacade() {
 		this.mapData = new MapData();

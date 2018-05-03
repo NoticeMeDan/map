@@ -46,7 +46,6 @@ public class CanvasView extends JComponent {
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 	private DomainFacade domain;
 
-
 	public CanvasView(DomainFacade domainFacade) {
 		this.domain = domainFacade;
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));

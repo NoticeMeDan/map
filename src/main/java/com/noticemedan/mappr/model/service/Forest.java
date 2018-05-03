@@ -29,7 +29,6 @@ public class Forest implements ForestInterface {
 		List<Element> zoom3 = new LinkedList<>();
 		List<Element> zoom4 = new LinkedList<>();
 
-
 		elements.forEach(osmElement -> {
 			switch (osmElement.getType()) {
 				case MOTORWAY:
