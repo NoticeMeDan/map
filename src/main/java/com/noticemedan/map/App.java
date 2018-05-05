@@ -1,10 +1,12 @@
 package com.noticemedan.map;
 
+import com.noticemedan.map.view.MainViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -14,13 +16,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
-		Image icon = new Image(App.class.getResourceAsStream("/media/icon.png"));
-		primaryStage.setTitle("Mappr");
-		primaryStage.getIcons().add(icon);
-		primaryStage.setWidth(1000);
-		primaryStage.setHeight(700);
-		primaryStage.setScene(new Scene(root));
-		primaryStage.show();
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setLocation(getClass().getResource("/fxml/MainView.fxml"));
+		AnchorPane mainView = fxmlLoader.load();
+		MainViewController mainViewController = fxmlLoader.getController();
+		mainViewController.setStage(primaryStage);
+		mainViewController.setUpStage();
     }
 }

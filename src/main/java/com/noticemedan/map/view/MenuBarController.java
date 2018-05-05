@@ -22,16 +22,16 @@ public class MenuBarController {
 	private void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
 		String labelStart = (this.showReversedBorders) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleReversedBorders();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleReversedBorders();
+		MainViewController.getCanvas().repaint();
 		menuShowReversedBorders.setText(labelStart + " range-search");
 	}
 
 	private void toggleFPS() {
 		this.showFPS = !this.showFPS;
 		String labelStart = (this.showFPS) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleFPS();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleFPS();
+		MainViewController.getCanvas().repaint();
 		menuShowFPS.setText(labelStart + " FPS");
 	}
 

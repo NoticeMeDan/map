@@ -1,5 +1,6 @@
 package com.noticemedan.map.viewmodel;
 
+import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
 import com.noticemedan.map.model.osm.OSMType;
@@ -12,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.util.List;
 
 @Slf4j
@@ -48,7 +46,6 @@ public class CanvasView extends JComponent {
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 	@Setter @Getter
 	private boolean logNearestNeighbor = false;
-
 
 	public CanvasView() {
 		this.forest = new Forest();
@@ -226,9 +223,51 @@ public class CanvasView extends JComponent {
 		double y1 = Coordinate.viewportPoint2canvasPoint(p1, transform).getY() - 0.02 * borderFactor;
 		double x2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getX() + 0.02 * borderFactor;
 		double y2 = Coordinate.viewportPoint2canvasPoint(p2, transform).getY() + 0.02 * borderFactor;
-
 		return new Rect(x1, y1, x2, y2);
 	}
+
+	public void zoomToCoordinate(Coordinate coordinate, int zoomLevel) {
+		centerCoordinateInCanvas(coordinate);
+		zoomToZoomLevel(zoomLevel);
+	}
+
+	public void centerCoordinateInCanvas(Coordinate coordinate,) {
+		//Go to coordinate at map's original zoomlevel. (The coordinate will be in the upper right corner)
+		transform = new AffineTransform();
+		pan(-coordinate.getX(), -Coordinate.lat2CanvasLat(coordinate.getY()));
+		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+
+		//Define upper right and lower left corners screen in canvas lat/lon
+		Point2D upperRightCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0, 0), transform);
+		Point2D lowerLeftCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+		//Calculate new upper right corner coordinates lambda and phi such that the coordinate will be centered
+		double lambda = upperRightCorner.getX()-((lowerLeftCorner.getX()-upperRightCorner.getX())/2);
+		double phi = upperRightCorner.getY()-((lowerLeftCorner.getY()-upperRightCorner.getY())/2);
+
+		//Go to coordinate at map's original zoomlevel. (The coordinate will now be centered)
+		transform = new AffineTransform();
+		pan(-lambda, -phi);
+		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+
+		//Reset canvas zoom level because we have reset to the map's original zoomlevel
+		this.zoomLevel = (1 / (Entities.getMaxLon() - Entities.getMinLon()));
+	}
+
+	private void zoomToZoomLevel(int zoomLevel) {
+		//Assumes zoomLevel has been reset.
+		while(this.zoomLevel < zoomLevel) zoomToCenter(1.1);
+		repaint();
+	}
+
+	private void zoomToRoute(Coordinate startRoute, Coordinate endRoute) {
+		Point2D averageCoordinate = new Point2D.Double((startRoute.getX() + endRoute.getX())/2, (startRoute.getX() + endRoute.getX())/2);
+
+
+	}
+
+
+
 
 	public void toggleFPS() {
 		this.showFPS = !this.showFPS;
