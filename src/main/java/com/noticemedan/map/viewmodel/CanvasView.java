@@ -47,6 +47,9 @@ public class CanvasView extends JComponent {
 	@Setter @Getter
 	private boolean logNearestNeighbor = false;
 
+	private Coordinate startRoute = new Coordinate(14.68819,-66.30889);
+	private Coordinate endRoute = new Coordinate(14.71319,-66.30343);
+
 	public CanvasView() {
 		this.forest = new Forest();
 	}
@@ -231,19 +234,22 @@ public class CanvasView extends JComponent {
 		zoomToZoomLevel(zoomLevel);
 	}
 
-	public void centerCoordinateInCanvas(Coordinate coordinate,) {
+	/**
+	 * @param coordinate 	In WGS-84 format
+	 */
+	private void centerCoordinateInCanvas(Coordinate coordinate) {
 		//Go to coordinate at map's original zoomlevel. (The coordinate will be in the upper right corner)
 		transform = new AffineTransform();
 		pan(-coordinate.getX(), -Coordinate.lat2CanvasLat(coordinate.getY()));
 		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
 
-		//Define upper right and lower left corners screen in canvas lat/lon
-		Point2D upperRightCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0, 0), transform);
-		Point2D lowerLeftCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+		//Define upper left and lower right viewport corners screen in canvas lat/lon
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0, 0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
 
 		//Calculate new upper right corner coordinates lambda and phi such that the coordinate will be centered
-		double lambda = upperRightCorner.getX()-((lowerLeftCorner.getX()-upperRightCorner.getX())/2);
-		double phi = upperRightCorner.getY()-((lowerLeftCorner.getY()-upperRightCorner.getY())/2);
+		double lambda = upperLeftViewPortCorner.getX()-((lowerRightViewPortCorner.getX()-upperLeftViewPortCorner.getX())/2);
+		double phi = upperLeftViewPortCorner.getY()-((lowerRightViewPortCorner.getY()-upperLeftViewPortCorner.getY())/2);
 
 		//Go to coordinate at map's original zoomlevel. (The coordinate will now be centered)
 		transform = new AffineTransform();
@@ -260,14 +266,51 @@ public class CanvasView extends JComponent {
 		repaint();
 	}
 
-	private void zoomToRoute(Coordinate startRoute, Coordinate endRoute) {
-		Point2D averageCoordinate = new Point2D.Double((startRoute.getX() + endRoute.getX())/2, (startRoute.getX() + endRoute.getX())/2);
+	public void zoomToRoute(Coordinate startRoute, Coordinate endRoute) {
 
+		//Transform coordinates into canvas coordinates
+		this.startRoute = new Coordinate(startRoute.getX(), Coordinate.lat2CanvasLat(startRoute.getY()));
+		this.endRoute = new Coordinate(endRoute.getX(), Coordinate.lat2CanvasLat(endRoute.getY()));
 
+		Coordinate averageCoordinate = new Coordinate(
+				(startRoute.getX() + endRoute.getX())/2,
+				(startRoute.getY() + endRoute.getY())/2);
+
+		centerCoordinateInCanvas(averageCoordinate);
+
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+		Rect currentViewRect = new Rect(
+			upperLeftViewPortCorner.getX(),
+			upperLeftViewPortCorner.getY(),
+			lowerRightViewPortCorner.getX(),
+			lowerRightViewPortCorner.getY()
+		);
+
+		Rect routeRect = new Rect(
+			startRoute.getX(),
+			Coordinate.lat2CanvasLat(startRoute.getY()),
+			endRoute.getX(),
+			Coordinate.lat2CanvasLat(endRoute.getY())
+		);
+
+		// Zoom continuously in on the route Rectange. If the route rectange intersects view rectangle stop zooming.
+		while (Rect.rectCompletelyInRect(routeRect, currentViewRect)) {
+			zoomToCenter(1.1);
+			upperLeftViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), transform);
+			lowerRightViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+			currentViewRect = new Rect(
+					upperLeftViewPortCorner.getX(),
+					upperLeftViewPortCorner.getY(),
+					lowerRightViewPortCorner.getX(),
+					lowerRightViewPortCorner.getY()
+			);
+		}
+		zoomToCenter(1/1.3);
+		repaint();
 	}
-
-
-
 
 	public void toggleFPS() {
 		this.showFPS = !this.showFPS;

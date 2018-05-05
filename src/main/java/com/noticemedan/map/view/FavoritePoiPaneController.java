@@ -1,6 +1,7 @@
 package com.noticemedan.map.view;
 
 import com.noticemedan.map.model.user.FavoritePoi;
+import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.viewmodel.CanvasView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

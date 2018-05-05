@@ -32,8 +32,6 @@ public class MainViewController {
 	FavoritePoiManager favoritePoiManager;
 
 	@FXML AnchorPane mainView;
-	private int latestSceneWidth;
-	private int latestSceneHeight;
 	@Setter
 	Stage stage;
 	int width = 1100;
@@ -56,6 +54,7 @@ public class MainViewController {
 	@FXML Pane favoritePoiPane;
 	@FXML Pane poiBoxView;
 	@FXML Pane searchPane;
+	boolean paneOpen = false;
 
 	//Component controllers
 	@FXML PoiBoxViewController poiBoxViewController;
@@ -76,21 +75,20 @@ public class MainViewController {
 
 	public void setUpStage() {
 		Image icon = new Image(App.class.getResourceAsStream("/media/icon.png"));
-
 		stage.setTitle("Mappr");
 		stage.getIcons().add(icon);
 		stage.setMinWidth(800);
 		stage.setMinHeight(700);
-		stage.setWidth(1100);
-		stage.setHeight(800);
+		stage.setWidth(width);
+		stage.setHeight(height);
 		stage.setScene(new Scene(mainView));
 
+		//TODO @emil move to event listeners
 		ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
 			width = (int) stage.getWidth();
 			height = (int) stage.getHeight();
 			resizeNode(width, height);
 		};
-
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener);
 
@@ -106,9 +104,9 @@ public class MainViewController {
 		swingNode = new SwingNode();
 		canvas = new CanvasView();
 		canvas.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		canvas.zoom(1100 / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		canvas.zoom(width / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
 		canvas.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
-		canvas.setPreferredSize(new Dimension(1100, 800));
+		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
@@ -116,9 +114,12 @@ public class MainViewController {
 	private void eventListeners() {
 		this.mouseController = new MouseController(canvas, this);
 		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardController(canvas));
-		searchFieldImitator.setOnMouseClicked(event -> searchPaneController.openSearchPane());
+
+		//searchFieldImitator.setOnMouseClicked(event -> searchPaneController.openSearchPane());
+		searchFieldImitator.setOnMouseClicked(event -> pushCanvas());
 		favoriteButton.setOnAction(event -> favoritePoiPaneController.openFavoritePane());
 		routeButton.setOnAction(event -> routePaneController.openRoutePane());
+
 		swingNode.addEventHandler(MouseEvent.ANY, new ClickDragHandler(
 				event -> poiBoxViewController.closePoiBox(),
 				event -> poiBoxViewController.openPoiBox(
@@ -130,24 +131,16 @@ public class MainViewController {
 		));
 	}
 
-	/*private void windowResizeListeners() {
-		osmPaneContainer.widthProperty().addListener(
-				(observableValue, oldSceneWidth, newSceneWidth) -> {
-					latestSceneWidth = newSceneWidth.intValue();
-					canvas.resizeCanvasToSceneSize(newSceneWidth.intValue(), latestSceneHeight);
-				});
-		osmPaneContainer.heightProperty().addListener(
-				(observableValue, oldSceneHeight, newSceneheight) -> {
-					latestSceneHeight = newSceneheight.intValue();
-					canvas.resizeCanvasToSceneSize(latestSceneWidth, newSceneheight.intValue());
-				});
-	}*/
-
 	public void updateScalaBar() {
 		Point2D scalaBarFirstPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), canvas.getTransform());
 		Point2D scalaBarSecondPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(130,0), canvas.getTransform());
 		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLat2Lat(scalaBarFirstPoint.getY()));
 		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLat2Lat(scalaBarSecondPoint.getY()));
 		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
+	}
+
+	public void pushCanvas() {
+		AnchorPane.setLeftAnchor(osmPaneContainer,200d);
+		System.out.println("hello");
 	}
 }

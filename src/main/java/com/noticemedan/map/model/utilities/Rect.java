@@ -14,8 +14,8 @@ public class Rect {
 	double y2;
 
 	static public boolean rectCompletelyInRect(Rect smallRect, Rect largeRect) {
-		boolean smallRectXRangeInLargeRectXRange = largeRect.getX1() <= smallRect.getX1() && smallRect.getX1() <= smallRect.getX2() && smallRect.getX2() <= largeRect.getX2();
-		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY1() && smallRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
+		boolean smallRectXRangeInLargeRectXRange = largeRect.getX1() <= smallRect.getX2() && smallRect.getX2() <= largeRect.getX2();
+		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
 		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
 	}
 
