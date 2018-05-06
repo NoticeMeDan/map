@@ -26,6 +26,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,9 +59,10 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 
 		// TODO: Fix me i suck (strategy pattern)
 		if (type.equals("osm")) {
-			readFromOSM(new InputSource(new ByteArrayInputStream(Files.readAllBytes(input))));
+			readFromOSM(new InputSource(Files.newBufferedReader(input)));
 		} else if (type.equals("zip")) {
-			ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(Files.readAllBytes(input)));
+			// Program will crash if zip exceeds 2^31 bytes (max array length)
+			ZipInputStream zip = new ZipInputStream(Files.newInputStream(input));
 			zip.getNextEntry();
 			readFromOSM(new InputSource(zip));
 		}
