@@ -2,6 +2,7 @@ package com.noticemedan.map.viewmodel;
 
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.kdtree.Forest;
+import com.noticemedan.map.model.osm.Amenity;
 import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Icon;
 import com.noticemedan.map.model.utilities.Rect;
@@ -33,6 +34,7 @@ public class CanvasView extends JComponent {
 	private Point2D poiPos;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	private Icon icon;
 
     //Performance test fields
 	//TODO @emil delete when finished performance tuning
@@ -48,6 +50,7 @@ public class CanvasView extends JComponent {
 	public CanvasView() {
 		this.forest = new Forest();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		this.icon = new Icon();
 		repaint();
 	}
 
@@ -125,6 +128,8 @@ public class CanvasView extends JComponent {
 		paintByType(result,OsmType.PRIMARY, getMediumLevelStroke());
 		paintByType(result,OsmType.HIGHWAY,new BasicStroke(0.0001f));
 		paintByType(result,OsmType.MOTORWAY, getLowLevelStroke());
+
+		if (this.zoomLevel > 130) drawAmenity(result);
 	}
 
 	private void paintClosedElements (List<OsmElement> result, BasicStroke stroke) {
@@ -228,7 +233,7 @@ public class CanvasView extends JComponent {
 
 	private void drawPoi() {
 		if (poiPos == null) return;
-		BufferedImage pointer = new Icon().getPointer();
+		BufferedImage pointer = icon.getPointer();
 		AffineTransform at = new AffineTransform();
 		double size = this.viewRect.getWidth() * 0.0001;
 		double width = pointer.getWidth() * size;
@@ -236,6 +241,29 @@ public class CanvasView extends JComponent {
 		at.translate(poiPos.getX() - width/2,poiPos.getY()-height);
 		at.scale(size,size);
 		this.g.drawImage(pointer,at,null);
+	}
+
+	private void drawAmenity(List<OsmElement> elements) {
+		elements.forEach(e -> {
+			if (e.getAmenity() != null) {
+				if (e.getAmenity().equals(Amenity.RESTAURANT)) {
+					BufferedImage restaurant = icon.getRestaurant();
+					AffineTransform at = icon.transform(restaurant, e);
+					this.g.drawImage(restaurant, at, null);
+				} else if (e.getAmenity().equals(Amenity.PARKING)) {
+					BufferedImage parking = icon.getParking();
+					AffineTransform at = icon.transform(parking, e);
+					this.g.drawImage(parking, at, null);
+				} else {
+				double width = 0.000005;
+				double height = 0.000005;
+				double xPos = e.getAvgPoint().getX() - width/2;
+				double yPos = e.getAvgPoint().getY() - height/2;
+				Rectangle.Double r = new Rectangle.Double(xPos,yPos,width,height);
+				this.g.setPaint(Color.GREEN);
+				this.g.draw(r); }
+			}
+		});
 	}
 
 	public void setPoiPos(Point2D p) {

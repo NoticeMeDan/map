@@ -58,7 +58,8 @@ public class MouseController extends MouseAdapter {
 
     @Override
 	public void mouseClicked(MouseEvent e) {
-		this.canvas.setPoiPos(e.getPoint());
+		if (e.getButton() == 1) this.canvas.setPoiPos(e.getPoint());
+		else this.canvas.setPoiPos(null);
 		this.canvas.repaint();
 	}
 }

@@ -1,5 +1,6 @@
 package com.noticemedan.map.model;
 
+import com.noticemedan.map.model.osm.Amenity;
 import com.noticemedan.map.model.osm.OsmType;
 import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.model.utilities.Rect;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class OsmElement implements Comparable<OsmElement>, Serializable {
 	private OsmType osmType;
+	private Amenity amenity;
 	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon

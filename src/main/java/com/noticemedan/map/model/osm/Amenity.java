@@ -1,0 +1,23 @@
+package com.noticemedan.map.model.osm;
+
+public enum Amenity {
+	CAFE,
+	RESTAURANT,
+	BAR,
+	FAST_FOOD,
+	PUB,
+	COLLEGE,
+	KINDERGARTEN,
+	LIBRARY,
+	SCHOOL,
+	UNIVERSITY,
+	BUS_STATION,
+	PARKING,
+	BANK,
+	HOSPITAL,
+	MARKETPLACE,
+	POLICE,
+	FUEL,
+	TOILETS,
+	FERRY_TERMINAL
+}

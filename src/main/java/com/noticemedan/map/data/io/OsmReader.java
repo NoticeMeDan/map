@@ -4,6 +4,7 @@ import com.noticemedan.map.model.Entities;
 import com.noticemedan.map.model.OsmElement;
 import com.noticemedan.map.model.osm.OsmNode;
 import com.noticemedan.map.model.osm.OsmType;
+import com.noticemedan.map.model.osm.Amenity;
 import com.noticemedan.map.model.utilities.LongToOSMNodeMap;
 import com.noticemedan.map.model.utilities.OsmElementProperty;
 import com.noticemedan.map.model.utilities.Rect;
@@ -90,7 +91,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 		}
 	}
 
-	public void add(OsmType type, Shape shape) {
+	public void add(OsmType type, Amenity amenity, Shape shape) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -100,6 +101,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		OsmElement osmElement = new OsmElement();
 		osmElement.setOsmType(type);
+		osmElement.setAmenity(amenity);
 		osmElement.setBounds(rect);
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
@@ -123,6 +125,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 		int path2DSize = 1;
 		private double lonFactor;
 		private OsmType type;
+		private Amenity amenity;
 		private long currentNodeID;
 
 		private Vector<OsmNode> osmWay;
@@ -196,6 +199,28 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 							break;
 						case "leisure":
 							if (attributes.getValue("v").equals("park")) type = OsmType.PARK;
+							break;
+						case "amenity":
+							if(attributes.getValue("v").equals("cafe")) amenity = Amenity.CAFE;
+							else if(attributes.getValue("v").equals("bank")) amenity = Amenity.BANK;
+							else if(attributes.getValue("v").equals("bar")) amenity = Amenity.BAR;
+							else if(attributes.getValue("v").equals("bus_station")) amenity = Amenity.BUS_STATION;
+							else if(attributes.getValue("v").equals("college")) amenity = Amenity.COLLEGE;
+							else if(attributes.getValue("v").equals("fast_food")) amenity = Amenity.FAST_FOOD;
+							else if(attributes.getValue("v").equals("fuel")) amenity = Amenity.FUEL;
+							else if(attributes.getValue("v").equals("hospital")) amenity = Amenity.HOSPITAL;
+							else if(attributes.getValue("v").equals("kindergarten")) amenity = Amenity.KINDERGARTEN;
+							else if(attributes.getValue("v").equals("library")) amenity = Amenity.LIBRARY;
+							else if(attributes.getValue("v").equals("marketplace")) amenity = Amenity.MARKETPLACE;
+							else if(attributes.getValue("v").equals("parking")) amenity = Amenity.PARKING;
+							else if(attributes.getValue("v").equals("police")) amenity = Amenity.POLICE;
+							else if(attributes.getValue("v").equals("pub")) amenity = Amenity.PUB;
+							else if(attributes.getValue("v").equals("school")) amenity = Amenity.SCHOOL;
+							else if(attributes.getValue("v").equals("toilets")) amenity = Amenity.TOILETS;
+							else if(attributes.getValue("v").equals("university")) amenity = Amenity.UNIVERSITY;
+							else if(attributes.getValue("v").equals("ferry_terminal")) amenity = Amenity.FERRY_TERMINAL;
+							else if(attributes.getValue("v").equals("restaurant")) amenity = Amenity.RESTAURANT;
+							else amenity = null;
 							break;
 						case "building":
 							type = OsmType.BUILDING;
@@ -275,7 +300,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 								node = this.osmWay.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(type, path);
+							add(type, amenity, path);
 						}
 					}
 					break;
@@ -288,7 +313,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
-					add(type, path);
+					add(type, null, path);
 					break;
 				case "osm":
 					// convert all coastlines found to paths
@@ -305,7 +330,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(OsmType.COASTLINE, path);
+							add(OsmType.COASTLINE, null, path);
 						}
 					}
 					break;
