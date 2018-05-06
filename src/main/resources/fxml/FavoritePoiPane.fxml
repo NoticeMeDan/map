@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
 	  xmlns:fx="http://javafx.com/fxml"
-	  fx:controller="com.noticemedan.map.view.FavoritePoiPaneController"
+	  fx:controller="com.noticemedan.mappr.viewmodel.poi.FavoritePoiPaneController"
 	  prefWidth="250.0"
 	  fx:id="favoritePoiPane">
 	<stylesheets>

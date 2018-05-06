@@ -7,7 +7,7 @@
 <VBox xmlns="http://javafx.com/javafx"
 	  xmlns:fx="http://javafx.com/fxml"
 	  prefWidth="250.0"
-	  fx:controller="com.noticemedan.map.view.SearchPaneController"
+	  fx:controller="com.noticemedan.mappr.viewmodel.SearchPaneController"
 	  fx:id="searchPane">
 	<HBox prefHeight="55.0" prefWidth="200.0">
 		<Pane prefHeight="100.0" prefWidth="300.0">

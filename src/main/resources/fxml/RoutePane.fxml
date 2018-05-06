@@ -10,7 +10,7 @@
 <VBox xmlns="http://javafx.com/javafx"
 	  xmlns:fx="http://javafx.com/fxml"
 	  fx:id="routePane"
-	  fx:controller="com.noticemedan.map.view.RoutePaneController"
+	  fx:controller="com.noticemedan.mappr.viewmodel.RoutePaneController"
 	  prefWidth="250.0">
 	<stylesheets>
 		<URL value="@../css/route-search.css" />
