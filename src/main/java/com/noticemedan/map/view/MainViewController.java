@@ -119,7 +119,6 @@ public class MainViewController {
 	private void eventListeners() {
 		this.mouseController = new MouseController(canvas, this);
 		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardController(canvas));
-
 		searchFieldImitator.setOnMouseClicked(event -> {
 			searchPaneController.openSearchPane();
 			pushCanvas();

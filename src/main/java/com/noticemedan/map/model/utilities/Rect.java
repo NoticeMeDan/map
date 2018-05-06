@@ -19,6 +19,12 @@ public class Rect {
 		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
 	}
 
+	static public boolean rectInRect(Rect smallRect, Rect largeRect) {
+		boolean smallRectXRangeInLargeRectXRange = largeRect.getX1() <= smallRect.getX2() && smallRect.getX2() <= largeRect.getX2();
+		boolean smallRectYRangeInLargeRectYRange = largeRect.getY1() <= smallRect.getY2() && smallRect.getY2() <= largeRect.getY2();
+		return smallRectXRangeInLargeRectXRange && smallRectYRangeInLargeRectYRange;
+	}
+
 	static public boolean rangeIntersectsRange(double a, double b, double c, double d) {
 		// Do range a-b and c-d intersect?
 		return a <= d && b >= c;

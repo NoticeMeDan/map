@@ -80,6 +80,15 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
+
+		g.setPaint(new Color(250,33,44));
+		Shape shape = new Ellipse2D.Double(14.68819, -66.3092802600697, 0.001d, 0.001d);
+		Shape shape1 = new Ellipse2D.Double(14.71319, -66.30328362766856, 0.001d, 0.001d);
+		g.fill(shape);
+		g.draw(shape);
+		g.fill(shape1);
+		g.draw(shape1);
+
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
@@ -267,7 +276,6 @@ public class CanvasView extends JComponent {
 	}
 
 	public void zoomToRoute(Coordinate startRoute, Coordinate endRoute) {
-
 		//Transform coordinates into canvas coordinates
 		this.startRoute = new Coordinate(startRoute.getX(), Coordinate.lat2CanvasLat(startRoute.getY()));
 		this.endRoute = new Coordinate(endRoute.getX(), Coordinate.lat2CanvasLat(endRoute.getY()));
@@ -295,8 +303,8 @@ public class CanvasView extends JComponent {
 			Coordinate.lat2CanvasLat(endRoute.getY())
 		);
 
-		// Zoom continuously in on the route Rectange. If the route rectange intersects view rectangle stop zooming.
-		while (Rect.rectCompletelyInRect(routeRect, currentViewRect)) {
+		// Zoom continuously in on the route Rectangle. If the route rectange intersects view rectangle stop zooming.
+		while (Rect.rectInRect(routeRect, currentViewRect)) {
 			zoomToCenter(1.1);
 			upperLeftViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), transform);
 			lowerRightViewPortCorner = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
