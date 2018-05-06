@@ -92,10 +92,10 @@ public class KdTreeTest {
 		return randomGeneratedPoints;
 	}
 
-	@Test //Usually takes 25 seconds
+	@Ignore @Test //Usually takes 25 seconds
 	public void testVeryLargeKDTreeSpeed() { //10E7 OsmElements, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
-		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(20000), 10);
+		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(10000000), 1000);
 		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
 		assertTrue(stopwatch.elapsedTime() < 30);
 	}

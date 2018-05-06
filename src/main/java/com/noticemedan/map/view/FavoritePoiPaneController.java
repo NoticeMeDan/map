@@ -1,7 +1,6 @@
 package com.noticemedan.map.view;
 
 import com.noticemedan.map.model.user.FavoritePoi;
-import com.noticemedan.map.model.utilities.Coordinate;
 import com.noticemedan.map.viewmodel.CanvasView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +25,8 @@ public class FavoritePoiPaneController {
 	ObservableList<FavoritePoi> favoritePois;
 	@Setter
 	CanvasView canvas;
+	@Setter
+	MainViewController mainViewController;
 
 
 	public void initialize() {
@@ -52,7 +53,10 @@ public class FavoritePoiPaneController {
 			}
 		});
 
-		favoritePoiPaneCloseButton.setOnAction(event -> closeFavoritePoiPane());
+		favoritePoiPaneCloseButton.setOnAction(event -> {
+			closeFavoritePoiPane();
+			mainViewController.pushCanvas();
+		});
 	}
 
 	private void zoomToPoi() {

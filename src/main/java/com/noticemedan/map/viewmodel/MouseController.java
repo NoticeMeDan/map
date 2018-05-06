@@ -50,7 +50,7 @@ public class MouseController extends MouseAdapter {
 		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
     	canvas.logNearestNeighbor(currentHoverCoordinate);
 		mainViewController.updateScalaBar();
-		System.out.println(Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform()));
+		//System.out.println(Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform()));
 	}
 
     @Override

@@ -54,7 +54,8 @@ public class MainViewController {
 	@FXML Pane favoritePoiPane;
 	@FXML Pane poiBoxView;
 	@FXML Pane searchPane;
-	boolean paneOpen = false;
+	boolean sidePaneOpen = false;
+	int sidePaneWidth = 0;
 
 	//Component controllers
 	@FXML PoiBoxViewController poiBoxViewController;
@@ -70,6 +71,9 @@ public class MainViewController {
 		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
 		insertOSMPane();
 		favoritePoiPaneController.setCanvas(canvas);
+		favoritePoiPaneController.setMainViewController(this);
+		routePaneController.setMainViewController(this);
+		searchPaneController.setMainViewController(this);
 		eventListeners();
 	}
 
@@ -85,7 +89,7 @@ public class MainViewController {
 
 		//TODO @emil move to event listeners
 		ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-			width = (int) stage.getWidth();
+			width = (int) stage.getWidth()-sidePaneWidth;
 			height = (int) stage.getHeight();
 			resizeNode(width, height);
 		};
@@ -97,6 +101,7 @@ public class MainViewController {
 
 	private void resizeNode(int width, int height) {
 		canvas.setPreferredSize(new Dimension(width, height));
+		canvas.setMaximumSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
 	}
 
@@ -115,10 +120,20 @@ public class MainViewController {
 		this.mouseController = new MouseController(canvas, this);
 		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardController(canvas));
 
-		//searchFieldImitator.setOnMouseClicked(event -> searchPaneController.openSearchPane());
-		searchFieldImitator.setOnMouseClicked(event -> pushCanvas());
-		favoriteButton.setOnAction(event -> favoritePoiPaneController.openFavoritePane());
-		routeButton.setOnAction(event -> routePaneController.openRoutePane());
+		searchFieldImitator.setOnMouseClicked(event -> {
+			searchPaneController.openSearchPane();
+			pushCanvas();
+		});
+
+		favoriteButton.setOnAction(event -> {
+			favoritePoiPaneController.openFavoritePane();
+			pushCanvas();
+		});
+
+		routeButton.setOnAction(event -> {
+			routePaneController.openRoutePane();
+			pushCanvas();
+		});
 
 		swingNode.addEventHandler(MouseEvent.ANY, new ClickDragHandler(
 				event -> poiBoxViewController.closePoiBox(),
@@ -140,7 +155,20 @@ public class MainViewController {
 	}
 
 	public void pushCanvas() {
-		AnchorPane.setLeftAnchor(osmPaneContainer,200d);
-		System.out.println("hello");
+		if(!sidePaneOpen) {
+			AnchorPane.setLeftAnchor(osmPaneContainer, 250d);
+			sidePaneWidth = 250;
+			sidePaneOpen = !sidePaneOpen;
+			// Annoying hack to make canvas actually resize. Tried to call nodeResize directly here
+			// but for some reason it does not work.
+			stage.setWidth(stage.getWidth()+1);
+			stage.setWidth(stage.getWidth()-1);
+		} else {
+			AnchorPane.setLeftAnchor(osmPaneContainer,0d);
+			sidePaneWidth = 0;
+			sidePaneOpen = !sidePaneOpen;
+			stage.setWidth(stage.getWidth()+1);
+			stage.setWidth(stage.getWidth()-1);
+		}
 	}
 }

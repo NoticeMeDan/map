@@ -16,13 +16,19 @@ public class SearchPaneController {
 	//@Setter
 	//ObservableList<Address> addressSearchResults; //TODO: @emil this comes from address parser.
 
+	@Setter
+	MainViewController mainViewController;
+
 	public void initialize() {
 		closeSearchPane();
 		eventListeners();
 	}
 
 	private void eventListeners() {
-		searchPaneCloseButton.setOnAction(event -> closeSearchPane());
+		searchPaneCloseButton.setOnAction(event -> {
+			closeSearchPane();
+			mainViewController.pushCanvas();
+		});
 	}
 
 	public void openSearchPane() {
