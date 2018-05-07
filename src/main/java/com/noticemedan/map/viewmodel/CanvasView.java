@@ -246,13 +246,22 @@ public class CanvasView extends JComponent {
 	private void drawAmenity(List<OsmElement> elements) {
 		elements.forEach(e -> {
 			if (e.getAmenity() != null) {
-				if (e.getAmenity().equals(Amenity.RESTAURANT)) {
+				BufferedImage img = icon.getIconMap().get(e.getAmenity());
+				AffineTransform at = icon.transform(img,e);
+				this.g.drawImage(img,at,null);
+			}
+				/*if (e.getAmenity().equals(Amenity.RESTAURANT)  && e.getOsmType() == OsmType.BUILDING) {
 					BufferedImage restaurant = icon.getRestaurant();
 					AffineTransform at = icon.transform(restaurant, e);
 					this.g.drawImage(restaurant, at, null);
-				} else if (e.getAmenity().equals(Amenity.PARKING)) {
+				} else if (e.getAmenity().equals(Amenity.PARKING_ENTRANCE)) {
 					BufferedImage parking = icon.getParking();
 					AffineTransform at = icon.transform(parking, e);
+					this.g.drawImage(parking, at, null);
+				} else if (e.getAmenity().equals(Amenity.UNIVERSITY)) {
+					BufferedImage parking = icon.getUniversity();
+					AffineTransform at = icon.transform(parking, e);
+					at.scale(1.5,1.5);
 					this.g.drawImage(parking, at, null);
 				} else {
 				double width = 0.000005;
@@ -262,7 +271,7 @@ public class CanvasView extends JComponent {
 				Rectangle.Double r = new Rectangle.Double(xPos,yPos,width,height);
 				this.g.setPaint(Color.GREEN);
 				this.g.draw(r); }
-			}
+			}*/
 		});
 	}
 

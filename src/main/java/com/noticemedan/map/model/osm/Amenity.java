@@ -2,6 +2,7 @@ package com.noticemedan.map.model.osm;
 
 public enum Amenity {
 	CAFE,
+	ICE_CREAM,
 	RESTAURANT,
 	BAR,
 	FAST_FOOD,
@@ -12,7 +13,7 @@ public enum Amenity {
 	SCHOOL,
 	UNIVERSITY,
 	BUS_STATION,
-	PARKING,
+	PARKING_ENTRANCE,
 	BANK,
 	HOSPITAL,
 	MARKETPLACE,

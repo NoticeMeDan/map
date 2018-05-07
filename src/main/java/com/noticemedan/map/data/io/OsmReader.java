@@ -212,7 +212,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 							else if(attributes.getValue("v").equals("kindergarten")) amenity = Amenity.KINDERGARTEN;
 							else if(attributes.getValue("v").equals("library")) amenity = Amenity.LIBRARY;
 							else if(attributes.getValue("v").equals("marketplace")) amenity = Amenity.MARKETPLACE;
-							else if(attributes.getValue("v").equals("parking")) amenity = Amenity.PARKING;
+							else if(attributes.getValue("v").equals("parking_entrance")) amenity = Amenity.PARKING_ENTRANCE;
 							else if(attributes.getValue("v").equals("police")) amenity = Amenity.POLICE;
 							else if(attributes.getValue("v").equals("pub")) amenity = Amenity.PUB;
 							else if(attributes.getValue("v").equals("school")) amenity = Amenity.SCHOOL;
@@ -220,6 +220,7 @@ public class OsmReader implements Supplier<Vector<Vector<OsmElement>>> {
 							else if(attributes.getValue("v").equals("university")) amenity = Amenity.UNIVERSITY;
 							else if(attributes.getValue("v").equals("ferry_terminal")) amenity = Amenity.FERRY_TERMINAL;
 							else if(attributes.getValue("v").equals("restaurant")) amenity = Amenity.RESTAURANT;
+							else if(attributes.getValue("v").equals("ice_cream")) amenity = Amenity.ICE_CREAM;
 							else amenity = null;
 							break;
 						case "building":
