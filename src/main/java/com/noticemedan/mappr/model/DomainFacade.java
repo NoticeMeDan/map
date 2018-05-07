@@ -30,7 +30,7 @@ public class DomainFacade {
 			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
-			log.error("An error occured", e);
+			log.error("An error occurred", e);
 		}
 	}
 
@@ -38,7 +38,7 @@ public class DomainFacade {
 		try {
 			this.mapData = new OsmDao().read(path); // Switch to MapData
 		} catch (IOException e) {
-			log.error("An error occured", e);
+			log.error("An error occurred", e);
 		}
 		this.forestService = new ForestService(
 				this.mapData.getElements().toJavaList(),

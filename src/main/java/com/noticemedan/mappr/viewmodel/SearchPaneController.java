@@ -53,9 +53,11 @@ public class SearchPaneController {
 
 	private void handleAddressSearch() {
 		String search = searchAddressField.getText();
+		// Dont run empty queries (will get *all* addresses)
+		if (search.isEmpty()) addressSearchResultsListView.getItems().removeAll(); // TODO: Find a way that actually clears the listview
 		List<String> results = this.domain.doAddressSearch(search).take(20);
 		addressSearchResultsListView.setItems(
-				FXCollections.observableArrayList(results.toJavaList())
+			FXCollections.observableArrayList(results.toJavaList())
 		);
 	}
 }
