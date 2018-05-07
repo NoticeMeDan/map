@@ -2,18 +2,17 @@ package com.noticemedan.mappr.dao;
 
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.MapData;
+import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Node;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
-import com.noticemedan.mappr.model.map.Address;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -26,53 +25,40 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader, Supplier<MapData> {
-	private Vector<Vector<Element>> elements = Vector.empty();
-	@Getter
-	private Vector<Element> osmElements = Vector.empty();
-	private Vector<Element> osmCoastlineElements = Vector.empty();
-	@Getter
+public class OsmDao implements DataReader {
+	private Vector<Element> elements = Vector.empty();
+	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
-	private Path input;
-	private String filename;
-
-	public OsmDao(Path input) {
-		this.input = input;
-	}
 
 	@Override
 	public MapData read(Path input) throws IOException {
 		String[] splitName = input.getFileName().toString().split(Pattern.quote("."));
 		String type = splitName[splitName.length - 1];
-		log.info("Begin reading from OSM");
 
-		// TODO: Fix me i suck (strategy pattern)
+		log.info("Begin reading from OSM");
 		if (type.equals("osm")) {
 			readFromOSM(new InputSource(Files.newBufferedReader(input)));
 		} else if (type.equals("zip")) {
-			// Program will crash if zip exceeds 2^31 bytes (max array length)
 			ZipInputStream zip = new ZipInputStream(Files.newInputStream(input));
 			zip.getNextEntry();
 			readFromOSM(new InputSource(zip));
 		}
 
 		log.info("End reading from OSM");
-		log.info("Coastlines: " + osmCoastlineElements.length());
+		log.info("Elements: " + elements.length());
+		log.info("Coastlines: " + coastlineElements.length());
 
 		return MapData.builder()
-				.elements(this.osmElements)
-				.coastlineElements(this.osmCoastlineElements)
+				.elements(this.elements)
+				.coastlineElements(this.coastlineElements)
 				.addresses(this.addresses)
 				.build();
 	}
@@ -95,29 +81,16 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 		double xLength = shapeBounds.getWidth();
 		double yLength = shapeBounds.getHeight();
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
-		Element element = new Element();
-		element.setType(type);
-		element.setBounds(rect);
-		element.setAvgPoint(rect.getAveragePoint());
-		element.setShape(shape);
-		element.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(Type.COASTLINE)) {
-			this.osmCoastlineElements = osmCoastlineElements.append(element);
-		}
-		else {
-			this.osmElements = osmElements.append(element);
-		}
-	}
-
-	@Override
-	public MapData get() {
-		MapData data = MapData.builder().build();
-		try {
-			data = this.read(this.input);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return data;
+		Element osmElement = new Element();
+		osmElement.setType(type);
+		osmElement.setBounds(rect);
+		osmElement.setAvgPoint(rect.getAveragePoint());
+		osmElement.setShape(shape);
+		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
+		if (type.equals(Type.COASTLINE))
+			this.coastlineElements = coastlineElements.append(osmElement);
+		else
+			this.elements = elements.append(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -125,6 +98,7 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 		Map<Long, Vector<Node>> idToWay = HashMap.empty();
 		Map<Node, Vector<Node>> coastlines = HashMap.empty();
 		Address address = new Address();
+		int path2DSize = 1;
 		private double lonFactor;
 		private Type type;
 		private long currentNodeID;
@@ -151,7 +125,6 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
-					type = Type.UNKNOWN;
 					currentNodeID = id;
 					idToNode.put(id, lonFactor * lon, -lat);
 					break;
@@ -210,23 +183,18 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 							break;
 						case "housenumber":
 							address.setHouseNumber(attributes.getValue("v"));
-							type = Type.ADDRESS;
 							break;
 						case "street":
 							address.setStreet(attributes.getValue("v"));
-							type = Type.ADDRESS;
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
-							type = Type.ADDRESS;
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));
-							type = Type.ADDRESS;
 							break;
 						case "city":
 							address.setCity(attributes.getValue("v"));
-							type = Type.ADDRESS;
 							break;
 						default:
 							break;
@@ -234,6 +202,7 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 					break;
 				case "nd":
 					this.osmWay = osmWay.append(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
+					this.path2DSize++;
 					break;
 				default:
 					break;
@@ -242,7 +211,8 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
-			Path2D path = new Path2D.Double();
+			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+			this.path2DSize = 1;
 			Node node;
 			switch (qName) {
 				case "way":
@@ -255,7 +225,7 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 						Vector<Node> after = null;
 						Vector<Node> merged = Vector.empty();
 
-						if(this.osmWay.size() > 0) {
+						if(!this.osmWay.isEmpty()) {
 							from = this.osmWay.get(0);
 							to = this.osmWay.get(osmWay.size() - 1);
 						}
@@ -271,12 +241,12 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 						if (after != null && after != before) {
 							merged = merged.appendAll(after.subSequence(1, after.size()));
 						}
-						if(merged.size() > 0) {
+						if(!merged.isEmpty()) {
 							this.coastlines = coastlines.put(merged.get(merged.size() - 1), merged);
 							this.coastlines = coastlines.put(merged.get(0), merged);
 						}
 					} else {
-						if(this.osmWay.size() > 0) {
+						if(!this.osmWay.isEmpty()) {
 							node = this.osmWay.get(0);
 							path.moveTo(node.getLon(), node.getLat());
 							for (int i = 1; i < osmWay.size(); i++) {
@@ -321,7 +291,6 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 				case "node":
 					if (type == Type.ADDRESS) {
 						addresses = addresses.append(address);
-						address = new Address();
 					}
 				default:
 					break;
