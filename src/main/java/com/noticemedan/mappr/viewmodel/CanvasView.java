@@ -3,8 +3,10 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import io.vavr.collection.Vector;
 import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +47,11 @@ public class CanvasView extends JComponent {
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 	private DomainFacade domain;
 
+	//ShortestPath
+	private boolean showNetwork;
+	private boolean showRandomSP;
+	private Vector<Shape> randomSP;
+
 	public CanvasView(DomainFacade domainFacade) {
 		this.domain = domainFacade;
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
@@ -72,6 +79,11 @@ public class CanvasView extends JComponent {
         drawCoastlines();
         drawAllElements();
         drawPoi();
+
+		if (this.showNetwork) drawNetwork();
+		if (this.showRandomSP) drawShortestPath(randomSP);
+		if (poiPos != null) drawPoi();
+
 		performanceTest();
 
 		//TODO MOVE FPS COUNTER TO FXML
@@ -89,6 +101,12 @@ public class CanvasView extends JComponent {
 		}
 		timeDraw = stopwatchDraw.elapsedTime();
     }
+
+	private void drawShortestPath(Vector<Shape> shape) {
+		this.g.setPaint(Color.RED);
+		this.g.setStroke(getMediumLevelStroke());
+		shape.forEach(s -> this.g.draw(s));
+	}
 
 	private void transformViewRect() {
 		g.transform(this.transform);
@@ -179,6 +197,20 @@ public class CanvasView extends JComponent {
 		}
 	}
 
+	private void drawNetwork() {
+		// Paint all edges
+		this.domain.deriveAllDijkstraEdges().forEach(e -> {
+			this.g.setPaint(Color.CYAN);
+			this.g.setStroke(new BasicStroke(0.0001f));
+			this.g.draw(e.toShape());
+		});
+		// Paint all nodes
+		this.domain.deriveAllDijkstraNodes().forEach(p -> {
+			this.g.setPaint(Color.BLUE);
+			this.g.fill(p.toShape());
+		});
+	}
+
 	private void performanceTest() {
 		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
@@ -207,13 +239,15 @@ public class CanvasView extends JComponent {
 		zoom(factor, -getWidth() / 2.0, -getHeight() / 2.0);
 	}
 
-	// TODO @Simon fix border relative to screen and not lat lon
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
-		int borderFactor = (showReversedBorders) ? -1 : 1;
-		double x1 = toModelCoords(p1).getX() - 0.02 * borderFactor;
-		double y1 = toModelCoords(p1).getY() - 0.02 * borderFactor;
-		double x2 = toModelCoords(p2).getX() + 0.02 * borderFactor;
-		double y2 = toModelCoords(p2).getY() + 0.02 * borderFactor;
+		int borderW = 100;
+		Point2D p1Altered = new Point2D.Double(p1.getX() + borderW, p1.getY() + borderW);
+		Point2D p2Altered = new Point2D.Double(p2.getX() - borderW, p2.getY() - borderW);
+
+		double x1 = (showReversedBorders) ? toModelCoords(p1Altered).getX() : toModelCoords(p1).getX() - 0.02;
+		double y1 = (showReversedBorders) ? toModelCoords(p1Altered).getY() : toModelCoords(p1).getY() - 0.02;
+		double x2 = (showReversedBorders) ? toModelCoords(p2Altered).getX() : toModelCoords(p2).getX() + 0.02;
+		double y2 = (showReversedBorders) ? toModelCoords(p2Altered).getY() : toModelCoords(p2).getY() + 0.02;
 
 		return new Rect(x1, y1, x2, y2);
 	}
@@ -265,5 +299,15 @@ public class CanvasView extends JComponent {
 	public Point2D toModelCoords(Point2D p) {
 		return Try.of( () -> transform.inverseTransform(p, null))
 				.getOrNull();
+	}
+
+	public void toggleDijkstraNetwork() {
+		this.showNetwork = !this.showNetwork;
+	}
+
+	public void toggleRandomShortestPath() {
+		this.showRandomSP = !this.showRandomSP;
+
+		if (this.showRandomSP) this.randomSP = domain.deriveRandomShortestPathShapes();
 	}
 }
