@@ -117,15 +117,15 @@ public class OsmDao implements DataReader {
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
 					Entities.setMinLon(minLon);
 					Entities.setMaxLon(maxLon);
-					Entities.setMinLat(Coordinate.lat2CanvasLat(minLat));
-					Entities.setMaxLat(Coordinate.lat2CanvasLat(maxLat));
+					Entities.setMinLat(Coordinate.latToCanvasLat(minLat));
+					Entities.setMaxLat(Coordinate.latToCanvasLat(maxLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
 					currentNodeID = id;
-					idToNode.put(id, lon, Coordinate.lat2CanvasLat(lat));
+					idToNode.put(id, lon, Coordinate.latToCanvasLat(lat));
 					break;
 				case "way":
 					this.osmWay = Vector.empty();

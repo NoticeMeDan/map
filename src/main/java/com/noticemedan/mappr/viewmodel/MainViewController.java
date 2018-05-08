@@ -29,7 +29,6 @@ import lombok.Setter;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import javax.inject.Inject;
-import javax.swing.SwingUtilities;
 
 public class MainViewController {
 	@Getter
@@ -156,17 +155,17 @@ public class MainViewController {
 				event -> poiBoxViewController.openPoiBox(
 						new Coordinate(
 								mouseHandler.getLastMousePositionCanvasCoords().getX(),
-								Coordinate.canvasLat2Lat(mouseHandler.getLastMousePositionCanvasCoords().getY())
+								Coordinate.canvasLatToLat(mouseHandler.getLastMousePositionCanvasCoords().getY())
 						)
 				)
 		));
 	}
 
 	public void updateScalaBar() {
-		Point2D scalaBarFirstPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), canvas.getTransform());
-		Point2D scalaBarSecondPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(130,0), canvas.getTransform());
-		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLat2Lat(scalaBarFirstPoint.getY()));
-		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLat2Lat(scalaBarSecondPoint.getY()));
+		Point2D scalaBarFirstPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), canvas.getTransform());
+		Point2D scalaBarSecondPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(130,0), canvas.getTransform());
+		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLatToLat(scalaBarFirstPoint.getY()));
+		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLatToLat(scalaBarSecondPoint.getY()));
 		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
 	}
 

@@ -43,7 +43,7 @@ public class MouseHandler extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
 		canvas.toggleAntiAliasing();
        	lastMousePosition = e.getPoint();
-		lastMousePositionCanvasCoords = Coordinate.viewportPoint2canvasPoint(lastMousePosition, canvas.getTransform());
+		lastMousePositionCanvasCoords = Coordinate.viewportPointToCanvasPoint(lastMousePosition, canvas.getTransform());
     }
 
     @Override
@@ -53,11 +53,11 @@ public class MouseHandler extends MouseAdapter {
 
 	@Override
     public void mouseMoved(MouseEvent e) {
-		Point2D currentHoverPoint = Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform());
+		Point2D currentHoverPoint = Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform());
 		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
 		canvas.logNearestNeighbor(currentHoverCoordinate);
 		mainViewController.updateScalaBar();
-		//log.info("" + Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform()));
+		//log.info("" + Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform()));
 	}
 
     @Override
