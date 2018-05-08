@@ -100,7 +100,7 @@ public class OsmDao implements DataReader {
 		Address address = new Address();
 		int path2DSize = 1;
 		private double lonFactor;
-		private Type type;
+		private Type type = Type.UNKNOWN;
 		private long currentNodeID;
 
 		private Vector<Node> osmWay;
@@ -150,8 +150,8 @@ public class OsmDao implements DataReader {
 					String keyValue = attributes.getValue("k");
 					if (keyValue.contains("addr:")) {
 						keyValue = keyValue.substring(5);
-						type = Type.ADDRESS;
 						Node currentNode = idToNode.get(currentNodeID);
+						type = Type.ADDRESS;
 						address.setLat(currentNode.getLat());
 						address.setLon(currentNode.getLon());
 					}
@@ -291,6 +291,7 @@ public class OsmDao implements DataReader {
 				case "node":
 					if (type == Type.ADDRESS) {
 						addresses = addresses.append(address);
+						address = new Address();
 					}
 				default:
 					break;
