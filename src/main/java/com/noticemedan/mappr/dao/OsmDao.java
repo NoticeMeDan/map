@@ -29,12 +29,13 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader {
+public class OsmDao implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();

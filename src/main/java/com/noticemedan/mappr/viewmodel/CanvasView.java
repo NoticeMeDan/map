@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 
 // TODO: Split up - right now it does the job of both the V and VM layer
@@ -31,10 +34,10 @@ public class CanvasView extends JComponent {
     @Setter
 	private double zoomLevel;
 	private boolean isShapeOpen;
-	private Shape poi;
-	private Point2D poiPos;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	private Point2D pointerPosition;
+	private BufferedImage pointer;
 
     //Performance test fields
 	public double timeDraw;
@@ -56,8 +59,14 @@ public class CanvasView extends JComponent {
 	private Vector<Shape> randomSP;
 
 	public CanvasView(DomainFacade domainFacade) {
-		this.domain = domainFacade;
-		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		try {
+			this.domain = domainFacade;
+			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
+      OsmElementProperty.standardColor();
+		} catch (URISyntaxException e) {
+			log.error("An error occurred", e);
+		}
 		repaint();
 	}
 
@@ -85,7 +94,7 @@ public class CanvasView extends JComponent {
 
 		if (this.showNetwork) drawNetwork();
 		if (this.showRandomSP) drawShortestPath(randomSP);
-		if (poiPos != null) drawPoi();
+		if (pointerPosition != null) drawPoi();
 
 		performanceTest();
 
@@ -122,7 +131,7 @@ public class CanvasView extends JComponent {
 
 	private void drawCoastlines() {
 		this.domain.getCoastLines().forEach(c -> {
-			this.g.setPaint(c.getColor());
+			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
 	}
@@ -190,7 +199,7 @@ public class CanvasView extends JComponent {
 
 	private void paintOsmElement(BasicStroke stroke, Element element) {
 		this.g.setStroke(stroke);
-		this.g.setPaint(element.getColor());
+		this.g.setPaint(OsmElementProperty.deriveColorFromType(element.getType()));
 		if (element.getShape().intersects(this.viewRect)) {
 			if (isShapeOpen) {
 				this.g.draw(element.getShape());
@@ -361,35 +370,16 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPoi() {
-		if (poiPos == null) return;
-		this.poi = createPoiShape();
-		this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
-		//Background color
-		this.g.setPaint(Color.decode("#D0021B"));
-		this.g.fill(this.poi);
-		//Outline color
-		this.g.setPaint(Color.WHITE);
-		this.g.draw(this.poi);
-	}
+		if (this.pointerPosition == null) return;
+		double size = this.viewRect.getWidth() * 0.0001;
+		double width = pointer.getWidth() * size;
+		double height = pointer.getHeight() * size;
 
-	private Shape createPoiShape() {
-		double size = this.viewRect.getWidth() * 0.05;
-		double xPos = this.poiPos.getX() - size/2;
-		double yPos = this.poiPos.getY() - size * 1.2;
+		AffineTransform at = new AffineTransform();
+		at.translate(this.pointerPosition.getX() - width/2,this.pointerPosition.getY()-height);
+		at.scale(size,size);
 
-		Shape oval = new Ellipse2D.Double(xPos, yPos, size, size);
-		Shape inner = new Ellipse2D.Double(xPos + size/2.7, yPos + size/2.7, size/4, size/4);
-
-		Path2D pointer = new Path2D.Double();
-		pointer.moveTo(xPos, yPos + size/1.5);
-		pointer.lineTo(poiPos.getX(), poiPos.getY());
-		pointer.lineTo(xPos + size, yPos + size/1.5);
-		pointer.closePath();
-
-		Area area = new Area(oval);
-		area.add(new Area(pointer));
-		area.subtract(new Area(inner));
-		return area;
+		this.g.drawImage(this.pointer,at,null);
 	}
 
 	public void setPoiPos(Point2D p) {
