@@ -37,7 +37,7 @@ import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader, Supplier<MapData> {
+public class OsmDao implements DataReader<MapData>, Supplier<MapData> {
 	private Vector<Vector<Element>> elements = Vector.empty();
 	@Getter
 	private Vector<Element> osmElements = Vector.empty();
