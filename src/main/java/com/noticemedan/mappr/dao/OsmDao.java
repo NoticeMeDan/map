@@ -101,7 +101,6 @@ public class OsmDao implements DataReader<MapData> {
 		Map<Node, Vector<Node>> coastlines = HashMap.empty();
 		Address address = new Address();
 		int path2DSize = 1;
-		private double lonFactor;
 		private Type type = Type.UNKNOWN;
 		private long currentNodeID;
 

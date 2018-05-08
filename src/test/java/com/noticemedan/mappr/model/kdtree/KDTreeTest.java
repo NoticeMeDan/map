@@ -4,11 +4,11 @@ import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import io.vavr.collection.Vector;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.Random;
 
 import static org.testng.Assert.*;
@@ -134,29 +134,7 @@ public class KDTreeTest {
 	@Test
 	public void rangeSearch_SmallKDTree_Positive_1() {
 		Rect query = new Rect(0.5,7.5,4,10.5);
-		List<Element> result = smallKdTree.rangeSearch(query);
-		assertEquals(result.size(), 2);
-
-		//Check a point
-		assertEquals(result.get(0).getAvgPoint().getX(), 3.0);
-		assertEquals(result.get(0).getAvgPoint().getY(), 8.0);
-	}
-
-	@Test
-	public void rangeSearch_SmallKDTree_Positive_2() {
-		Rect query = new Rect(3.5,0.5,6.5,8.5);
-		List<Element> result = smallKdTree.rangeSearch(query);
-		assertEquals(result.size(),3);
-
-		//Check a point
-		assertEquals(result.get(2).getAvgPoint().getX(),6.0);
-		assertEquals(result.get(2).getAvgPoint().getY(),7.0);
-	}
-
-	@Test
-	public void rangeSearch_SmallKDTree_Negative_1() {
-		Rect query = new Rect(8.0,4.0,10,6);
-		List<Element> result = smallKdTree.rangeSearch(query);
+		Vector<Element> result = smallKdTree.rangeSearch(query);
 		assertTrue(result.size() <= 0);
 	}
 
@@ -178,7 +156,7 @@ public class KDTreeTest {
 		}
 		//return randomGeneratedPoints;
 		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
-		List results = randomBornHolmTree.rangeSearch(new Rect(14, 54, 15, 55));
+		Vector results = randomBornHolmTree.rangeSearch(new Rect(14, 54, 15, 55));
 		assertEquals(results.size(), 45000);
 	}
 
@@ -199,7 +177,7 @@ public class KDTreeTest {
 		}
 		//return randomGeneratedPoints;
 		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
-		List results = randomBornHolmTree.rangeSearch(new Rect(14.3, 54.8, 15.6, 55.4));
+		Vector results = randomBornHolmTree.rangeSearch(new Rect(14.3, 54.8, 15.6, 55.4));
 		assertEquals(results.size(), 45000);
 	}
 
@@ -220,7 +198,7 @@ public class KDTreeTest {
 		}
 		//return randomGeneratedPoints;
 		randomBornHolmTree = new KdTree(randomGeneratedPoints, 100);
-		List results = randomBornHolmTree.rangeSearch(new Rect(14.3, -55.4, 15.6, -54.8));
+		Vector results = randomBornHolmTree.rangeSearch(new Rect(14.3, -55.4, 15.6, -54.8));
 
 		assertEquals(results.size(), 45000);
 	}

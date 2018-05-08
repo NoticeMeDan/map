@@ -6,17 +6,16 @@ import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.map.Element;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
+import io.vavr.collection.Vector;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class KdTree {
 	@Getter
 	private KdNode rootNode;
 	private int maxNumberOfElementsAtLeaf;
-	private ArrayList<Element> rangeSearchQueryResults;
+	private Vector<Element> rangeSearchQueryResults;
 	private Element nearestNeighbor;
 
 	public KdTree(Element[] elements, int maxNumberOfElementsAtLeaf) {
@@ -83,8 +82,8 @@ public class KdTree {
 		return Tuple.of(firstHalf, secondHalf);
 	}
 
-	public List<Element> rangeSearch(Rect query) {
-		rangeSearchQueryResults = new ArrayList<>();
+	public Vector<Element> rangeSearch(Rect query) {
+		rangeSearchQueryResults = Vector.empty();
 		if (rootNode == null) return this.rangeSearchQueryResults;
 
 		Rect startBoundingBox = new Rect(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -125,7 +124,7 @@ public class KdTree {
 	private void addElementsToQueryResults(KdNode parent, Rect searchQuery) {
 		for (int i = 0; i < parent.getElements().length; i++) {
 			if (Rect.pointInRect(parent.getElements()[i], searchQuery)) //Check if elements lie in search query
-				rangeSearchQueryResults.add(parent.getElements()[i]);
+				rangeSearchQueryResults = rangeSearchQueryResults.append(parent.getElements()[i]);
 		}
 	}
 
@@ -133,7 +132,7 @@ public class KdTree {
 	//Adds all elements to query results
 	private void reportSubtree(KdNode parent) {
 		if (parent.getLeftChild() != null) reportSubtree(parent.getLeftChild()); //L
-		if (parent.getElements() != null) rangeSearchQueryResults.addAll(Arrays.asList(parent.getElements())); //V:
+		if (parent.getElements() != null) rangeSearchQueryResults = rangeSearchQueryResults.appendAll(Arrays.asList(parent.getElements())); //V:
 		if (parent.getRightChild() != null) reportSubtree(parent.getRightChild());//R
 	}
 

@@ -139,7 +139,7 @@ public class CanvasView extends JComponent {
 
     private void drawAllElements() {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
-		List<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
+		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
 
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
@@ -158,7 +158,7 @@ public class CanvasView extends JComponent {
 		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
 	}
 
-	private void paintClosedElements (List<Element> result, BasicStroke stroke) {
+	private void paintClosedElements (Vector<Element> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
 		paintByType(result,Type.PARK,stroke);
 		paintByType(result,Type.GRASSLAND,stroke);
@@ -192,9 +192,8 @@ public class CanvasView extends JComponent {
 		else return new BasicStroke(0.0007f);
 	}
 
-    private void paintByType(List<Element> elements, Type type, BasicStroke stroke) {
-		elements.stream()
-				.filter(e -> e.getType() == type)
+    private void paintByType(Vector<Element> elements, Type type, BasicStroke stroke) {
+		elements.filter(e -> e.getType() == type)
 				.forEach(e -> paintOsmElement(stroke, e));
 	}
 
