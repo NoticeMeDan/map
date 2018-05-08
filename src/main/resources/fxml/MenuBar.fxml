@@ -35,6 +35,8 @@
 				<MenuItem fx:id="menuShowFPS" mnemonicParsing="false" text="Vis FPS" />
 				<MenuItem mnemonicParsing="false" text="Vis KDTree linjer" />
 				<MenuItem fx:id="menuShowReversedBorders" mnemonicParsing="false" text="Vis range-search" />
+				<MenuItem fx:id="menuShowDijkstraNetwork" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
+				<MenuItem fx:id="menuShowShortestPath" mnemonicParsing="false" text="Vis shortest path"/>
 			</items>
 		</Menu>
 	</menus>

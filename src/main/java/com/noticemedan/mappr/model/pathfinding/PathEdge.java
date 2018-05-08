@@ -14,7 +14,7 @@ public class PathEdge {
 	private PathNode v;
 	private PathNode w;
 
-	public PathEdge(PathNode v, PathNode w) {
+	PathEdge(PathNode v, PathNode w) {
 		this.v = v;
 		this.w = w;
 		this.weight = computeWeight(v, w);
