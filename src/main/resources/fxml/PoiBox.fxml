@@ -7,7 +7,7 @@
 <AnchorPane fx:id="poiBoxContainer"
 			xmlns="http://javafx.com/javafx/9.0.1"
 			xmlns:fx="http://javafx.com/fxml/1"
-			fx:controller="com.noticemedan.map.view.PoiBoxViewController">
+			fx:controller="com.noticemedan.mappr.viewmodel.poi.PoiBoxViewController">
 	<stylesheets>
 		<URL value="@../css/poi-box.css" />
 	</stylesheets>

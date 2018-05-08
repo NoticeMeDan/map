@@ -4,7 +4,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 
-<MenuBar fx:id="menubar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.noticemedan.map.view.MenuBarController">
+<MenuBar fx:id="menubar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
 	<menus>
 		<Menu mnemonicParsing="false" text="Fil">
 			<items>
@@ -35,6 +35,8 @@
 				<MenuItem fx:id="menuShowFPS" mnemonicParsing="false" text="Vis FPS" />
 				<MenuItem mnemonicParsing="false" text="Vis KDTree linjer" />
 				<MenuItem fx:id="menuShowReversedBorders" mnemonicParsing="false" text="Vis range-search" />
+				<MenuItem fx:id="menuShowDijkstraNetwork" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
+				<MenuItem fx:id="menuShowShortestPath" mnemonicParsing="false" text="Vis shortest path"/>
 			</items>
 		</Menu>
 	</menus>
