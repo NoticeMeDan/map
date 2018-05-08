@@ -5,6 +5,7 @@ import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
@@ -63,7 +64,7 @@ public class CanvasView extends JComponent {
 			this.domain = domainFacade;
 			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
-      OsmElementProperty.standardColor();
+      		OsmElementProperty.standardColor();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
@@ -382,8 +383,8 @@ public class CanvasView extends JComponent {
 		this.g.drawImage(this.pointer,at,null);
 	}
 
-	public void setPoiPos(Point2D p) {
-		this.poiPos = Coordinate.viewportPointToCanvasPoint(p, transform);
+	public void setPointerPosition(Point2D p) {
+		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
 	}
 
 	public void toggleDijkstraNetwork() {

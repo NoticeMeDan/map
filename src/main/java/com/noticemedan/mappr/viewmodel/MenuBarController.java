@@ -40,7 +40,7 @@ public class MenuBarController {
 				OsmElementProperty.standardColor();
 				break;
 		}
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().repaint();
 	}
 
 	private void toggleReversedBorders() {
