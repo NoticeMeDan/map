@@ -208,7 +208,11 @@ public class CanvasView extends JComponent {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
 			this.g.setPaint(Color.CYAN);
-			this.g.setStroke(new BasicStroke(0.0001f));
+			this.g.setStroke(new BasicStroke(0.00002f));
+			if (e.getRoadType() == Type.ROAD) {
+				this.g.setPaint(Color.magenta);
+				this.g.setStroke(new BasicStroke(0.00001f));
+			}
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes

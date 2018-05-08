@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.model.pathfinding;
 
+import com.noticemedan.mappr.model.map.Type;
 import io.vavr.collection.Vector;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ public class PathNode {
 	private double lon;
 	private double lat;
 	private int maxspeed;
+	private Type roadType;
 	Vector<PathEdge> edges;
 
 	public int degree() {
@@ -21,7 +23,7 @@ public class PathNode {
 	}
 
 	public Shape toShape() {
-		double size = 0.0002;
+		double size = 0.00005;
 		return new Ellipse2D.Double(this.lon - (size/2), this.lat- (size/2), size,size);
 	}
 

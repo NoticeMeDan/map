@@ -107,7 +107,7 @@ public class OsmDao implements DataReader<MapData> {
 
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
-		private int maxspeed = 80;
+		private int maxspeed = 50;
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -166,9 +166,16 @@ public class OsmDao implements DataReader<MapData> {
 						case "highway":
 							type = Type.ROAD;
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
+							if (attributes.getValue("v").equals("motorway_link")) type = Type.MOTORWAY;
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
+							if (attributes.getValue("v").equals("primary_link")) type = Type.PRIMARY;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
+							if (attributes.getValue("v").equals("secondary_link")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
+							if (attributes.getValue("v").equals("tertiary_link")) type = Type.TERTIARY;
+							if (attributes.getValue("v").equals("trunk")) type = Type.TRUNK;
+							if (attributes.getValue("v").equals("trunk_link")) type = Type.TRUNK;
+							if (attributes.getValue("v").equals("unclassified")) type = Type.UNCLASSIFIED;
 							break;
 						case "natural":
 							if (attributes.getValue("v").equals("water")) type = Type.WATER;

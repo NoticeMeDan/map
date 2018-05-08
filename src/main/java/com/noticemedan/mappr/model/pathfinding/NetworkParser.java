@@ -20,8 +20,8 @@ public class NetworkParser {
 			for(PathIterator pi = e.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 				int type = pi.currentSegment(coords);
 				double[] pathCoords = {type, coords[0], coords[1]};
-				PathNode to = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed());
-				if (from == null) from = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed());
+				PathNode to = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed(), e.getType());
+				if (from == null) from = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed(), e.getType());
 				else {
 					network.addPath(from,to);
 					from = to;
@@ -31,11 +31,12 @@ public class NetworkParser {
 		});
 	}
 
-	private PathNode createPathNode(double lon, double lat, int maxspeed) {
+	private PathNode createPathNode(double lon, double lat, int maxspeed, Type type) {
 		return PathNode.builder()
 				.id(this.network.getAllNodes().length())
 				.lon(lon)
 				.lat(lat)
+				.roadType(type)
 				.maxspeed(maxspeed)
 				.edges(Vector.empty())
 				.build();
@@ -46,7 +47,9 @@ public class NetworkParser {
 				e.getType() == Type.PRIMARY ||
 				e.getType() == Type.SECONDARY ||
 				e.getType() == Type.TERTIARY ||
-				e.getType() == Type.ROAD;
+				e.getType() == Type.ROAD ||
+				e.getType() == Type.TRUNK ||
+				e.getType() == Type.UNCLASSIFIED;
 	}
 
 	//Testing purpose

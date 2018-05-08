@@ -22,5 +22,5 @@ public enum Type {
 	PARK,
 	FOREST,
 	ADDRESS,
-	UNKNOWN
+	UNCLASSIFIED, UNKNOWN
 }

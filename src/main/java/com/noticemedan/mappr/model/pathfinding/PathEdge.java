@@ -1,6 +1,7 @@
 package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.util.Coordinate;
 import lombok.Data;
 
 import java.awt.*;
@@ -18,12 +19,19 @@ public class PathEdge {
 		this.v = v;
 		this.w = w;
 		this.weight = computeWeight(v, w);
+		this.speedLimit = v.getMaxspeed();
 	}
 
 	private double computeWeight(PathNode v, PathNode w) {
-		double deltaLon = w.getLon() - v.getLon();
-		double deltaLat = w.getLat() - v.getLat();
-		return Math.sqrt(Math.pow(deltaLon, 2) + Math.pow(deltaLat, 2))/ v.getMaxspeed();
+		Coordinate from = new Coordinate(
+				v.getLon(),
+				Coordinate.canvasLat2Lat(v.getLat())
+		);
+		Coordinate to = new Coordinate(
+				w.getLon(),
+				Coordinate.canvasLat2Lat(w.getLat())
+		);
+		return Coordinate.haversineDistance(from,to,6378);
 	}
 
 	public Shape toShape() {

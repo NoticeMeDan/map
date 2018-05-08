@@ -66,6 +66,14 @@ public class ShortestPathService {
 		if (!this.dijkstra.pathExists(to)) log.info("There exists NO path");
 		else log.info("There exists a path from startNode to endNode");
 		log.info("..............................");
+		double distance = 0;
+		int i = 0;
+		for(PathEdge e : randomSP) {
+			distance += e.getWeight();
+			System.out.println("edge: " + i + ", speed: " + e.getSpeedLimit());
+			i++;
+		}
+		System.out.println("ShortestPath Distance: " + distance + "km");
 		return randomSP;
 	}
 }
