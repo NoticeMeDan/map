@@ -11,12 +11,12 @@ import static org.testng.Assert.assertNotEquals;
 public class TextFormatterTest {
 	@Test
 	public void distanceFormat_AverageCase1() {
-		assertEquals(TextFormatter.formatDistance(55.53623,2), "55,54 km");
+		assertEquals(TextFormatter.formatDistance(55.53623,2), "55.54 km");
 	}
 
 	@Test
 	public void distanceFormat_AverageCase2() {
-		assertEquals(TextFormatter.formatDistance(0.7423467,3), "742,347 m");
+		assertEquals(TextFormatter.formatDistance(0.7423467,3), "742.347 m");
 	}
 
 	@Test
