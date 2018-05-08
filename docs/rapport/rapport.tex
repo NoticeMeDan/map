@@ -119,25 +119,36 @@ Finally, we provide a conclusion (Section~\ref{sec:conclusion}) and reflect on o
 
 \section{Graphical User Interface}\label{sec:ui}
 
-\begin{figure}
-    \centering
-    \includegraphics[height=.35\textheight]{ui.png}
-    \caption{A screenshot of the user interface.}
-    \label{fig:ui}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[height=.35\textheight]{ui.png}
+%     \caption{A screenshot of the user interface.}
+%     \label{fig:ui}
+% \end{figure}
 
 Figure~\ref{fig:ui} shows our user interface when running the program on the latest OSM dataset for Denmark. We divided our user interface in the following sections: ... . We chose this approach because ....
 
 \section{Algorithmic Considerations}\label{sec:algorithms}
+@Emil --> \\
+We were considering using Quadtrees or KDTrees for our data structure. \\
+---
+
+We chose to use RadixTree for searching through addresses.
+
+@Simon --> @Magnus --> \\
+We chose to use A* for searching through shortest path. We wanted to use A*, because it builds on top of Dijkstra we have been educated in. It functions as an 'informed' Dijkstra, so instead of testing all possible routes, it guesses on the shortest way to the next node and tests.\\
+---
+
+In every iteration of the algorithm, it tries to minimize the function determined by a heuristic, that estimates the lenght of the shortest path, together with the distance from the start node to where you currently are in the algorithm.
 
 \section{Technical Description}\label{sec:technical}
 
-\begin{figure}[t!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{uml.png}
-    \caption{Overview of our Architecture. (Can be created automatically from within IntelliJ!)}
-    \label{fig:uml}
-\end{figure}
+% \begin{figure}[t!]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{uml.png}
+%     \caption{Overview of our Architecture. (Can be created automatically from within IntelliJ!)}
+%     \label{fig:uml}
+% \end{figure}
 
 Figure~\ref{fig:uml} gives a broad overview over our software product in terms of a UML diagram. From this diagram we see that the architecture of our product is split up into ... .
 
@@ -166,6 +177,9 @@ We used both unit testing and system testing to find errors in our implementatio
 \section{Conclusion}\label{sec:conclusion}
 
 \section{Reflection}\label{sec:reflection}
+@Simon --> @Magnus --> \\
+We spent a lot of time implementing drawing the map in JavaFX. We realised after three weeks, that the solution would take too long to find a good solution, so we switched to Swing. That process was of course unfortunate as a lot of time had been spent on code that didn't end up in the final result. We learned a lot during the process.\\
+---
 
 \appendix
 
@@ -175,41 +189,52 @@ We used both unit testing and system testing to find errors in our implementatio
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{l c c l}
-        \textbf{Navn} & \textbf{Mail} & \textbf{Telefon} & \textbf{MBTI} \\ \hline
-        Person A & \texttt{a@itu.dk} & 10101010 & ENFB--Champion \\
-        Person B & \texttt{b@itu.dk} & 10101010 & INFJ--Counselor \\
-        Person C & \texttt{c@itu.dk} & 10101010 & ENFJ--Teacher \\
-        Person D & \texttt{d@itu.dk} & 10101010 & ESTP--Promoter \\
-        Person E & \texttt{e@itu.dk} & 10101010 & INTJ--Mastermind \\
+    \begin{tabular}{l c c l l}
+        \textbf{Navn} & \textbf{Mail} & \textbf{DoB} & \textbf{MBTI} & \textbf{Role} \\ \hline
+        Elias Jørgensen & \texttt{ejoe@itu.dk} & 301098 & ISTJ & System-manager\\
+        Simon Høiberg & \texttt{shoe@itu.dk} & 030288 & ENTJ & Project Manager \\
+        Emil Bartholdy & \texttt{emba@itu.dk} & 270193 & ENTP & HR manager\\
+        Magnus Arnild & \texttt{mips@itu.dk} & 090594 & INTP & Idea - and concept developer\\
+        Mathias Egekvist & \texttt{maeg@itu.dk} & 61608483 & ENTP & Scrum master \\
     \end{tabular}
 \end{table}
 
 \subsection{Organisering}
 
-\paragraph{Planlægning af arbejdet}
-Vi mødes som udgangspunkt 3 dage om ugen, for at arbejde sammen. Her aftaler vi og uddelegerer arbejde, der evt. skal laves hjemme.
-Dagene hvor vi mødes starter med et møde, og fortsætter derefter med dagens arbejde.
-Vi forventer af hinanden at vi arbejder i de aftalte tidsrum, og så vidt muligt holder det sociale adskilt derfra. Pauser styres individuelt.
-Vi regner med at bruge mindst 20 timer om ugen pr. person på projektarbejde.
+\paragraph{Planning of work}
+We meet twice a week to plan work and co-work if need be. We plan who is in charge of what for next time. We have our primary communication channel on Slack.
+We start out with a SCRUM-meeting going through what has been made, and what are we going to do next.
+We all agree on a relaxed social tone and expect each member to be able to say, if they want more focus and quiet time for working.
 
-\paragraph{Mødetidspunkter}
+If any conflicts should arise we have chosen to use:
+Olsen & Pedersens "grundmodel for konfliktløsning".
+
+We expect to work the hours set aside for it whether at home or on sight. Pauses is controlled by the individuel. If need arises we use pair programming and write it in pull requests.
+
+We expect to use at least 15 hours a week on it pr. person dependant on the individuels experience.
+
+\paragraph{Meeting time}
 
 \begin{itemize}
-    \item Mandag: 10:00--16:00
-    \item Tirsdag: 10:00--16:00
-    \item Onsdag: selvstændigt arbejde
-    \item Torsdag: selvstændigt arbejde
-    \item Fredag: 10:00--16:00
-    \item Lørdag: selvstændigt arbejde (hold weekend!)
-    \item Søndag: selvstændigt arbejde (hold weekend!)
+    \item Tuesday: 09:00--16:00
+    \item Thursday: 09:00--16:00
+\end{itemize}
+Magnus and Mathias has special cases on Thursday, as Magnus has to leave at 13, and Mathias some times work from home. \\
+Everybody has accepted the above.
+
+\paragraph{Documentation and tools}
+We want to document our progress through the process using:
+\begin{itemize}
+    \item Github wiki for log book and meeting minutes: Writing the decisions and considerations in your work.
 \end{itemize}
 
-\paragraph{Dokumentation og værktøjer}
-Vi ønsker at arbejde på at dokumentere alt løbende i processen. Dette vil vi gøre via:
+\paragraph{Generel tools}
+We expect to use these programming tools:
 \begin{itemize}
-    \item Individuel logbog: Vi nedskriver de beslutninger og overvejelser ned som man støder på i sit individuelle arbejde.
-    \item Referat til hvert møde: Dette referat skal dokumentere hvad vi har talt om, hvor vi står i processen, hvor vi skal hen og de aftaler og beslutninger vi har lavet.
+    \item CI (Travis)
+    \item SonarQube
+    \item Vavr & Project Lombok
+    \item Code Review
 \end{itemize}
 
 \section{Development Diary}
