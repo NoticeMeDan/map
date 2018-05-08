@@ -53,9 +53,11 @@ public class ShortestPathService {
 		return dijkstra.derivePath(to);
 	}
 	private Vector<PathEdge> getRandomSP() {
-		Random random = new Random();
+		/*Random random = new Random();
 		PathNode from = this.network.getAllNodes().get(random.nextInt(this.network.getAllNodes().size() - 1));
-		PathNode to = this.network.getAllNodes().get(random.nextInt(this.network.getAllNodes().size() - 1));
+		PathNode to = this.network.getAllNodes().get(random.nextInt(this.network.getAllNodes().size() - 1));*/
+		PathNode from = this.network.getAllNodes().get(31464);
+		PathNode to = this.network.getAllNodes().get(29395);
 		Vector<PathEdge> randomSP = getShortestPath(from, to);
 		log.info("..............................");
 		log.info("Random Dijkstra nodes created:");

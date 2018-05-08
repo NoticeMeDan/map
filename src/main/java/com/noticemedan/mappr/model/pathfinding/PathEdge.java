@@ -23,7 +23,7 @@ public class PathEdge {
 	private double computeWeight(PathNode v, PathNode w) {
 		double deltaLon = w.getLon() - v.getLon();
 		double deltaLat = w.getLat() - v.getLat();
-		return Math.sqrt(Math.pow(deltaLon, 2) + Math.pow(deltaLat, 2));
+		return Math.sqrt(Math.pow(deltaLon, 2) + Math.pow(deltaLat, 2))/ v.getMaxspeed();
 	}
 
 	public Shape toShape() {

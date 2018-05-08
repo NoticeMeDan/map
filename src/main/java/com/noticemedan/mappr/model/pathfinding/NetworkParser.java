@@ -20,8 +20,8 @@ public class NetworkParser {
 			for(PathIterator pi = e.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 				int type = pi.currentSegment(coords);
 				double[] pathCoords = {type, coords[0], coords[1]};
-				PathNode to = createPathNode(pathCoords[1], pathCoords[2]);
-				if (from == null) from = createPathNode(pathCoords[1],pathCoords[2]);
+				PathNode to = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed());
+				if (from == null) from = createPathNode(pathCoords[1], pathCoords[2], e.getMaxspeed());
 				else {
 					network.addPath(from,to);
 					from = to;
@@ -31,11 +31,12 @@ public class NetworkParser {
 		});
 	}
 
-	private PathNode createPathNode(double lon, double lat) {
+	private PathNode createPathNode(double lon, double lat, int maxspeed) {
 		return PathNode.builder()
 				.id(this.network.getAllNodes().length())
 				.lon(lon)
 				.lat(lat)
+				.maxspeed(maxspeed)
 				.edges(Vector.empty())
 				.build();
 	}
