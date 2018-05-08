@@ -1,6 +1,7 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
 import com.noticemedan.mappr.model.user.FavoritePoi;
+import com.noticemedan.mappr.viewmodel.MainViewController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,6 +21,8 @@ public class FavoritePoiPaneController {
 	@FXML StackPane noFavoritesYetPane;
 	@Setter
 	ObservableList<FavoritePoi> favoritePois;
+	@Setter
+	MainViewController mainViewController;
 
 	public void initialize() {
 		closeFavoritePoiPane();
@@ -41,7 +44,10 @@ public class FavoritePoiPaneController {
 			}
 		});
 
-		favoritePoiPaneCloseButton.setOnAction(event -> closeFavoritePoiPane());
+		favoritePoiPaneCloseButton.setOnAction(event -> {
+			closeFavoritePoiPane();
+			mainViewController.pushCanvas();
+		});
 	}
 
 	public void openFavoritePane() {

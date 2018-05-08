@@ -86,7 +86,9 @@ public class MainViewController {
 		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
 		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
 		insertOSMPane();
-
+		favoritePoiPaneController.setMainViewController(this);
+		routePaneController.setMainViewController(this);
+		searchPaneController.setMainViewController(this);
 		eventListeners();
 	}
 
@@ -103,7 +105,7 @@ public class MainViewController {
 		stage.show();
 	}
 
-	private void stageListeners() {
+	private void stageListeners() { // This enables canvas resizing
 		ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
 			width = (int) stage.getWidth() - sidePaneWidth;
 			height = (int) stage.getHeight();
@@ -132,9 +134,22 @@ public class MainViewController {
 
 	private void eventListeners() {
 		this.mouseHandler = new MouseHandler(this);
-		searchFieldImitator.setOnMouseClicked(event -> searchPaneController.openSearchPane());
-		favoriteButton.setOnAction(event -> favoritePoiPaneController.openFavoritePane());
-		routeButton.setOnAction(event -> routePaneController.openRoutePane());
+		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvas));
+
+		searchFieldImitator.setOnMouseClicked(event -> {
+			searchPaneController.openSearchPane();
+			pushCanvas();
+		});
+
+		favoriteButton.setOnAction(event -> {
+			favoritePoiPaneController.openFavoritePane();
+			pushCanvas();
+		});
+
+		routeButton.setOnAction(event -> {
+			routePaneController.openRoutePane();
+			pushCanvas();
+		});
 
 		swingNode.addEventHandler(MouseEvent.ANY, new ClickDragHandler(
 				event -> poiBoxViewController.closePoiBox(),
@@ -153,5 +168,23 @@ public class MainViewController {
 		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLat2Lat(scalaBarFirstPoint.getY()));
 		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLat2Lat(scalaBarSecondPoint.getY()));
 		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
+	}
+
+	public void pushCanvas() {
+		if(!sidePaneOpen) {
+			AnchorPane.setLeftAnchor(osmPaneContainer, 250d);
+			sidePaneWidth = 250;
+			sidePaneOpen = !sidePaneOpen;
+			// Annoying hack to make canvas actually resize. Tried to call nodeResize directly here
+			// but for some reason it does not work.
+			stage.setWidth(stage.getWidth()+1);
+			stage.setWidth(stage.getWidth()-1);
+		} else {
+			AnchorPane.setLeftAnchor(osmPaneContainer,0d);
+			sidePaneWidth = 0;
+			sidePaneOpen = !sidePaneOpen;
+			stage.setWidth(stage.getWidth()+1);
+			stage.setWidth(stage.getWidth()-1);
+		}
 	}
 }
