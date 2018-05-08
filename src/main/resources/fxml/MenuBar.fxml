@@ -23,8 +23,8 @@
 
 				<Menu mnemonicParsing="false" text="Farvestil">
 					<items>
-						<MenuItem fx:id="standardColour" mnemonicParsing="false" text="Standard" />
-						<MenuItem fx:id="colourBlind" mnemonicParsing="false" text="Farveblind" />
+						<MenuItem fx:id="standardColor" mnemonicParsing="false" text="Standard" />
+						<MenuItem fx:id="colorBlind" mnemonicParsing="false" text="Farveblind" />
 					</items>
 				</Menu>
 			</items>

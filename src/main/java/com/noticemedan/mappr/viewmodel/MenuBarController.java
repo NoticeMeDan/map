@@ -9,8 +9,8 @@ public class MenuBarController {
 	@FXML MenuItem menuShowReversedBorders;
 	@FXML MenuItem menuShowDijkstraNetwork;
 	@FXML MenuItem menuShowShortestPath;
-	@FXML MenuItem colourBlind;
-	@FXML MenuItem standardColour;
+	@FXML MenuItem colorBlind;
+	@FXML MenuItem standardColor;
 
 	private boolean showFPS = false;
 	private boolean showReversedBorders = false;
@@ -26,18 +26,18 @@ public class MenuBarController {
 		menuShowReversedBorders.setOnAction(event -> toggleReversedBorders());
 		menuShowDijkstraNetwork.setOnAction(event -> toggleDijkstra());
 		menuShowShortestPath.setOnAction(event -> toggleShortestPath());
-		colourBlind.setOnAction(event -> colourProfile("colourBlind"));
-		standardColour.setOnAction(event -> colourProfile("standard"));
+		colorBlind.setOnAction(event -> colorProfile("colorBlind"));
+		standardColor.setOnAction(event -> colorProfile("standard"));
 	}
 
-	private void colourProfile(String colourProfile) {
-		switch (colourProfile) {
-			case "colourBlind":
+	private void colorProfile(String colorProfile) {
+		switch (colorProfile) {
+			case "colorBlind":
 				OsmElementProperty.colorBlind();
 				break;
 
 			default:
-				OsmElementProperty.standardColour();
+				OsmElementProperty.standardColor();
 				break;
 		}
 		MainViewController.getCanvasView().repaint();

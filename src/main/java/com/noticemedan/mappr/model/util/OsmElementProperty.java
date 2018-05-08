@@ -32,7 +32,7 @@ public class OsmElementProperty {
 		typeColors.put(Type.UNKNOWN, new Color(230,0,160));
 	}
 
-	public static void standardColour() {
+	public static void standardColor() {
 		typeColors.put(Type.COASTLINE, new Color(249, 245, 237));
 		typeColors.put(Type.WATER, new Color(179, 227, 245));
 
