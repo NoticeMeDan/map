@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
@@ -37,7 +38,6 @@ public class CanvasView extends JComponent {
 	private boolean showFPS = false;
 
     //Performance test fields
-	//TODO @emil delete when finished performance tuning
 	public double timeDraw;
 	public double timeRangeSearch;
 	@Setter @Getter
@@ -46,6 +46,9 @@ public class CanvasView extends JComponent {
 	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
+	@Setter @Getter
+	private boolean logNearestNeighbor = false;
+
 	private DomainFacade domain;
 
 	//ShortestPath
@@ -217,6 +220,10 @@ public class CanvasView extends JComponent {
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
+
+    public void logNearestNeighbor(Coordinate queryPoint) {
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+	}
 
     public void toggleAntiAliasing() {
         antiAliasing = !antiAliasing;

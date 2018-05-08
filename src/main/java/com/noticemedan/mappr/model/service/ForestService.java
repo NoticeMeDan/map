@@ -3,6 +3,7 @@ package com.noticemedan.mappr.model.service;
 import com.noticemedan.mappr.model.kdtree.ForestInterface;
 import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +90,25 @@ public class ForestService implements ForestInterface {
 	}
 
 	@Override
-	public Element nearestNeighbor(double x, double y) {
-		throw new RuntimeException("nearestNeighbor() not implemented yet.");
+	public Element nearestNeighbor(Coordinate queryPoint, double zoomLevel) {
+		int excludeTrees = 0;
+
+		if (zoomLevel > 0) excludeTrees = 4;
+		if (zoomLevel > 0.5) excludeTrees = 3;
+		if (zoomLevel > 1) excludeTrees = 2;
+		if (zoomLevel > 15) excludeTrees = 1;
+		if (zoomLevel > 50) excludeTrees = 0;
+
+		Element currentNN = new Element();
+		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+
+		//Get NN from each tree, than calculate NN from those elements
+		for (int i = 0; i < trees.length-excludeTrees; i++) {
+			Element candidate = trees[i].nearestNeighbor(queryPoint);
+			double distanceCurrentNNToQueryPoint = Coordinate.euclidianDistance(currentNN.getAvgPoint(), queryPoint);
+			double distanceCandidateToQueryPoint = Coordinate.euclidianDistance(candidate.getAvgPoint(), queryPoint);
+			if (distanceCandidateToQueryPoint < distanceCurrentNNToQueryPoint) currentNN = candidate;
+		}
+		return currentNN;
 	}
 }

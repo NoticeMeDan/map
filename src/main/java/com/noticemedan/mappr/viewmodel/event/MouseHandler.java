@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.viewmodel.CanvasView;
 import com.noticemedan.mappr.viewmodel.MainViewController;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,6 +13,7 @@ import java.awt.geom.Point2D;
 
 import static java.lang.Math.pow;
 
+@Slf4j
 public class MouseHandler extends MouseAdapter {
     private CanvasView canvas;
     @Getter private Point2D lastMousePosition;
@@ -51,9 +53,12 @@ public class MouseHandler extends MouseAdapter {
 
 	@Override
     public void mouseMoved(MouseEvent e) {
-        Point2D modelCoords = canvas.toModelCoords(e.getPoint());
+		Point2D currentHoverPoint = Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform());
+		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
+		canvas.logNearestNeighbor(currentHoverCoordinate);
 		mainViewController.updateScalaBar();
-    }
+		//log.info("" + Coordinate.viewportPoint2canvasPoint(e.getPoint(), canvas.getTransform()));
+	}
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {

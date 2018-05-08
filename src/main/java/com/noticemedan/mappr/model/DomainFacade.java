@@ -59,6 +59,7 @@ public class DomainFacade {
 	public List<Element> getCoastLines() { return this.forestService.getCoastlines(); }
 	public List<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public List<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
+	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
