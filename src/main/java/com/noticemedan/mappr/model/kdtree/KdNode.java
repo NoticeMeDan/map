@@ -8,15 +8,16 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class KDTreeNode {
+public class KdNode {
 	private double splitValue;
-	private KDTreeNode leftChild;
-	private KDTreeNode rightChild;
+	private Element splitElement;
+	private KdNode leftChild;
+	private KdNode rightChild;
 	private int depth;
 	private Element[] elements;
 	private String binaryID = UUID.randomUUID().toString();
 
-	public KDTreeNode(Element[] points, int depth) {
+	public KdNode(Element[] points, int depth) {
 		this.elements = points;
 		this.depth = depth;
 	}

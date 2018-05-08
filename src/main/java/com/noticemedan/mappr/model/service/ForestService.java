@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.model.service;
 
 import com.noticemedan.mappr.model.kdtree.ForestInterface;
-import com.noticemedan.mappr.model.kdtree.KDTree;
+import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.util.Rect;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 public class ForestService implements ForestInterface {
-	private KDTree trees[];
+	private KdTree trees[];
 	@Getter
 	private List<Element> coastlines;
 
@@ -64,9 +64,9 @@ public class ForestService implements ForestInterface {
 		elementArray[3] = zoom3.toArray(new Element[0]);
 		elementArray[4] = zoom4.toArray(new Element[0]);
 
-		this.trees = new KDTree[elementArray.length];
+		this.trees = new KdTree[elementArray.length];
 		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KDTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
+			this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
 		}
 	}
 
