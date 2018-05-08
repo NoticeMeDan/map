@@ -138,11 +138,19 @@ public class CanvasView extends JComponent {
 		paintByType(result,Type.SAND, getLowLevelStroke());
 		paintByType(result,Type.FOOTWAY, new BasicStroke(0.00002f));
 		paintByType(result,Type.ROAD, new BasicStroke(0.00004f));
+		paintByType(result,Type.FOOTWAY, getLowLevelStroke());
+		paintByType(result,Type.TRACK, getLowLevelStroke());
+		paintByType(result,Type.SERVICE, getLowLevelStroke());
+		paintByType(result,Type.RACEWAY, getLowLevelStroke());
+		paintByType(result,Type.CYCLEWAY, getLowLevelStroke());
+		paintByType(result,Type.PATH, getLowLevelStroke());
+		paintByType(result,Type.UNCLASSIFIED, getLowLevelStroke());
 		paintByType(result,Type.TERTIARY, getHighLevelStroke());
 		paintByType(result,Type.SECONDARY, getHighLevelStroke());
 		paintByType(result,Type.PRIMARY, getMediumLevelStroke());
 		paintByType(result,Type.HIGHWAY,new BasicStroke(0.0001f));
 		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
+
 	}
 
 	private void paintClosedElements (List<Element> result, BasicStroke stroke) {

@@ -190,6 +190,14 @@ public class OsmDao implements DataReader, Supplier<MapData> {
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
+							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
+							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
+							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
+							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;
+							if (attributes.getValue("v").equals("raceway")) type = Type.RACEWAY;
+							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
+							if (attributes.getValue("v").equals("path")) type = Type.PATH;
+							if (attributes.getValue("v").equals("unclassified")) type = Type.UNCLASSIFIED;
 							break;
 						case "natural":
 							if (attributes.getValue("v").equals("water")) type = Type.WATER;

@@ -18,6 +18,12 @@ public class OsmElementProperty {
 		typeColors.put(Type.GARDEN, new Color(209, 236, 188));
 		typeColors.put(Type.FOREST, new Color(171, 220, 160));
 
+		typeColors.put(Type.TRACK, new Color(201,201,201));
+		typeColors.put(Type.SERVICE, new Color(201,201,201));
+		typeColors.put(Type.RACEWAY, new Color(201,201,201));
+		typeColors.put(Type.CYCLEWAY, new Color(201,201,201));
+		typeColors.put(Type.UNCLASSIFIED, new Color(201,201,201));
+		typeColors.put(Type.PATH, new Color(201,201,201));
 
 		typeColors.put(Type.BUILDING, new Color(238,234,226));
 

@@ -47,6 +47,13 @@ public class ForestService implements ForestInterface {
 				case PARK:
 				case ROAD:
 				case FOREST:
+				case FOOTWAY:
+				case TRACK:
+				case SERVICE:
+				case RACEWAY:
+				case CYCLEWAY:
+				case PATH:
+				case UNCLASSIFIED:
 					zoom3.add(osmElement);
 					break;
 				case BUILDING:

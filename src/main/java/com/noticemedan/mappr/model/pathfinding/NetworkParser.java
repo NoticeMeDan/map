@@ -4,9 +4,11 @@ import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import io.vavr.collection.Vector;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.geom.PathIterator;
 
+@Slf4j
 public class NetworkParser {
 
 	@Getter
@@ -27,8 +29,10 @@ public class NetworkParser {
 					from = to;
 				}
 			}
-
 		});
+
+		log.info("Dijkstra node size: " + network.getAllNodes().length());
+		log.info("Dijkstra edge size: " + network.getAllEdges().length());
 	}
 
 	private PathNode createPathNode(double lon, double lat) {
@@ -45,7 +49,14 @@ public class NetworkParser {
 				e.getType() == Type.PRIMARY ||
 				e.getType() == Type.SECONDARY ||
 				e.getType() == Type.TERTIARY ||
-				e.getType() == Type.ROAD;
+				e.getType() == Type.ROAD ||
+				e.getType() == Type.FOOTWAY ||
+				e.getType() == Type.TRACK ||
+				e.getType() == Type.SERVICE ||
+				e.getType() == Type.RACEWAY ||
+				e.getType() == Type.CYCLEWAY ||
+				e.getType() == Type.PATH ||
+				e.getType() == Type.UNCLASSIFIED;
 	}
 
 	//Testing purpose
