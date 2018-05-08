@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml"
+	  fx:id="routePane"
+	  fx:controller="com.noticemedan.mappr.viewmodel.RoutePaneController"
+	  prefWidth="250.0">
+	<stylesheets>
+		<URL value="@../css/route-search.css" />
+	</stylesheets>
+	<fx:define>
+		<ToggleGroup fx:id="transitMethod"/>
+	</fx:define>
+	<Pane prefHeight="135.0" prefWidth="200.0">
+		<Button fx:id="routePaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
+		<TextField fx:id="searchStartPointAddressField" styleClass="greenTextField" promptText="Fra:" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="183.0" />
+		<TextField fx:id="searchEndPointAddressField" styleClass="greenTextField" promptText="Til:" layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="183.0" />
+		<ToggleButton fx:id="routeCarToggleButton" toggleGroup="$transitMethod" selected="true" layoutX="16.0" layoutY="98"/>
+		<ToggleButton fx:id="routeWalkToggleButton" toggleGroup="$transitMethod" layoutX="60" layoutY="95"/>
+		<ToggleButton fx:id="routeBicycleToggleButton" toggleGroup="$transitMethod" layoutX="97" layoutY="96"/>
+	</Pane>
+	<Pane fx:id="routeInfoPane" prefHeight="55.0" prefWidth="200.0">
+		<Label fx:id="timeLabel" text="TID" layoutX="14.0" layoutY="10.0" />
+		<Label fx:id="distanceLabel" text="AFSTAND" layoutX="120.0" layoutY="10.0" />
+		<Label fx:id="estimatedTimeLabel" text="1t 15m" layoutX="14.0" layoutY="27.0" />
+		<Label fx:id="estimatedDistanceLabel" text="200km" layoutX="120.0" layoutY="27.0" />
+	</Pane>
+	<ListView fx:id="navigationInstructionsListView" VBox.vgrow="ALWAYS" />
+	<ListView fx:id="routeSearchResultsListView" VBox.vgrow="ALWAYS" />
+</VBox>

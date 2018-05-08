@@ -1,0 +1,47 @@
+/*-------------------------------------------- */
+/* NAVIGATION ACTION ICONS
+/*-------------------------------------------- */
+
+.roundabout {
+	-fx-background-image: url("../graphics/roundabout.png");
+	-fx-background-size: 20 auto;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.turnLeft {
+	-fx-background-image: url("../graphics/upleft.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.turnRight {
+	-fx-background-image: url("../graphics/upright.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.straight {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 13 auto;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.destination {
+	-fx-background-image: url("../graphics/check.png");
+	-fx-background-size: 25 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+/*-------------------------------------------- */
+/* NAVIGATION ACTION
+/*-------------------------------------------- */
+
+#distanceToNextNavigationAction {
+	-fx-font-size: 15;
+}
+
+

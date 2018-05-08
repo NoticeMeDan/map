@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml"
+	  prefWidth="250.0"
+	  fx:controller="com.noticemedan.mappr.viewmodel.SearchPaneController"
+	  fx:id="searchPane">
+	<HBox prefHeight="55.0" prefWidth="200.0">
+		<Pane prefHeight="100.0" prefWidth="300.0">
+			<TextField fx:id="searchAddressField" styleClass="greenTextField" layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="183.0" />
+			<Button fx:id="searchPaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
+		</Pane>
+	</HBox>
+	<ListView fx:id="addressSearchResultsListView" VBox.vgrow="ALWAYS" />
+</VBox>
