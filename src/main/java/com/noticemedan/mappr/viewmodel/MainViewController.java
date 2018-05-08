@@ -99,13 +99,12 @@ public class MainViewController {
 		favoriteButton.setOnAction(event -> favoritePoiPaneController.openFavoritePane());
 		routeButton.setOnAction(event -> routePaneController.openRoutePane());
 
-		//TODO: @Emil Point2D or Coordinate? Save proper coordinates (real lat lon)
 		swingNode.addEventHandler(MouseEvent.ANY, new ClickDragHandler(
 				event -> poiBoxViewController.closePoiBox(),
 				event -> poiBoxViewController.openPoiBox(
 						new Coordinate(
-								mouseHandler.getLastMousePositionModelCoords().getX(),
-								mouseHandler.getLastMousePositionModelCoords().getY()
+								mouseHandler.getLastMousePositionCanvasCoords().getX(),
+								Coordinate.canvasLat2Lat(mouseHandler.getLastMousePositionCanvasCoords().getY())
 						)
 				)
 		));
