@@ -1,6 +1,7 @@
 package com.noticemedan.mappr.viewmodel.event;
 
 import com.noticemedan.mappr.viewmodel.CanvasView;
+import com.noticemedan.mappr.viewmodel.MainViewController;
 import lombok.Getter;
 
 import java.awt.event.MouseAdapter;
@@ -14,14 +15,16 @@ public class MouseHandler extends MouseAdapter {
     private CanvasView canvas;
     @Getter private Point2D lastMousePosition;
     @Getter private Point2D lastMousePositionModelCoords;
+    private MainViewController mainViewController;
 
 
-    public MouseHandler(CanvasView c) {
-        canvas = c;
+    public MouseHandler(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    	canvas = mainViewController.getCanvasView();
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
         canvas.addMouseMotionListener(this);
-        c.toggleAntiAliasing();
+        canvas.toggleAntiAliasing();
     }
 
     @Override
@@ -49,6 +52,7 @@ public class MouseHandler extends MouseAdapter {
 	@Override
     public void mouseMoved(MouseEvent e) {
         Point2D modelCoords = canvas.toModelCoords(e.getPoint());
+		mainViewController.updateScalaBar();
     }
 
     @Override

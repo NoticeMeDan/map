@@ -6,6 +6,7 @@ import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Node;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -114,19 +115,17 @@ public class OsmDao implements DataReader {
 					double minLon = Double.parseDouble(attributes.getValue("minlon"));
 					double maxLat = Double.parseDouble(attributes.getValue("maxlat"));
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
-					double avgLat = minLat + (maxLat - minLat) / 2;
-					lonFactor = Math.cos(avgLat / 180 * Math.PI);
-					Entities.setMinLon(minLon * lonFactor);
-					Entities.setMaxLon(maxLon * lonFactor);
-					Entities.setMaxLat(-maxLat);
-					Entities.setMinLat(-minLat);
+					Entities.setMinLon(minLon);
+					Entities.setMaxLon(maxLon);
+					Entities.setMinLat(Coordinate.lat2CanvasLat(minLat));
+					Entities.setMaxLat(Coordinate.lat2CanvasLat(maxLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
 					currentNodeID = id;
-					idToNode.put(id, lonFactor * lon, -lat);
+					idToNode.put(id, lon, Coordinate.lat2CanvasLat(lat));
 					break;
 				case "way":
 					this.osmWay = Vector.empty();

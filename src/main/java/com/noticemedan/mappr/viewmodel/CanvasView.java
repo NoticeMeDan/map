@@ -22,6 +22,7 @@ import java.util.List;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
+	@Getter
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
     private Rectangle2D viewRect;

@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.TextFormatter;
 import com.noticemedan.mappr.viewmodel.event.ClickDragHandler;
 import com.noticemedan.mappr.viewmodel.event.KeyboardHandler;
 import com.noticemedan.mappr.viewmodel.event.MouseHandler;
@@ -16,9 +17,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import lombok.Getter;
 
 import java.awt.Dimension;
+import java.awt.geom.Point2D;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 
@@ -34,6 +37,10 @@ public class MainViewController {
 	@FXML Button routeButton;
 	@FXML Button favoriteButton;
 	@FXML Pane searchFieldImitator;
+
+	//scalaBar
+	@FXML
+	Text scalaBarDistanceText;
 
 	// OSM
 	@FXML Pane osmPaneContainer;
@@ -80,7 +87,6 @@ public class MainViewController {
 		canvasView.pan(-Entities.getMinLon(), -Entities.getMaxLat());
 		canvasView.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
 		canvasView.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
-		this.mouseHandler = new MouseHandler(canvasView);
 		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvasView));
 
 		SwingUtilities.invokeLater(() -> swingNode.setContent(canvasView));
@@ -88,6 +94,7 @@ public class MainViewController {
 	}
 
 	private void eventListeners() {
+		this.mouseHandler = new MouseHandler(this);
 		searchFieldImitator.setOnMouseClicked(event -> searchPaneController.openSearchPane());
 		favoriteButton.setOnAction(event -> favoritePoiPaneController.openFavoritePane());
 		routeButton.setOnAction(event -> routePaneController.openRoutePane());
@@ -102,5 +109,13 @@ public class MainViewController {
 						)
 				)
 		));
+	}
+
+	public void updateScalaBar() {
+		Point2D scalaBarFirstPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(0,0), canvasView.getTransform());
+		Point2D scalaBarSecondPoint = Coordinate.viewportPoint2canvasPoint(new Point2D.Double(130,0), canvasView.getTransform());
+		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLat2Lat(scalaBarFirstPoint.getY()));
+		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLat2Lat(scalaBarSecondPoint.getY()));
+		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
 	}
 }
