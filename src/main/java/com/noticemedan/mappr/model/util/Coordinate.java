@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.model.util;
 
+import io.vavr.control.Try;
 import lombok.Data;
 
 import java.awt.geom.AffineTransform;
@@ -60,12 +61,8 @@ public class Coordinate extends Point2D implements Serializable {
 	 * @return					The corrosponding point in canvas lat/lon.
 	 */
 	public static Point2D viewportPoint2canvasPoint(Point2D viewportPoint, AffineTransform transform) {
-		try {
-			return transform.inverseTransform(viewportPoint, null);
-		} catch (NoninvertibleTransformException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return Try.of( () -> transform.inverseTransform(viewportPoint, null))
+				.getOrNull();
 	}
 
 	/**

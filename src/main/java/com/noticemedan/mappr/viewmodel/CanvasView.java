@@ -216,7 +216,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private void performanceTest() {
-		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea).size());
+		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
@@ -252,10 +252,10 @@ public class CanvasView extends JComponent {
 		Point2D p1Altered = new Point2D.Double(p1.getX() + borderW, p1.getY() + borderW);
 		Point2D p2Altered = new Point2D.Double(p2.getX() - borderW, p2.getY() - borderW);
 
-		double x1 = (showReversedBorders) ? toModelCoords(p1Altered).getX() : toModelCoords(p1).getX() - 0.02;
-		double y1 = (showReversedBorders) ? toModelCoords(p1Altered).getY() : toModelCoords(p1).getY() - 0.02;
-		double x2 = (showReversedBorders) ? toModelCoords(p2Altered).getX() : toModelCoords(p2).getX() + 0.02;
-		double y2 = (showReversedBorders) ? toModelCoords(p2Altered).getY() : toModelCoords(p2).getY() + 0.02;
+		double x1 = (showReversedBorders) ? Coordinate.viewportPoint2canvasPoint(p1Altered, transform).getX() : Coordinate.viewportPoint2canvasPoint(p1, transform).getX() - 0.02;
+		double y1 = (showReversedBorders) ? Coordinate.viewportPoint2canvasPoint(p1Altered, transform).getY() : Coordinate.viewportPoint2canvasPoint(p1, transform).getY() - 0.02;
+		double x2 = (showReversedBorders) ? Coordinate.viewportPoint2canvasPoint(p2Altered, transform).getX() : Coordinate.viewportPoint2canvasPoint(p2, transform).getX() + 0.02;
+		double y2 = (showReversedBorders) ? Coordinate.viewportPoint2canvasPoint(p2Altered, transform).getY() : Coordinate.viewportPoint2canvasPoint(p2, transform).getY() + 0.02;
 
 		return new Rect(x1, y1, x2, y2);
 	}
@@ -301,12 +301,7 @@ public class CanvasView extends JComponent {
 	}
 
 	public void setPoiPos(Point2D p) {
-		this.poiPos = toModelCoords(p);
-	}
-
-	public Point2D toModelCoords(Point2D p) {
-		return Try.of( () -> transform.inverseTransform(p, null))
-				.getOrNull();
+		this.poiPos = Coordinate.viewportPoint2canvasPoint(p, transform);
 	}
 
 	public void toggleDijkstraNetwork() {
