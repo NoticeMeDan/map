@@ -3,6 +3,7 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
@@ -59,6 +60,7 @@ public class CanvasView extends JComponent {
 			this.domain = domainFacade;
 			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
+      OsmElementProperty.standardColor();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
@@ -126,7 +128,7 @@ public class CanvasView extends JComponent {
 
 	private void drawCoastlines() {
 		this.domain.getCoastLines().forEach(c -> {
-			this.g.setPaint(c.getColor());
+			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
 	}
@@ -194,7 +196,7 @@ public class CanvasView extends JComponent {
 
 	private void paintOsmElement(BasicStroke stroke, Element element) {
 		this.g.setStroke(stroke);
-		this.g.setPaint(element.getColor());
+		this.g.setPaint(OsmElementProperty.deriveColorFromType(element.getType()));
 		if (element.getShape().intersects(this.viewRect)) {
 			if (isShapeOpen) {
 				this.g.draw(element.getShape());
