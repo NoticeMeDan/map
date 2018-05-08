@@ -5,6 +5,7 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
+import io.vavr.control.Try;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,13 +57,7 @@ public class Network {
 	 * @return PathNode
 	 */
 	public PathNode getNodeFromCoords(Coordinate c) {
-		Integer getId;
-		try {
-			getId = this.nodeFromCoordMap.get(c).get();
-		} catch (Exception e) {
-			return null;
-		}
-		return this.allNodes.get(getId);
+		return Try.of(() -> this.allNodes.get(this.nodeFromCoordMap.get(c).get())).getOrNull();
 	}
 
 	private void addPathNode(PathNode pathNode) {
