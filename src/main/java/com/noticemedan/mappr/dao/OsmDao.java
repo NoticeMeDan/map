@@ -13,6 +13,7 @@ import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
+import javafx.concurrent.Task;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -34,10 +35,20 @@ import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao implements DataReader<MapData> {
+public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
+	private Path input;
+
+	public OsmDao(Path input) {
+		this.input = input;
+	}
+
+	@Override
+	protected MapData call() throws Exception {
+		return read(this.input);
+	}
 
 	@Override
 	public MapData read(Path input) throws IOException {
