@@ -34,7 +34,7 @@ public class CanvasView extends JComponent {
 	private boolean isShapeOpen;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
-	private Point2D poiPos;
+	private Point2D pointerPosition;
 	private BufferedImage pointer;
 
     //Performance test fields
@@ -89,7 +89,7 @@ public class CanvasView extends JComponent {
 
 		if (this.showNetwork) drawNetwork();
 		if (this.showRandomSP) drawShortestPath(randomSP);
-		if (poiPos != null) drawPoi();
+		if (pointerPosition != null) drawPoi();
 
 		performanceTest();
 
@@ -268,20 +268,20 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPoi() {
-		if (this.poiPos == null) return;
+		if (this.pointerPosition == null) return;
 		double size = this.viewRect.getWidth() * 0.0001;
 		double width = pointer.getWidth() * size;
 		double height = pointer.getHeight() * size;
 
 		AffineTransform at = new AffineTransform();
-		at.translate(this.poiPos.getX() - width/2,this.poiPos.getY()-height);
+		at.translate(this.pointerPosition.getX() - width/2,this.pointerPosition.getY()-height);
 		at.scale(size,size);
 
 		this.g.drawImage(this.pointer,at,null);
 	}
 
-	public void setPoiPos(Point2D p) {
-		this.poiPos = toModelCoords(p);
+	public void setPointerPosition(Point2D p) {
+		this.pointerPosition = toModelCoords(p);
 	}
 
 	public Point2D toModelCoords(Point2D p) {
