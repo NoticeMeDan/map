@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.viewmodel;
 
+import com.noticemedan.mappr.model.util.OsmElementProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 
@@ -8,6 +9,8 @@ public class MenuBarController {
 	@FXML MenuItem menuShowReversedBorders;
 	@FXML MenuItem menuShowDijkstraNetwork;
 	@FXML MenuItem menuShowShortestPath;
+	@FXML MenuItem colourBlind;
+	@FXML MenuItem standardColour;
 
 	private boolean showFPS = false;
 	private boolean showReversedBorders = false;
@@ -23,6 +26,21 @@ public class MenuBarController {
 		menuShowReversedBorders.setOnAction(event -> toggleReversedBorders());
 		menuShowDijkstraNetwork.setOnAction(event -> toggleDijkstra());
 		menuShowShortestPath.setOnAction(event -> toggleShortestPath());
+		colourBlind.setOnAction(event -> colourProfile("colourBlind"));
+		standardColour.setOnAction(event -> colourProfile("standard"));
+	}
+
+	private void colourProfile(String colourProfile) {
+		switch (colourProfile) {
+			case "colourBlind":
+				OsmElementProperty.colorBlind();
+				break;
+
+			default:
+				OsmElementProperty.standardColour();
+				break;
+		}
+		MainViewController.getCanvasView().repaint();
 	}
 
 	private void toggleReversedBorders() {
@@ -56,7 +74,4 @@ public class MenuBarController {
 		MainViewController.getCanvasView().repaint();
 		menuShowShortestPath.setText(labelStart + " shortest path");
 	}
-
-
-
 }
