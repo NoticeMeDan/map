@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 public class DomainFacade {
 	// Domain data
-	public MapData mapData; // TODO Do something better than public
+	private MapData mapData;
 
 	// Services
 	private TextSearchService<Address> addressSearch;
