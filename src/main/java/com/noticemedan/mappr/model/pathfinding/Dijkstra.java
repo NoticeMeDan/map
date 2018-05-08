@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.util.IndexMinPQ;
-import io.vavr.collection.List;
+import io.vavr.collection.Vector;
 
 /**
  * Dijkstra shortest path
@@ -22,16 +22,16 @@ public class Dijkstra {
 			if (e.getWeight() < 0) throw new IllegalArgumentException("Weight less than zero");
 		});
 
-		distTo = new double[n.getAllNodes().length()];
-		edgeTo = new PathEdge[n.getAllNodes().length()];
+		distTo = new double[n.getAllNodes().size()];
+		edgeTo = new PathEdge[n.getAllNodes().size()];
 
 		validatePathNode(s.getId());
 
-		for (int v = 0; v < n.getAllNodes().length(); v++)
+		for (int v = 0; v < n.getAllNodes().size(); v++)
 			distTo[v] = Double.POSITIVE_INFINITY;
 		distTo[s.getId()] = 0.0;
 
-		priorityQueue = new IndexMinPQ<>(n.getAllNodes().length());
+		priorityQueue = new IndexMinPQ<>(n.getAllNodes().size());
 		priorityQueue.insert(s.getId(), distTo[s.getId()]);
 		while (!priorityQueue.isEmpty()) {
 			int vId = priorityQueue.delMin();
@@ -82,12 +82,13 @@ public class Dijkstra {
 	 * @param v destination node
 	 * @return a list of edges between the source and destination
 	 */
-	public List<PathEdge> derivePath(PathNode v) {
+	public Vector<PathEdge> derivePath(PathNode v) {
 		validatePathNode(v.getId());
-		if (!pathExists(v)) return null;
-		List<PathEdge> path = List.empty();
-		for (PathEdge e = edgeTo[v.getId()]; e != null; e = edgeTo[e.getV().getId()])
+		if (!pathExists(v)) return Vector.empty();
+		Vector<PathEdge> path = Vector.empty();
+		for (PathEdge e = edgeTo[v.getId()]; e != null; e = edgeTo[e.getV().getId()]) {
 			path = path.append(e);
+		}
 		return path;
 	}
 }
