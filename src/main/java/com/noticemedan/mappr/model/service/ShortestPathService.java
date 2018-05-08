@@ -19,8 +19,8 @@ public class ShortestPathService {
 	private Network network;
 
 	public ShortestPathService(Vector<Element> elements) {
-		//this.networkParser = new NetworkParser(elements);
-		//this.network = networkParser.getNetwork();
+		this.networkParser = new NetworkParser(elements);
+		this.network = networkParser.getNetwork();
 	}
 
 	public Vector<Shape> getShortestPath(Coordinate from, Coordinate to) {

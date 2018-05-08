@@ -21,7 +21,7 @@ public class MouseHandler extends MouseAdapter {
 
     public MouseHandler(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
-    	canvas = mainViewController.getCanvasView();
+    	canvas = mainViewController.getCanvas();
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
         canvas.addMouseMotionListener(this);
