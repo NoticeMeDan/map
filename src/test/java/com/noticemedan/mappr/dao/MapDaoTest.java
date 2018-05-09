@@ -22,7 +22,8 @@ public class MapDaoTest {
 	@BeforeTest
 	void prepare() throws Exception {
 		this.original = new OsmDao().read(Paths.get("/home/elias/Projects/Code/map/src/main/resources/fyn.osm.zip"));
-		this.test = new MapDao().write(Paths.get("test.map"), this.original);
+		new MapDao().write(Paths.get("test.map"), this.original);
+		this.test = new MapDao().read(Paths.get("test.map"));
 	}
 
 	@Test

@@ -85,7 +85,7 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 		}
 	}
 
-	public void add(Type type, Shape shape) {
+	public void add(Type type, Path2D.Double shape) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -223,7 +223,7 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 
 		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
-			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+			Path2D.Double path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
 			this.path2DSize = 1;
 			Node node;
 			switch (qName) {
