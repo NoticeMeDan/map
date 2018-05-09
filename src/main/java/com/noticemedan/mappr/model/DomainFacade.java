@@ -1,7 +1,6 @@
 package com.noticemedan.mappr.model;
 
 import com.noticemedan.mappr.dao.ImageDao;
-import com.noticemedan.mappr.dao.MapDao;
 import com.noticemedan.mappr.dao.OsmDao;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
@@ -52,14 +51,6 @@ public class DomainFacade {
 		} catch (IOException e) {
 			log.error("An error occurred", e);
 		}
-
-		try {
-			this.mapData = new MapDao().write(Paths.get("tissemand.map"), mapData);
-			System.out.println("Catch me bby");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		this.forestService = new ForestService(
 				this.mapData.getElements().toJavaList(),
 				this.mapData.getCoastlineElements().toJavaList());

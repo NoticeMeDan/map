@@ -4,11 +4,9 @@ import com.noticemedan.mappr.model.util.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
-public class FavoritePoi implements Serializable {
+public class FavoritePoi {
 	Coordinate coordinate;
 	String name;
 }
