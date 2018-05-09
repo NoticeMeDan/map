@@ -64,38 +64,38 @@ public class MenuBarController {
 				OsmElementProperty.standardColor();
 				break;
 		}
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().repaint();
 	}
 
 	private void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
 		String labelStart = (this.showReversedBorders) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleReversedBorders();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleReversedBorders();
+		MainViewController.getCanvas().repaint();
 		menuShowReversedBorders.setText(labelStart + " range-search");
 	}
 
 	private void toggleFPS() {
 		this.showFPS = !this.showFPS;
 		String labelStart = (this.showFPS) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleFPS();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleFPS();
+		MainViewController.getCanvas().repaint();
 		menuShowFPS.setText(labelStart + " FPS");
 	}
 
 	private void toggleDijkstra() {
 		this.showDijkstra = !this.showDijkstra;
 		String labelStart = (this.showDijkstra) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleDijkstraNetwork();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleDijkstraNetwork();
+		MainViewController.getCanvas().repaint();
 		menuShowDijkstraNetwork.setText(labelStart + " dijkstra-netværk");
 	}
 
 	private void toggleShortestPath() {
 		this.showShortestPath = !this.showShortestPath;
 		String labelStart = (this.showShortestPath) ? "Fjern" : "Vis";
-		MainViewController.getCanvasView().toggleRandomShortestPath();
-		MainViewController.getCanvasView().repaint();
+		MainViewController.getCanvas().toggleRandomShortestPath();
+		MainViewController.getCanvas().repaint();
 		menuShowShortestPath.setText(labelStart + " shortest path");
 	}
 

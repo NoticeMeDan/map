@@ -55,12 +55,12 @@ public class PoiBoxViewController {
 		this.coordinate = coordinate;
 
 		String shortCoordinateX = String.valueOf(coordinate.getX());
-		shortCoordinateX = shortCoordinateX.substring(0,9);
+		shortCoordinateX = shortCoordinateX.substring(0,10);
 
 		String shortCoordinateY = String.valueOf(coordinate.getY());
-		shortCoordinateY = shortCoordinateY.substring(0,10); //TODO 9 @emil when not canvas coords.
+		shortCoordinateY = shortCoordinateY.substring(0,10);
 
-		poiCoordinatesLabel.setText(shortCoordinateX + ", " + shortCoordinateY);
+		poiCoordinatesLabel.setText(shortCoordinateY + ", " + shortCoordinateX);
 		poiBoxContainer.setVisible(true);
 		poiBoxContainer.setManaged(true);
 	}

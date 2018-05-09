@@ -15,6 +15,7 @@ import java.util.Objects;
 public class Element implements Comparable<Element>, Serializable {
 	private Type type;
 	private Path2D shape;
+	private String name;
 	private Color color;
 	private boolean open; // TODO @Simon
 	private Coordinate avgPoint;
@@ -53,11 +54,5 @@ public class Element implements Comparable<Element>, Serializable {
 				Objects.equals(color, element.color) &&
 				Objects.equals(avgPoint, element.avgPoint) &&
 				Objects.equals(bounds, element.bounds);
-	}
-
-	@Override
-	public int hashCode() {
-
-		return Objects.hash(type, shape, color, open, avgPoint, bounds, depthEven);
 	}
 }

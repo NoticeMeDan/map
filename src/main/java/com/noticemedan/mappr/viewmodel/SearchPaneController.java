@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -22,6 +23,9 @@ public class SearchPaneController {
 	@FXML Button searchPaneCloseButton;
 	@FXML ListView addressSearchResultsListView;
 	private DomainFacade domain;
+
+	@Setter
+	MainViewController mainViewController;
 
 	@Inject
 	public SearchPaneController(DomainFacade domainFacade) {
@@ -34,7 +38,11 @@ public class SearchPaneController {
 	}
 
 	private void eventListeners() {
-		searchPaneCloseButton.setOnAction(event -> closeSearchPane());
+		searchPaneCloseButton.setOnAction(event -> {
+			closeSearchPane();
+			mainViewController.pushCanvas();
+		});
+
 		searchAddressField.setOnKeyTyped(event -> handleAddressSearch());
 	}
 
