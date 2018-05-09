@@ -56,11 +56,11 @@ public class ForestService implements ForestInterface {
 			}
 		}
 
-		elementArray[0] = zoom0.toJavaList().toArray(new Element[0]);
-		elementArray[1] = zoom1.toJavaList().toArray(new Element[0]);
-		elementArray[2] = zoom2.toJavaList().toArray(new Element[0]);
-		elementArray[3] = zoom3.toJavaList().toArray(new Element[0]);
-		elementArray[4] = zoom4.toJavaList().toArray(new Element[0]);
+		elementArray[0] = zoom0.toJavaArray(Element.class);
+		elementArray[1] = zoom1.toJavaArray(Element.class);
+		elementArray[2] = zoom2.toJavaArray(Element.class);
+		elementArray[3] = zoom3.toJavaArray(Element.class);
+		elementArray[4] = zoom4.toJavaArray(Element.class);
 
 		this.trees = new KdTree[elementArray.length];
 		for (int i = 0; i < trees.length; i++) {
