@@ -3,9 +3,11 @@ package com.noticemedan.mappr.model.map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class Address {
+public class Address implements Serializable {
 	private String street;
 	private String houseNumber;
 	private String postcode;

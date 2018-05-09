@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,24 @@ public class Element implements Comparable<Element>, Serializable {
 	private Coordinate avgPoint;
 	private Rect bounds;
 	private boolean depthEven = true; // Is this object at even depth in KD-Tree?
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Element element = (Element) o;
+		return open == element.open &&
+				depthEven == element.depthEven &&
+				type == element.type &&
+				Objects.equals(color, element.color) &&
+				Objects.equals(avgPoint, element.avgPoint) &&
+				Objects.equals(bounds, element.bounds);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(type, color, open, avgPoint, bounds, depthEven);
+	}
 
 	@Override
 	public int compareTo(Element that) {

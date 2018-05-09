@@ -8,9 +8,11 @@ import io.vavr.collection.Vector;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-public class MapData {
+public class MapData implements Serializable {
 	private Vector<Element> elements;
 	private Vector<Element> coastlineElements;
 	private Vector<Address> addresses;
