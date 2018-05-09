@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Element implements Comparable<Element>, Serializable {
 	private Type type;
+	private String name;
 	private Shape shape;
 	private Color color;
 	private boolean open; // TODO @Simon

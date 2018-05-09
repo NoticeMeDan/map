@@ -6,6 +6,7 @@ import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Node;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -88,10 +89,8 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(Type.COASTLINE))
-			this.coastlineElements = coastlineElements.append(osmElement);
-		else
-			this.elements = elements.append(osmElement);
+		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
+		else this.elements = elements.append(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -100,7 +99,6 @@ public class OsmDao implements DataReader<MapData> {
 		Map<Node, Vector<Node>> coastlines = HashMap.empty();
 		Address address = new Address();
 		int path2DSize = 1;
-		private double lonFactor;
 		private Type type = Type.UNKNOWN;
 		private long currentNodeID;
 
@@ -115,19 +113,17 @@ public class OsmDao implements DataReader<MapData> {
 					double minLon = Double.parseDouble(attributes.getValue("minlon"));
 					double maxLat = Double.parseDouble(attributes.getValue("maxlat"));
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
-					double avgLat = minLat + (maxLat - minLat) / 2;
-					lonFactor = Math.cos(avgLat / 180 * Math.PI);
-					Entities.setMinLon(minLon * lonFactor);
-					Entities.setMaxLon(maxLon * lonFactor);
-					Entities.setMaxLat(-maxLat);
-					Entities.setMinLat(-minLat);
+					Entities.setMinLon(minLon);
+					Entities.setMaxLon(maxLon);
+					Entities.setMinLat(Coordinate.latToCanvasLat(minLat));
+					Entities.setMaxLat(Coordinate.latToCanvasLat(maxLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));
 					double lat = Double.parseDouble(attributes.getValue("lat"));
 					long id = Long.parseLong(attributes.getValue("id"));
 					currentNodeID = id;
-					idToNode.put(id, lonFactor * lon, -lat);
+					idToNode.put(id, lon, Coordinate.latToCanvasLat(lat));
 					break;
 				case "way":
 					this.osmWay = Vector.empty();
@@ -190,6 +186,7 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
+
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));

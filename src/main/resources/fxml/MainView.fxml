@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import javafx.scene.text.Text?>
 <AnchorPane fx:id="mainView" minWidth="1100" minHeight="650" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.noticemedan.mappr.viewmodel.MainViewController">
 	<stylesheets>
 		<URL value="@../css/style.css" />
@@ -21,6 +22,11 @@
 			<ImageView id="boxImage" layoutX="143" layoutY="7">
 				<Image url="@../graphics/searchbar-separator.png" />
 			</ImageView>
+		</Pane>
+
+		<Pane fx:id="scalebarContainer" prefHeight="27.0" prefWidth="130.0" AnchorPane.topAnchor="25" AnchorPane.rightAnchor="25">
+			<Text fx:id="scalaBarDistanceText" textAlignment="CENTER" wrappingWidth="130" />
+			<Pane fx:id="scalaBarImagePane" layoutY="5" prefWidth="130.0" prefHeight="10.0" />
 		</Pane>
 
 		<fx:include fx:id="poiBoxView" source="PoiBox.fxml" AnchorPane.topAnchor="65.0" AnchorPane.leftAnchor="15.0" />
