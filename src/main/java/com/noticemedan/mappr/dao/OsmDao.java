@@ -69,7 +69,7 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 		log.info("Coastlines: " + coastlineElements.length());
 
 		return MapData.builder()
-				.elements(this.elements)
+				.elements(this.elements.filter(x -> x.getType() == Type.UNKNOWN))
 				.coastlineElements(this.coastlineElements)
 				.addresses(this.addresses)
 				.build();

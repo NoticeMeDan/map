@@ -1,6 +1,8 @@
 package com.noticemedan.mappr.model.map;
 
-public enum Type {
+import java.io.Serializable;
+
+public enum Type implements Serializable {
 	ROAD,
 	FOOTWAY,
 	HIGHWAY,
