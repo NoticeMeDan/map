@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Element implements Comparable<Element>, Serializable {
 	private Type type;
-	private Path2D.Double shape;
+	private Path2D shape;
 	private Color color;
 	private boolean open; // TODO @Simon
 	private Coordinate avgPoint;

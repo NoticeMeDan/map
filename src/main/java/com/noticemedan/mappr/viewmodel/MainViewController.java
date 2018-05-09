@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.Entities;
+import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.viewmodel.event.ClickDragHandler;
@@ -56,10 +56,12 @@ public class MainViewController {
 
 	// Model Facade
 	private DomainFacade domain;
+	private Boundaries boundaries;
 
 	@Inject
 	public MainViewController(DomainFacade domainFacade) {
 		this.domain = domainFacade;
+		this.boundaries = this.domain.getBoundaries();
 	}
 
 	public void initialize() {
@@ -76,10 +78,10 @@ public class MainViewController {
 		swingNode = new SwingNode();
 		canvasView = new CanvasView(this.domain);
 		canvasView.setSize(screenSize);
-		System.out.println(Entities.writeOut());
-		canvasView.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		canvasView.zoom(screenSize.getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		canvasView.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		System.out.println(this.boundaries.writeOut());
+		canvasView.pan(-this.boundaries.getMinLon(), -this.boundaries.getMaxLat());
+		canvasView.zoom(screenSize.getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
+		canvasView.setZoomLevel(1 / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()));
 		this.mouseHandler = new MouseHandler(canvasView);
 		mainView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardHandler(canvasView));
 

@@ -1,11 +1,7 @@
 package com.noticemedan.mappr.dao;
 
-import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.MapData;
-import com.noticemedan.mappr.model.map.Address;
-import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.map.Node;
-import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.map.*;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -23,13 +19,11 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -39,6 +33,7 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
+	private Boundaries boundaries = new Boundaries();
 	private Path input;
 
 	public OsmDao(Path input) {
@@ -69,7 +64,8 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 		log.info("Coastlines: " + coastlineElements.length());
 
 		return MapData.builder()
-				.elements(this.elements)
+				.boundaries(this.boundaries)
+				.elements(this.elements.filter(x -> x.getType() != Type.UNKNOWN))
 				.coastlineElements(this.coastlineElements)
 				.addresses(this.addresses)
 				.build();
@@ -85,7 +81,7 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 		}
 	}
 
-	public void add(Type type, Path2D.Double shape) {
+	public void add(Type type, Path2D shape) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -128,10 +124,10 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
 					double avgLat = minLat + (maxLat - minLat) / 2;
 					lonFactor = Math.cos(avgLat / 180 * Math.PI);
-					Entities.setMinLon(minLon * lonFactor);
-					Entities.setMaxLon(maxLon * lonFactor);
-					Entities.setMaxLat(-maxLat);
-					Entities.setMinLat(-minLat);
+					boundaries.setMinLon(minLon * lonFactor);
+					boundaries.setMaxLon(maxLon * lonFactor);
+					boundaries.setMaxLat(-maxLat);
+					boundaries.setMinLat(-minLat);
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));

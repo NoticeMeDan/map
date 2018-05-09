@@ -4,6 +4,7 @@ import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.MapDao;
 import com.noticemedan.mappr.dao.OsmDao;
 import com.noticemedan.mappr.model.map.Address;
+import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
@@ -38,25 +39,16 @@ public class DomainFacade {
 	private ShortestPathService shortestPathService;
 
 	public DomainFacade() {
-		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
-			this.initialize(path);
-		} catch (Exception e) {
-			log.error("An error occurred", e);
-		}
+		Path path = Try.of(() -> Paths.get(DomainFacade.class.getResource("/default.map").toURI()))
+				.getOrNull();
+		this.initialize(path);
 	}
 
 	private void initialize(Path path) {
-//		try {
-//			this.mapData = new OsmDao().read(path); // Switch to MapData
-//		} catch (IOException e) {
-//			log.error("An error occurred", e);
-//		}
-
 		try {
-			this.mapData = new MapDao().read(Paths.get("read.map"));
+			this.mapData = new MapDao().read(path); // Switch to MapData
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("An error occurred loading .map file", e);
 		}
 
 		this.forestService = new ForestService(
@@ -67,16 +59,27 @@ public class DomainFacade {
 		this.shortestPathService = new ShortestPathService(mapData.getElements());
 	}
 
-	// Viewport Data
+	/* SECTION START: VIEWPORT DATA */
+
+	public Boundaries getBoundaries() { return this.mapData.getBoundaries(); }
 	public List<Element> getCoastLines() { return this.forestService.getCoastlines(); }
 	public List<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public List<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 
-	// Address Search
+	/* SECTION END: VIEWPORT DATA */
+	/* SECTION START: ADDRESS SEARCHING */
+
+	/**
+	 * Query the AddressSearchService for matching addresses
+	 * @param search The Address to query for
+	 * @return List of Address strings matching the query
+	 */
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
 	}
+
+	/* SECTION END: SHORTEST PATH */
 
 	/* SECTION START: SHORTEST PATH */
 
