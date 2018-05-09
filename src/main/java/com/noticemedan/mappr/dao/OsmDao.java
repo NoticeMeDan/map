@@ -89,10 +89,8 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(Type.COASTLINE))
-			this.coastlineElements = coastlineElements.append(osmElement);
-		else
-			this.elements = elements.append(osmElement);
+		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
+		else this.elements = elements.append(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -188,6 +186,7 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
+
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));

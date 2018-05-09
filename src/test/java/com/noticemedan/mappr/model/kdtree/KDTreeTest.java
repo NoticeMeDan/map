@@ -135,6 +135,28 @@ public class KDTreeTest {
 	public void rangeSearch_SmallKDTree_Positive_1() {
 		Rect query = new Rect(0.5,7.5,4,10.5);
 		Vector<Element> result = smallKdTree.rangeSearch(query);
+		assertEquals(result.size(), 2);
+
+		//Check a point
+		assertEquals(result.get(0).getAvgPoint().getX(), 3.0);
+		assertEquals(result.get(0).getAvgPoint().getY(), 8.0);
+	}
+
+	@Test
+	public void rangeSearch_SmallKDTree_Positive_2() {
+		Rect query = new Rect(3.5,0.5,6.5,8.5);
+		Vector<Element> result = smallKdTree.rangeSearch(query);
+		assertEquals(result.size(),3);
+
+		//Check a point
+		assertEquals(result.get(2).getAvgPoint().getX(),6.0);
+		assertEquals(result.get(2).getAvgPoint().getY(),7.0);
+	}
+
+	@Test
+	public void rangeSearch_SmallKDTree_Negative_1() {
+		Rect query = new Rect(8.0,4.0,10,6);
+		Vector<Element> result = smallKdTree.rangeSearch(query);
 		assertTrue(result.size() <= 0);
 	}
 
