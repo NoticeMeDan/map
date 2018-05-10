@@ -1,0 +1,11 @@
+#noMapsYetPane {
+	-fx-background-color: white;
+}
+
+#noMapText {
+	-fx-font-size: 16px;
+}
+
+#mapListView .list-cell:selected Label {
+	-fx-text-fill: black;
+}
