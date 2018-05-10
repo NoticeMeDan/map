@@ -1,10 +1,7 @@
 package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.util.Coordinate;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Vector;
+import io.vavr.collection.*;
 import io.vavr.control.Try;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +25,7 @@ public class Network {
 	 * @param from PathNode from
 	 * @param to   PathNode to
 	 */
-	public void addPath(PathNode from, PathNode to) {
-		for (int i = 1; i < 100; i++) {
-			int flag = i * 100000;
-			if (allNodes.size() == flag) log.info(flag + " reached");
-		}
-
+	public void addPath(PathNode from, PathNode to, Set<TravelType> type) {
 		PathNode fromNode = this.getNodeFromCoords(new Coordinate(from.getLon(), from.getLat()));
 		PathNode toNode = this.getNodeFromCoords(new Coordinate(to.getLon(), to.getLat()));
 
@@ -47,7 +39,7 @@ public class Network {
 			toNode = to;
 		}
 
-		addEdge(fromNode, toNode);
+		addEdge(fromNode, toNode, type);
 	}
 
 	/**
@@ -60,37 +52,20 @@ public class Network {
 		return Try.of(() -> this.allNodes.get(this.nodeFromCoordMap.get(c).get())).getOrNull();
 	}
 
-	private void addPathNode(PathNode pathNode) {
-		this.nodeFromCoordMap = nodeFromCoordMap.put(new Coordinate(pathNode.getLon(), pathNode.getLat()), this.allNodes.length());
-		this.allNodes = this.allNodes.append(pathNode);
-	}
-
-	public void addEdge(PathNode v, PathNode w) {
+	public void addEdge(PathNode v, PathNode w, Set<TravelType> type) {
 		PathEdge pathEdgeV = new PathEdge(v, w);
 		PathEdge pathEdgeW = new PathEdge(w, v);
+
+		pathEdgeV.setTravelTypesAllowed(type);
+		pathEdgeW.setTravelTypesAllowed(type);
 
 		if (!v.getEdges().contains(pathEdgeV)) v.setEdges(v.getEdges().prepend(pathEdgeV));
 		if (!w.getEdges().contains(pathEdgeW)) w.setEdges(w.getEdges().prepend(pathEdgeW));
 		allEdges = allEdges.append(pathEdgeV);
 	}
 
-	/**
-	 * For testing purposes only
-	 *
-	 * @param coordinateList
-	 */
-	public void addPathNodes(List<Coordinate> coordinateList) {
-		for (Coordinate coordinate : coordinateList) {
-			this.allNodes = this.allNodes.append(
-					PathNode.builder()
-							.id(this.allNodes.length())
-							.lon(coordinate.getX())
-							.lat(coordinate.getY())
-							.edges(Vector.empty())
-							.build()
-			);
-		}
-		System.out.println("List is now size: " + allNodes.length());
+	private void addPathNode(PathNode pathNode) {
+		this.nodeFromCoordMap = nodeFromCoordMap.put(new Coordinate(pathNode.getLon(), pathNode.getLat()), this.allNodes.length());
+		this.allNodes = this.allNodes.append(pathNode);
 	}
-
 }
