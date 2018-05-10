@@ -50,7 +50,6 @@ public class Element implements Comparable<Element>, Serializable {
 		return open == element.open &&
 				depthEven == element.depthEven &&
 				type == element.type &&
-				Objects.equals(shape, element.shape) &&
 				Objects.equals(color, element.color) &&
 				Objects.equals(avgPoint, element.avgPoint) &&
 				Objects.equals(bounds, element.bounds);

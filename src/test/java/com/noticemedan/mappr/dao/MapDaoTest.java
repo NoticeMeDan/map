@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.testng.Assert.assertEquals;
@@ -13,12 +14,13 @@ import static org.testng.Assert.assertEquals;
 public class MapDaoTest {
 	private MapData original;
 	private MapData test;
+	private Path mapPath = Paths.get(MapDaoTest.class.getResource("/osm").getPath(), "test.map");
 
 	@BeforeTest
 	void prepare() throws Exception {
-		this.original = new OsmDao().read(Paths.get("/home/elias/Projects/Code/map/src/main/resources/fyn.osm.zip"));
-		new MapDao().write(Paths.get("test.map"), this.original);
-		this.test = new MapDao().read(Paths.get("test.map"));
+		this.original = new OsmDao().read(Paths.get(MapDaoTest.class.getResource("/osm/small.osm.zip").toURI()));
+		new MapDao().write(this.mapPath, this.original);
+		this.test = new MapDao().read(this.mapPath);
 	}
 
 	@Test
@@ -38,6 +40,6 @@ public class MapDaoTest {
 
 	@AfterTest
 	void clearFiles() throws Exception {
-		Files.delete(Paths.get("test.map"));
+		Files.delete(this.mapPath);
 	}
 }
