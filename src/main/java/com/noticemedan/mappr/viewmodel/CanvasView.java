@@ -103,9 +103,19 @@ public class CanvasView extends JComponent {
     }
 
 	private void drawShortestPath(Vector<Shape> shape) {
-		this.g.setPaint(Color.RED);
+		this.g.setPaint(Color.decode("#2F9862"));
 		this.g.setStroke(getMediumLevelStroke());
-		shape.forEach(s -> this.g.draw(s));
+		Path2D path = new GeneralPath();
+		boolean first = true;
+		 for(Shape s : shape) {
+			Line2D.Double line = (Line2D.Double) s;
+			if(first) {
+				path.moveTo(line.x1, line.y1);
+				first = false;
+			}
+			else path.lineTo(line.x1,line.y1);
+		}
+		this.g.draw(path);
 	}
 
 	private void transformViewRect() {
