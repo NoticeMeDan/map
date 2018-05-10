@@ -19,7 +19,9 @@ public class MapDao implements DataReader<MapData>, DataWriter<MapData> {
 
 	@Override
 	public MapData write(Path output, MapData data) throws IOException {
-		try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(Files.newOutputStream(output, StandardOpenOption.CREATE_NEW)))) {
+		Files.createDirectories(output.getParent());
+		try (ObjectOutputStream stream = new ObjectOutputStream(new BufferedOutputStream(Files.newOutputStream(output,
+				StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)))) {
 			stream.writeObject(data);
 			return data;
 		}

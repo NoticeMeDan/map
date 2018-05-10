@@ -11,6 +11,7 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
 import javafx.concurrent.Task;
+import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -30,21 +31,11 @@ import java.util.zip.ZipInputStream;
 
 @NoArgsConstructor
 @Slf4j
-public class OsmDao extends Task<MapData> implements DataReader<MapData> {
+public class OsmDao implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
 	private Boundaries boundaries = new Boundaries();
-	private Path input;
-
-	public OsmDao(Path input) {
-		this.input = input;
-	}
-
-	@Override
-	protected MapData call() throws Exception {
-		return read(this.input);
-	}
 
 	@Override
 	public MapData read(Path input) throws IOException {
@@ -55,9 +46,10 @@ public class OsmDao extends Task<MapData> implements DataReader<MapData> {
 		if (type.equals("osm")) {
 			readFromOSM(new InputSource(Files.newBufferedReader(input)));
 		} else if (type.equals("zip")) {
-			ZipInputStream zip = new ZipInputStream(Files.newInputStream(input));
-			zip.getNextEntry();
-			readFromOSM(new InputSource(zip));
+			try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(input))) {
+				zip.getNextEntry();
+				readFromOSM(new InputSource(zip));
+			}
 		}
 
 		log.info("End reading from OSM");

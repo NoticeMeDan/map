@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.model;
 
+import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.MapDao;
 import com.noticemedan.mappr.dao.OsmDao;
@@ -8,6 +9,7 @@ import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
+import com.noticemedan.mappr.model.service.MapImportService;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
@@ -17,16 +19,25 @@ import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Vector;
+import io.vavr.concurrent.Future;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class DomainFacade {
@@ -80,8 +91,7 @@ public class DomainFacade {
 				.map(Tuple2::_1);
 	}
 
-	/* SECTION END: SHORTEST PATH */
-
+	/* SECTION END:  ADDRESS SEARCHING */
 	/* SECTION START: SHORTEST PATH */
 
 	/**
@@ -122,11 +132,36 @@ public class DomainFacade {
 	}
 
 	/* SECTION END: SHORTEST PATH */
-
 	/* SECTION START: IMAGE DAO */
+
+	/**
+	 * Gets image from FS and returns a BufferedImage
+	 * @param input Path to input image
+	 * @return Option containing either Nothing or a BufferedImage
+	 */
 	public Option<BufferedImage> getImageFromFS(Path input) {
 		ImageDao dao = new ImageDao();
 		return Try.of(() -> dao.read(input))
 				.toOption();
 	}
+
+	/* SECTION END: IMAGE DAO */
+	/* SECTION START: OSM IMPORT */
+
+	/**
+	 * Builds .map from .osm/.osm.zip in background, and notifies on completion
+	 * @param from The path to get the .osm file from
+	 * @param onSuccess What to do on success
+	 * @param onFailed What to do on failure
+	 */
+	public void buildMapFromOsmPath(Path from, EventHandler<WorkerStateEvent> onSuccess, EventHandler<WorkerStateEvent> onFailed) {
+		String filename = from.getFileName().toString().split("\\.")[0] + ".map";
+		Path to = Paths.get(System.getProperty("user.home"), "/maps/", filename);
+		MapImportService importer = new MapImportService(from, to, new OsmDao(), new MapDao());
+		importer.setOnSucceeded(onSuccess);
+		importer.setOnFailed(onFailed);
+		Executors.newSingleThreadExecutor().execute(importer);
+	}
+
+	/* SECTION END: OSM IMPORT */
 }

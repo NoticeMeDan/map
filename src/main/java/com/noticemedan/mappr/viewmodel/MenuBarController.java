@@ -1,8 +1,10 @@
 package com.noticemedan.mappr.viewmodel;
 
-import com.noticemedan.mappr.dao.MapDao;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
+import com.noticemedan.mappr.view.util.FilePicker;
+import com.noticemedan.mappr.view.util.InfoBox;
+import io.vavr.control.Option;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;
@@ -12,10 +14,8 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.nio.file.Files;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Slf4j
 public class MenuBarController {
@@ -100,16 +100,16 @@ public class MenuBarController {
 	}
 
 	private void createMapFromOsm(ActionEvent event) {
-		FileChooser fileChooser = new FileChooser();
 		Stage stage = (Stage) this.menuBar.getScene().getWindow();
+		FilePicker picker = new FilePicker(new FileChooser
+				.ExtensionFilter("OSM Files (*.osm or *.osm.zip)", "*.osm", "*.osm.zip"));
 
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OSM Files (*.osm or *.osm.zip)", "*.osm", "*.osm.zip");
-		fileChooser.getExtensionFilters().addAll(extFilter);
-
-		Path path = Paths.get(fileChooser.showOpenDialog(stage).toURI());
-
-		if (Files.exists(path)) log.info("File found: " + path.toString());
-
-		log.info("Running future");
+		Option<Path> path = picker.getPath(stage);
+		if (!path.isEmpty()) {
+			new InfoBox("Vi danner kortet i baggrunden - du vil få besked når det er færdigt.").show();
+			InfoBox onComplete = new InfoBox("Kortet er nu oprettet, og du har muligheden for at tilgå det fra menuen.");
+			InfoBox onFailed = new InfoBox("Der opsted en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
+			domain.buildMapFromOsmPath(path.get(), x -> onComplete.show(), x -> onFailed.show());
+		}
 	}
 }
