@@ -162,7 +162,7 @@ public class DomainFacade {
 	 */
 	public void buildMapFromOsmPath(Path from, EventHandler<WorkerStateEvent> onSuccess, EventHandler<WorkerStateEvent> onFailed) {
 		String filename = from.getFileName().toString().split("\\.")[0] + ".map";
-		Path to = Paths.get(System.getProperty("user.home"), "/maps/", filename);
+		Path to = Paths.get(System.getProperty("user.home"), "/mappr/", filename);
 		MapImportService importer = new MapImportService(from, to, new OsmDao(), new MapDao());
 		importer.setOnSucceeded(onSuccess);
 		importer.setOnFailed(onFailed);

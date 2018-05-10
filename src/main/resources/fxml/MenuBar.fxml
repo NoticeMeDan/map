@@ -6,14 +6,8 @@
 
 <MenuBar fx:id="menuBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1"
 		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
-	<Menu mnemonicParsing="false" text="Fil">
-		<MenuItem fx:id="handleMapImportMenuItem" mnemonicParsing="false" text="Indlæs nyt kort fra fil"/>
-		<MenuItem mnemonicParsing="false" text="Indlæs kort"/>
-		<MenuItem mnemonicParsing="false" text="Slet kort"/>
-		<MenuItem mnemonicParsing="false" disable="true" text="Current map: Bornholm"/>
-	</Menu>
 	<Menu mnemonicParsing="false" text="Vindue">
-		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis kort"/>
+		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis mine kort"/>
 		<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder"/>
 		<MenuItem fx:id="ShowAddressSearch" mnemonicParsing="false" text="Vis addressesøgning"/>
 		<MenuItem fx:id="ShowRoutePlanning" mnemonicParsing="false" text="Vis navigering"/>

@@ -27,7 +27,6 @@ public class MenuBarController {
 	@FXML MenuItem showColorBlindModeMenuItem;
 	@FXML MenuItem showStandardColorMenuItem;
 	@FXML MenuItem showMapMenuItem;
-	@FXML MenuItem handleMapImportMenuItem;
 
 	@Setter
 	MainViewController mainViewController;
@@ -38,13 +37,6 @@ public class MenuBarController {
 	private boolean showShortestPath = false;
 	private boolean showMapPane = false;
 
-	private DomainFacade domain;
-
-	@Inject
-	public MenuBarController(DomainFacade domainFacade) {
-		this.domain = domainFacade;
-	}
-
 	public void initialize() {
 		eventListeners();
 	}
@@ -54,7 +46,6 @@ public class MenuBarController {
 		showReversedBordersMenuItem.setOnAction(event -> toggleReversedBorders());
 		showDijkstraNetworkMenuItem.setOnAction(event -> toggleDijkstra());
 		showShortestPathMenuItem.setOnAction(event -> toggleShortestPath());
-		handleMapImportMenuItem.setOnAction(this::createMapFromOsm);
 		showColorBlindModeMenuItem.setOnAction(event -> colorProfile("showColorBlindModeMenuItem"));
 		showStandardColorMenuItem.setOnAction(event -> colorProfile("standard"));
 		showMapMenuItem.setOnAction(event -> toggleMapPane());
@@ -109,19 +100,5 @@ public class MenuBarController {
 		this.showMapPane = !this.showMapPane;
 		mainViewController.getMapPaneController().openMapPane();
 		showMapMenuItem.setText("Vis kort");
-	}
-
-	private void createMapFromOsm(ActionEvent event) {
-		Stage stage = (Stage) this.menuBar.getScene().getWindow();
-		FilePicker picker = new FilePicker(new FileChooser
-				.ExtensionFilter("OSM Files (*.osm or *.osm.zip)", "*.osm", "*.osm.zip"));
-
-		Option<Path> path = picker.getPath(stage);
-		if (!path.isEmpty()) {
-			new InfoBox("Vi danner kortet i baggrunden - du vil få besked når det er færdigt.").show();
-			InfoBox onComplete = new InfoBox("Kortet er nu oprettet, og du har muligheden for at tilgå det fra menuen.");
-			InfoBox onFailed = new InfoBox("Der opsted en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
-			domain.buildMapFromOsmPath(path.get(), x -> onComplete.show(), x -> onFailed.show());
-		}
 	}
 }
