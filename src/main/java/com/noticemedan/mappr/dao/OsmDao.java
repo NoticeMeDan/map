@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -75,7 +76,7 @@ public class OsmDao implements DataReader<MapData> {
 		}
 	}
 
-	public void add(Type type, Shape shape) {
+	public void add(Type type, Shape shape, int maxspeed) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -89,8 +90,11 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
-		else this.elements = elements.append(osmElement);
+		osmElement.setMaxspeed(maxspeed);
+		if (type.equals(Type.COASTLINE))
+			this.coastlineElements = coastlineElements.append(osmElement);
+		else
+			this.elements = elements.append(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -104,6 +108,10 @@ public class OsmDao implements DataReader<MapData> {
 
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
+		private int maxspeed = 50; // default value
+		final String regex = "\\d+";
+		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -154,12 +162,26 @@ public class OsmDao implements DataReader<MapData> {
 					}
 
 					switch (keyValue) {
+						case "maxspeed":
+							final Matcher matcher = pattern.matcher(attributes.getValue("v"));
+							while (matcher.find()) {
+								this.maxspeed = Integer.parseInt(matcher.group(0));
+							}
+							break;
 						case "highway":
 							type = Type.ROAD;
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
+							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
+							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
+							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
+							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;
+							if (attributes.getValue("v").equals("raceway")) type = Type.RACEWAY;
+							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
+							if (attributes.getValue("v").equals("path")) type = Type.PATH;
+							if (attributes.getValue("v").equals("unclassified")) type = Type.UNCLASSIFIED;
 							break;
 						case "natural":
 							if (attributes.getValue("v").equals("water")) type = Type.WATER;
@@ -186,7 +208,6 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
-
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));
@@ -251,7 +272,7 @@ public class OsmDao implements DataReader<MapData> {
 								node = this.osmWay.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(type, path);
+							add(type, path, maxspeed);
 						}
 					}
 					break;
@@ -264,7 +285,7 @@ public class OsmDao implements DataReader<MapData> {
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
-					add(type, path);
+					add(type, path, maxspeed);
 					break;
 				case "osm":
 					// convert all coastlines found to paths
@@ -281,7 +302,7 @@ public class OsmDao implements DataReader<MapData> {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(Type.COASTLINE, path);
+							add(Type.COASTLINE, path, 0);
 						}
 					}
 					break;

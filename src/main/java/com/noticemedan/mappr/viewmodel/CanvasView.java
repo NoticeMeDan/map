@@ -19,7 +19,6 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.List;
 
 // TODO: Split up - right now it does the job of both the V and VM layer
 @Slf4j
@@ -115,10 +114,30 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
+    private Shape pointShape(Point2D point, Color color) {
+		this.g.setPaint(color);
+		double size = 0.005;
+		return new Ellipse2D.Double(point.getX() - (size/2), point.getY() - (size/2), size,size);
+	}
+
 	private void drawShortestPath(Vector<Shape> shape) {
-		this.g.setPaint(Color.RED);
+		if (shape.isEmpty()) return;
+		Path2D path = new GeneralPath();
+		boolean first = true;
+		for(Shape s : shape) {
+			Line2D.Double line = (Line2D.Double) s;
+			if(first) {
+				this.g.fill(pointShape(new Point2D.Double(line.x1,line.y1), Color.MAGENTA));
+				path.moveTo(line.x1, line.y1);
+				first = false;
+			}
+			else path.lineTo(line.x1,line.y1);
+		}
+		this.g.fill(pointShape(path.getCurrentPoint(),Color.decode("#ff5733")));
+		this.g.setPaint(Color.decode("#2F9862"));
 		this.g.setStroke(getMediumLevelStroke());
-		shape.forEach(s -> this.g.draw(s));
+		if (this.zoomLevel < 5)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		this.g.draw(path);
 	}
 
 	private void transformViewRect() {
@@ -151,11 +170,19 @@ public class CanvasView extends JComponent {
 		paintByType(result,Type.SAND, getLowLevelStroke());
 		paintByType(result,Type.FOOTWAY, new BasicStroke(0.00002f));
 		paintByType(result,Type.ROAD, new BasicStroke(0.00004f));
+		paintByType(result,Type.FOOTWAY, getLowLevelStroke());
+		paintByType(result,Type.TRACK, getLowLevelStroke());
+		paintByType(result,Type.SERVICE, getLowLevelStroke());
+		paintByType(result,Type.RACEWAY, getLowLevelStroke());
+		paintByType(result,Type.CYCLEWAY, getLowLevelStroke());
+		paintByType(result,Type.PATH, getLowLevelStroke());
+		paintByType(result,Type.UNCLASSIFIED, getLowLevelStroke());
 		paintByType(result,Type.TERTIARY, getHighLevelStroke());
 		paintByType(result,Type.SECONDARY, getHighLevelStroke());
 		paintByType(result,Type.PRIMARY, getMediumLevelStroke());
 		paintByType(result,Type.HIGHWAY,new BasicStroke(0.0001f));
 		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
+
 	}
 
 	private void paintClosedElements (Vector<Element> result, BasicStroke stroke) {
@@ -212,8 +239,10 @@ public class CanvasView extends JComponent {
 	private void drawNetwork() {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
-			this.g.setPaint(Color.CYAN);
-			this.g.setStroke(new BasicStroke(0.0001f));
+			this.g.setPaint(Color.GREEN);
+			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.CYAN);
+			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.RED);
+			this.g.setStroke(new BasicStroke(0.00002f));
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes
