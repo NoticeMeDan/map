@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.util.FileInfo;
 import com.noticemedan.mappr.view.util.FilePicker;
 import com.noticemedan.mappr.view.util.InfoBox;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +23,8 @@ import lombok.Setter;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -35,30 +38,26 @@ public class MapPaneController {
 	@FXML Button createMapButton;
 	@FXML StackPane noMapsYetPane;
 
-	@Setter
 	ObservableList<FileInfo> maps;
 	@Setter
 	MainViewController mainViewController;
-	DomainFacade domain;
+	private DomainFacade domain;
 
 	@Inject
 	public MapPaneController(DomainFacade domainFacade) { this.domain = domainFacade; }
 
 	public void initialize() {
 		closeMapPane();
-
-		//TODO @emil / @elias fjern!
-		ArrayList test = new ArrayList();
-		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
-		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
-		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
-		maps = FXCollections.observableArrayList(test);
-
-		mapListView.setItems(maps);
-		showNoMapsYetPane();
+		readFiles();
 		disableActionMenu();
-		mapListView.setCellFactory(listView -> new MapCell()); //Custom cells for list
 		eventListeners();
+	}
+
+	private void readFiles() {
+		this.maps = FXCollections.observableArrayList(this.domain.getAllFileInfoFromMapprDir().toJavaList());
+		mapListView.setItems(maps);
+		mapListView.setCellFactory(listView -> new MapCell()); //Custom cells for list
+		handleNoMaps();
 	}
 
 	private void eventListeners() {
@@ -68,11 +67,9 @@ public class MapPaneController {
 
 		createMapButton.setOnAction(this::createMapFromOsm);
 		deleteMapButton.setOnAction(event -> {
-			maps.remove(mapListView.getSelectionModel().getSelectedItem());
-			if (maps.size() == 0) {
-				disableActionMenu();
-				showNoMapsYetPane();
-			}
+			FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
+			this.domain.deleteMap(map.getName());
+			readFiles();
 		});
 
 		mapPaneCloseButton.setOnAction(event -> closeMapPane());
@@ -89,6 +86,16 @@ public class MapPaneController {
 		mapPane.setVisible(false);
 	}
 
+	private void handleNoMaps() {
+		if (maps == null || maps.size() == 0 ) {
+			showNoMapsYetPane();
+			enableActionMenu();
+		} else {
+			hideNoMapsYetPane();
+			disableActionMenu();
+		}
+	}
+
 	private void disableActionMenu() {
 		loadMapButton.setDisable(true);
 		deleteMapButton.setDisable(true);
@@ -101,12 +108,10 @@ public class MapPaneController {
 	}
 
 	private void showNoMapsYetPane() {
-		if (maps == null || maps.size() == 0 ) {
-			noMapsYetPane.setVisible(true);
-			noMapsYetPane.setManaged(true);
-			mapListView.setVisible(false);
-			mapListView.setManaged(false);
-		}
+		noMapsYetPane.setVisible(true);
+		noMapsYetPane.setManaged(true);
+		mapListView.setVisible(false);
+		mapListView.setManaged(false);
 	}
 
 	private void hideNoMapsYetPane() {
@@ -131,7 +136,10 @@ public class MapPaneController {
 			new InfoBox("Vi danner kortet i baggrunden - du vil få besked når det er færdigt.").show();
 			InfoBox onComplete = new InfoBox("Kortet er nu oprettet, og du har muligheden for at tilgå det fra menuen.");
 			InfoBox onFailed = new InfoBox("Der opsted en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
-			domain.buildMapFromOsmPath(path.get(), x -> onComplete.show(), x -> onFailed.show());
+			domain.buildMapFromOsmPath(path.get(), x -> {
+				onComplete.show();
+				this.readFiles();
+			}, x -> onFailed.show());
 		}
 	}
 }

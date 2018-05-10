@@ -45,6 +45,9 @@ public class DomainFacade {
 	private ForestService forestService;
 	private ShortestPathService shortestPathService;
 
+	// Constants
+	private final Path MAPPR_DIR = Paths.get(System.getProperty("user.home"), "/mappr/");
+
 	public DomainFacade() {
 		Path path = Try.of(() -> Paths.get(DomainFacade.class.getResource("/default.map").toURI()))
 				.getOrNull();
@@ -52,13 +55,6 @@ public class DomainFacade {
 	}
 
 	private void initialize(Path path) {
-		try {
-			List<FileInfo> test = new MapDao().getAllFileInfoFromDirectory(Paths.get(System.getProperty("user.home"), "/mappr/"));
-			System.out.println("Catch");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		try {
 			this.mapData = new MapDao().read(path); // Switch to MapData
 		} catch (IOException e) {
@@ -95,7 +91,6 @@ public class DomainFacade {
 	}
 
 	/* SECTION END:  ADDRESS SEARCHING */
-
 	/* SECTION START: SHORTEST PATH */
 
 	/**
@@ -161,7 +156,7 @@ public class DomainFacade {
 	}
 
 	/* SECTION END: IMAGE DAO */
-	/* SECTION START: OSM IMPORT */
+	/* SECTION START: .map HANDLING */
 
 	/**
 	 * Builds .map from .osm/.osm.zip in background, and notifies on completion
@@ -171,12 +166,23 @@ public class DomainFacade {
 	 */
 	public void buildMapFromOsmPath(Path from, EventHandler<WorkerStateEvent> onSuccess, EventHandler<WorkerStateEvent> onFailed) {
 		String filename = from.getFileName().toString().split("\\.")[0] + ".map";
-		Path to = Paths.get(System.getProperty("user.home"), "/mappr/", filename);
+		Path to = Paths.get(MAPPR_DIR.toString(), filename);
 		MapImportService importer = new MapImportService(from, to, new OsmDao(), new MapDao());
 		importer.setOnSucceeded(onSuccess);
 		importer.setOnFailed(onFailed);
 		Executors.newSingleThreadExecutor().execute(importer);
 	}
 
-	/* SECTION END: OSM IMPORT */
+	public Option<Path> deleteMap(String name) {
+		Path path = Paths.get(MAPPR_DIR.toString(), name);
+		return Try.of(() -> new MapDao().delete(path))
+				.toOption();
+	}
+
+	public List<FileInfo> getAllFileInfoFromMapprDir() {
+		return Try.of(() -> new MapDao().getAllFileInfoFromDirectory(MAPPR_DIR))
+				.getOrElse(List.empty());
+	}
+
+	/* SECTION END: .map HANDLING */
 }

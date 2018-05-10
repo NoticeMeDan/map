@@ -25,7 +25,7 @@
 		<Button fx:id="deleteMapButton" styleClass="actionMenuButton" text="Slet kort" />
 	</HBox>
 	<StackPane fx:id="noMapsYetPane" VBox.vgrow="ALWAYS">
-		<Text id="noMapsText" wrappingWidth="210" textAlignment="CENTER" text="Ingen kort er tilføjet. Tilføj et kort i menubaren." />
+		<Text id="noMapsText" wrappingWidth="210" textAlignment="CENTER" text="Ingen kort er fundet. Tilføj et via knappen ovenover." />
 	</StackPane>
 	<ListView fx:id="mapListView" VBox.vgrow="ALWAYS" />
 </VBox>

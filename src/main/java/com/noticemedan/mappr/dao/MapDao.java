@@ -35,15 +35,20 @@ public class MapDao implements DataReader<MapData>, DataWriter<MapData> {
 		}
 	}
 
-	public List<FileInfo> getAllFileInfoFromDirectory(Path input) throws IOException {
-		NumberFormat formatter = new DecimalFormat("#.0");
-		final double SIZE_MB = Math.pow(1024, 2);
-		return List.ofAll(Files.walk(input)
+	public Path delete(Path file) throws IOException {
+		Files.deleteIfExists(file);
+		return file;
+	}
+
+	public List<FileInfo> getAllFileInfoFromDirectory(Path dir) throws IOException {
+		if (!Files.isDirectory(dir)) return List.empty();
+		return List.ofAll(Files.walk(dir)
 							.map(x -> Try.of(() -> FileInfo.builder()
 									.name(x.getFileName().toString())
-									.date(LocalDateTime.ofInstant(Files.getLastModifiedTime(x).toInstant(), ZoneId.systemDefault()))
-									.size(formatter.format(Files.size(x)/SIZE_MB) + "MB")
+									.lastEdited(LocalDateTime.ofInstant(Files.getLastModifiedTime(x).toInstant(), ZoneId.systemDefault()))
+									.size(Files.size(x))
 									.build())))
-							.flatMap(x -> x);
+							.flatMap(x -> x)
+							.drop(1); // First element is the directory itself
 	}
 }

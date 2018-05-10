@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 @Builder
 public class FileInfo {
 	String name;
-	LocalDateTime date;
-	String size;
+	LocalDateTime lastEdited;
+	double size;
 }

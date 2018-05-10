@@ -8,12 +8,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Each FavoritePoiCell has its own FavoritePoiCellController that manages the cell.
  */
-public class MapCellController {
+class MapCellController {
 	@Getter
 	@FXML Pane cell;
 	@FXML Label mapNameLabel;
@@ -21,7 +24,7 @@ public class MapCellController {
 	@FXML Label mapSizeLabel;
 
 
-	public MapCellController() {
+	MapCellController() {
 		initialiseCell();
 		setFXMLNodes();
 	}
@@ -39,10 +42,12 @@ public class MapCellController {
 		Try.of(fxmlLoader::load);
 	}
 
-	public void setInformation(FileInfo map) {
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+	void setInformation(FileInfo map) {
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		NumberFormat numberFormatter = new DecimalFormat("#.#");
+		double SIZE_MB = Math.pow(1024, 2);
 		mapNameLabel.setText(map.getName());
-		mapCreatedLabel.setText(dateFormatter.format(map.getDate()));
-		mapSizeLabel.setText("Størrelse: " + map.getSize() + " MB");
+		mapCreatedLabel.setText(dateFormatter.format(map.getLastEdited()));
+		mapSizeLabel.setText("Størrelse: " + numberFormatter.format(map.getSize()/SIZE_MB) + " MB");
 	}
 }
