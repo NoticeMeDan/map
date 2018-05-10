@@ -1,7 +1,10 @@
 package com.noticemedan.mappr.viewmodel.event;
 
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.viewmodel.CanvasView;
+import com.noticemedan.mappr.viewmodel.MainViewController;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,18 +13,21 @@ import java.awt.geom.Point2D;
 
 import static java.lang.Math.pow;
 
+@Slf4j
 public class MouseHandler extends MouseAdapter {
     private CanvasView canvas;
     @Getter private Point2D lastMousePosition;
-    @Getter private Point2D lastMousePositionModelCoords;
+    @Getter private Point2D lastMousePositionCanvasCoords;
+    private MainViewController mainViewController;
 
 
-    public MouseHandler(CanvasView c) {
-        canvas = c;
+    public MouseHandler(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    	canvas = mainViewController.getCanvas();
         canvas.addMouseListener(this);
         canvas.addMouseWheelListener(this);
         canvas.addMouseMotionListener(this);
-        c.toggleAntiAliasing();
+        canvas.toggleAntiAliasing();
     }
 
     @Override
@@ -30,7 +36,6 @@ public class MouseHandler extends MouseAdapter {
         double dx = currentMousePosition.getX() - lastMousePosition.getX();
         double dy = currentMousePosition.getY() - lastMousePosition.getY();
         canvas.pan(dx, dy);
-
         lastMousePosition = currentMousePosition;
     }
 
@@ -38,7 +43,7 @@ public class MouseHandler extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
 		canvas.toggleAntiAliasing();
        	lastMousePosition = e.getPoint();
-		lastMousePositionModelCoords = canvas.toModelCoords(lastMousePosition);
+		lastMousePositionCanvasCoords = Coordinate.viewportPointToCanvasPoint(lastMousePosition, canvas.getTransform());
     }
 
     @Override
@@ -48,8 +53,12 @@ public class MouseHandler extends MouseAdapter {
 
 	@Override
     public void mouseMoved(MouseEvent e) {
-        Point2D modelCoords = canvas.toModelCoords(e.getPoint());
-    }
+		Point2D currentHoverPoint = Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform());
+		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
+		canvas.logNearestNeighbor(currentHoverCoordinate);
+		mainViewController.updateScalaBar();
+		//log.info("" + Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform()));
+	}
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -59,7 +68,8 @@ public class MouseHandler extends MouseAdapter {
 
     @Override
 	public void mouseClicked(MouseEvent e) {
-		this.canvas.setPoiPos(e.getPoint());
+    	Point2D mousePosition = (e.getButton() == 1) ? e.getPoint() : null;
+		this.canvas.setPointerPosition(mousePosition);
 		this.canvas.repaint();
 	}
 }

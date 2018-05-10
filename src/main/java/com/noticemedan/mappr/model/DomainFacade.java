@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.model;
 
+import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.OsmDao;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
@@ -15,9 +16,12 @@ import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Vector;
+import io.vavr.control.Option;
+import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,7 +39,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
@@ -49,17 +53,18 @@ public class DomainFacade {
 			log.error("An error occurred", e);
 		}
 		this.forestService = new ForestService(
-				this.mapData.getElements().toJavaList(),
-				this.mapData.getCoastlineElements().toJavaList());
+				this.mapData.getElements(),
+				this.mapData.getCoastlineElements());
 		this.addressSearch = new TextSearchService<>(HashMap.ofEntries(
 				this.mapData.getAddresses().map(x -> Tuple.of(x.toFullAddress(), x))));
 		this.shortestPathService = new ShortestPathService(mapData.getElements());
 	}
 
 	// Viewport Data
-	public List<Element> getCoastLines() { return this.forestService.getCoastlines(); }
-	public List<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
-	public List<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
+	public Vector<Element> getCoastLines() { return this.forestService.getCoastlines(); }
+	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
+	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
+	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
@@ -118,4 +123,11 @@ public class DomainFacade {
 	}
 
 	/* SECTION END: SHORTEST PATH */
+
+	/* SECTION START: IMAGE DAO */
+	public Option<BufferedImage> getImageFromFS(Path input) {
+		ImageDao dao = new ImageDao();
+		return Try.of(() -> dao.read(input))
+				.toOption();
+	}
 }

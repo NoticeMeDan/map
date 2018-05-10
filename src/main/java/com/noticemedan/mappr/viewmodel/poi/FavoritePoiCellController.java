@@ -32,7 +32,6 @@ public class FavoritePoiCellController {
 	private void initialiseCell() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavoritePoiCell.fxml"));
 		fxmlLoader.setController(this);
-		//TODO: @emil ask @elias about this part
 		Try.of(fxmlLoader::load);
 	}
 
@@ -41,11 +40,11 @@ public class FavoritePoiCellController {
 		Coordinate coordinate = favoritePoi.getCoordinate();
 
 		String shortCoordinateX = String.valueOf(coordinate.getX());
-		shortCoordinateX = shortCoordinateX.substring(0,9);
+		shortCoordinateX = shortCoordinateX.substring(0, 9);
 
 		String shortCoordinateY = String.valueOf(coordinate.getY());
-		shortCoordinateY = shortCoordinateY.substring(0,10); //TODO 9 @emil when not canvas coords.
+		shortCoordinateY = shortCoordinateY.substring(0, 9);
 
-		favoritePoiLatLonLabel.setText(shortCoordinateX + ", " + shortCoordinateY);
+		favoritePoiLatLonLabel.setText(shortCoordinateY + ", " + shortCoordinateX);
 	}
 }
