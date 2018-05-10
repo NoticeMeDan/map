@@ -1,6 +1,5 @@
 package com.noticemedan.mappr.model;
 
-import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.MapDao;
 import com.noticemedan.mappr.dao.OsmDao;
@@ -10,6 +9,7 @@ import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
 import com.noticemedan.mappr.model.service.MapImportService;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
@@ -19,7 +19,6 @@ import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Vector;
-import io.vavr.concurrent.Future;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import javafx.concurrent.WorkerStateEvent;
@@ -28,16 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class DomainFacade {
@@ -100,9 +94,20 @@ public class DomainFacade {
 	 * @param to coordinate of the to-destination
 	 * @return Vector of Shapes
 	 */
-	public Vector<Shape> deriveShortestPathShapes(Coordinate from, Coordinate to) {
-		return shortestPathService.getShortestPath(from, to);
+	public Vector<Shape> deriveShortestPathShapes(Coordinate from, Coordinate to, TravelType type) {
+		return shortestPathService.getShortestPath(from, to, type);
 	}
+
+	/**
+	 * Derive the distance of the shortest path between two given coordinates
+	 * @param from coordinate of the from-destination
+	 * @param to coordinate of the to-destination
+	 * @return the distance of the path
+	 */
+	public double deriveShortestPathDistance(Coordinate from, Coordinate to, TravelType type) {
+		return shortestPathService.getPathDistance(from, to, type);
+	}
+
 	/**
 	 * DEVELOPMENT OPTION
 	 * Derive a random shortest path as a Vector of Shapes
@@ -110,7 +115,7 @@ public class DomainFacade {
 	 * @return Vector of Shapes of random shortest path
 	 */
 	public Vector<Shape> deriveRandomShortestPathShapes() {
-		return shortestPathService.getRandomShortestPath();
+		return shortestPathService.getRandomShortestPath(TravelType.ALL);
 	}
 
 	/**

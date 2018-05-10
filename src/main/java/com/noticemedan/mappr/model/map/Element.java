@@ -16,6 +16,7 @@ public class Element implements Comparable<Element>, Serializable {
 	private Type type;
 	private Path2D shape;
 	private String name;
+	private int maxspeed;
 	private Color color;
 	private boolean open; // TODO @Simon
 	private Coordinate avgPoint;
