@@ -24,4 +24,8 @@ public class TextSearchService<T> {
 		return List.ofAll(this.radixTree.getValuesForClosestKeys(search.toLowerCase()))
 				.map(kv -> (Tuple2<String, T>) kv);
 	}
+
+	public T getAddress(String search) {
+		return (T) this.radixTree.getValueForExactKey(search.toLowerCase())._2;
+	}
 }

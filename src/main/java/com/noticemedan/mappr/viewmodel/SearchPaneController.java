@@ -2,11 +2,8 @@ package com.noticemedan.mappr.viewmodel;
 
 import com.google.inject.Inject;
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.map.Address;
 import io.vavr.collection.List;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -61,11 +58,12 @@ public class SearchPaneController {
 
 	private void handleAddressSearch() {
 		String search = searchAddressField.getText();
-		// Dont run empty queries (will get *all* addresses)
-		if (search.isEmpty()) addressSearchResultsListView.getItems().removeAll(); // TODO: Find a way that actually clears the listview
-		List<String> results = this.domain.doAddressSearch(search).take(20);
-		addressSearchResultsListView.setItems(
-			FXCollections.observableArrayList(results.toJavaList())
-		);
+		if (search.isEmpty()) addressSearchResultsListView.getItems().clear();
+		else {
+			List<String> results = this.domain.doAddressSearch(search).take(20);
+			addressSearchResultsListView.setItems(
+					FXCollections.observableArrayList(results.toJavaList())
+			);
+		}
 	}
 }

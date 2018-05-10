@@ -15,11 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.List;
 
 // TODO: Split up - right now it does the job of both the V and VM layer
 @Slf4j
@@ -115,7 +117,7 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
-	private void drawShortestPath(Vector<Shape> shape) {
+	public void drawShortestPath(Vector<Shape> shape) {
 		this.g.setPaint(Color.RED);
 		this.g.setStroke(getMediumLevelStroke());
 		shape.forEach(s -> this.g.draw(s));

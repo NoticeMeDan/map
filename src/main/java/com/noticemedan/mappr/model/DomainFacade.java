@@ -6,8 +6,8 @@ import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
-import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
+import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
@@ -24,7 +24,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 public class DomainFacade {
@@ -38,7 +37,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/denmark-latest.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
@@ -69,6 +68,10 @@ public class DomainFacade {
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
+	}
+
+	public Address getAddress(String search) {
+		return this.addressSearch.getAddress(search);
 	}
 
 	/* SECTION START: SHORTEST PATH */

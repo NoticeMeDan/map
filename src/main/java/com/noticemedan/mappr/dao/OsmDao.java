@@ -29,7 +29,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -149,8 +148,7 @@ public class OsmDao implements DataReader<MapData> {
 						keyValue = keyValue.substring(5);
 						Node currentNode = idToNode.get(currentNodeID);
 						type = Type.ADDRESS;
-						address.setLat(currentNode.getLat());
-						address.setLon(currentNode.getLon());
+						address.setCoordinate(new Coordinate(currentNode.getLon(),currentNode.getLat()));
 					}
 
 					switch (keyValue) {
