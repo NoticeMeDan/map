@@ -209,8 +209,10 @@ public class CanvasView extends JComponent {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
 			System.out.println(e.getSpeedLimit());
-			this.g.setPaint(Color.CYAN);
-			this.g.setStroke(new BasicStroke(0.0001f));
+			this.g.setPaint(Color.GREEN);
+			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.CYAN);
+			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.RED);
+			this.g.setStroke(new BasicStroke(0.00002f));
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes
