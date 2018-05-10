@@ -27,7 +27,6 @@ public class NetworkParser {
 					from = to;
 				}
 			}
-
 		});
 	}
 

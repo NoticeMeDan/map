@@ -3,6 +3,7 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
@@ -209,7 +210,11 @@ public class CanvasView extends JComponent {
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
 			this.g.setPaint(Color.CYAN);
 			this.g.setStroke(new BasicStroke(0.00002f));
-			if (e.getRoadType() == Type.ROAD) {
+			if (e.getSpeedLimit() >= 80) {
+				this.g.setPaint(Color.GREEN);
+				this.g.setStroke(new BasicStroke(0.00001f));
+			}
+			if (e.getSpeedLimit() <=20) {
 				this.g.setPaint(Color.magenta);
 				this.g.setStroke(new BasicStroke(0.00001f));
 			}
