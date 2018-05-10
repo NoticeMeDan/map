@@ -1,15 +1,15 @@
 package com.noticemedan.mappr.viewmodel;
 
-import com.noticemedan.mappr.view.MapInfo;
+import com.noticemedan.mappr.model.util.FileInfo;
 import javafx.scene.control.ListCell;
 
 /**
  * MapCell is used to define a custom layout for each cell in the
  * mapListView.
  */
-public class MapCell extends ListCell<MapInfo> {
+public class MapCell extends ListCell<FileInfo> {
 	@Override
-	public void updateItem(MapInfo map, boolean empty) {
+	public void updateItem(FileInfo map, boolean empty) {
 		super.updateItem(map, empty);
 		if (empty) setGraphic(null);
 		else {

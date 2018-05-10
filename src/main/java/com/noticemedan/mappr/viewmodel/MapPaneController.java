@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.view.MapInfo;
+import com.noticemedan.mappr.model.util.FileInfo;
 import com.noticemedan.mappr.view.util.FilePicker;
 import com.noticemedan.mappr.view.util.InfoBox;
 import io.vavr.control.Option;
@@ -22,6 +22,7 @@ import lombok.Setter;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MapPaneController {
@@ -35,7 +36,7 @@ public class MapPaneController {
 	@FXML StackPane noMapsYetPane;
 
 	@Setter
-	ObservableList<MapInfo> maps;
+	ObservableList<FileInfo> maps;
 	@Setter
 	MainViewController mainViewController;
 	DomainFacade domain;
@@ -48,9 +49,9 @@ public class MapPaneController {
 
 		//TODO @emil / @elias fjern!
 		ArrayList test = new ArrayList();
-		test.add(new MapInfo("denmark-latest.osm", 23.65));
-		test.add(new MapInfo("denmark-latest.osm", 23.65));
-		test.add(new MapInfo("denmark-latest.osm", 23.65));
+		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
+		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
+		test.add(FileInfo.builder().name("denmark-latest.map").size("4MB").date(LocalDateTime.now()).build());
 		maps = FXCollections.observableArrayList(test);
 
 		mapListView.setItems(maps);
@@ -61,7 +62,7 @@ public class MapPaneController {
 	}
 
 	private void eventListeners() {
-		ChangeListener<MapInfo> favoritePoiListener = (ObservableValue<? extends MapInfo> observable, MapInfo oldValue, MapInfo newValue) -> enableActionMenu();
+		ChangeListener<FileInfo> favoritePoiListener = (ObservableValue<? extends FileInfo> observable, FileInfo oldValue, FileInfo newValue) -> enableActionMenu();
 
 		mapListView.getSelectionModel().selectedItemProperty().addListener(favoritePoiListener);
 

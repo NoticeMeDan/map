@@ -14,10 +14,12 @@ import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.FileInfo;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
 import io.vavr.collection.Vector;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -50,6 +52,13 @@ public class DomainFacade {
 	}
 
 	private void initialize(Path path) {
+		try {
+			List<FileInfo> test = new MapDao().getAllFileInfoFromDirectory(Paths.get(System.getProperty("user.home"), "/mappr/"));
+			System.out.println("Catch");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		try {
 			this.mapData = new MapDao().read(path); // Switch to MapData
 		} catch (IOException e) {

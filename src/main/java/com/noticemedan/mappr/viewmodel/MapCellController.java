@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.viewmodel;
 
-import com.noticemedan.mappr.view.MapInfo;
+import com.noticemedan.mappr.model.util.FileInfo;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -40,7 +39,7 @@ public class MapCellController {
 		Try.of(fxmlLoader::load);
 	}
 
-	public void setInformation(MapInfo map) {
+	public void setInformation(FileInfo map) {
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 		mapNameLabel.setText(map.getName());
 		mapCreatedLabel.setText(dateFormatter.format(map.getDate()));
