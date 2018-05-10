@@ -1,18 +1,14 @@
 package com.noticemedan.mappr.model.map;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 
+@Data
 public class Boundaries implements Serializable {
-	@Getter @Setter
 	private double minLat;
-	@Getter @Setter
 	private double minLon;
-	@Getter @Setter
 	private double maxLat;
-	@Getter @Setter
 	private double maxLon;
 
 	public String writeOut() {
