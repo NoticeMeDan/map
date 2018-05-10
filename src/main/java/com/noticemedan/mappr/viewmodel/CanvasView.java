@@ -208,6 +208,7 @@ public class CanvasView extends JComponent {
 	private void drawNetwork() {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
+			System.out.println(e.getSpeedLimit());
 			this.g.setPaint(Color.CYAN);
 			this.g.setStroke(new BasicStroke(0.0001f));
 			this.g.draw(e.toShape());

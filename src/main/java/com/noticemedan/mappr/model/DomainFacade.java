@@ -35,7 +35,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);

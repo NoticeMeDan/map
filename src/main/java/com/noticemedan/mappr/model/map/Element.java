@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class Element implements Comparable<Element>, Serializable {
 	private Type type;
 	private Shape shape;
+	private int maxspeed;
 	private Color color;
 	private boolean open; // TODO @Simon
 	private Coordinate avgPoint;

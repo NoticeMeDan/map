@@ -73,7 +73,7 @@ public class OsmDao implements DataReader {
 		}
 	}
 
-	public void add(Type type, Shape shape) {
+	public void add(Type type, Shape shape, int maxspeed) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -87,6 +87,7 @@ public class OsmDao implements DataReader {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
+		osmElement.setMaxspeed(maxspeed);
 		if (type.equals(Type.COASTLINE))
 			this.coastlineElements = coastlineElements.append(osmElement);
 		else
@@ -105,6 +106,7 @@ public class OsmDao implements DataReader {
 
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
+		private int maxspeed = 50; // default value
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -157,6 +159,9 @@ public class OsmDao implements DataReader {
 					}
 
 					switch (keyValue) {
+						case "maxspeed":
+							this.maxspeed = Integer.parseInt(attributes.getValue("v"));
+							break;
 						case "highway":
 							type = Type.ROAD;
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
@@ -261,7 +266,7 @@ public class OsmDao implements DataReader {
 								node = this.osmWay.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(type, path);
+							add(type, path, maxspeed);
 						}
 					}
 					break;
@@ -274,7 +279,7 @@ public class OsmDao implements DataReader {
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
-					add(type, path);
+					add(type, path, maxspeed);
 					break;
 				case "osm":
 					// convert all coastlines found to paths
@@ -291,7 +296,7 @@ public class OsmDao implements DataReader {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(Type.COASTLINE, path);
+							add(Type.COASTLINE, path, 0);
 						}
 					}
 					break;
