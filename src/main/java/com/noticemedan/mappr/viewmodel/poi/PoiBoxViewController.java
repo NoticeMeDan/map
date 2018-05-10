@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
 import javafx.collections.ObservableList;
@@ -18,7 +19,7 @@ public class PoiBoxViewController {
 	@FXML Label poiCoordinatesLabel;
 	@FXML TextField namePoiTextfield;
 	@Setter
-	ObservableList<FavoritePoi> favoritePois;
+	ObservableList<Element> favoritePois;
 
 	private Coordinate coordinate;
 
@@ -40,7 +41,10 @@ public class PoiBoxViewController {
 	}
 
 	private void savePoi() {
-		favoritePois.add(new FavoritePoi(this.coordinate, namePoiTextfield.getText()));
+		Element newFavoritePoi = new Element();
+		newFavoritePoi.setName(namePoiTextfield.getText());
+		newFavoritePoi.setAvgPoint(this.coordinate);
+		favoritePois.add(newFavoritePoi);
 		closePoiBox();
 	}
 

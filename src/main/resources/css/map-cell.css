@@ -1,0 +1,7 @@
+#mapNameLabel {
+	-fx-font-size: 16px;
+}
+
+#mapCreatedLabel, #mapSizeLabel {
+	-fx-text-fill: #ADADAD;
+}

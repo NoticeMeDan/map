@@ -72,6 +72,8 @@ public class DomainFacade {
 				.map(Tuple2::_1);
 	}
 
+	// Favorite POI
+
 	/* SECTION START: SHORTEST PATH */
 
 	/**
