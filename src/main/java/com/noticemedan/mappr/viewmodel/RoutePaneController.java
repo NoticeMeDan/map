@@ -11,6 +11,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 
 public class RoutePaneController {
@@ -24,6 +26,9 @@ public class RoutePaneController {
 	@FXML ListView routeSearchResultsListView;
 	@FXML ListView navigationInstructionsListView;
 
+	@Setter
+	MainViewController mainViewController;
+
 	ObservableList<NavigationInstruction> navigationInstructions;
 
 	public void initialize() {
@@ -36,7 +41,10 @@ public class RoutePaneController {
 	}
 
 	private void eventListeners() {
-		routePaneCloseButton.setOnAction(event -> closeRoutePane());
+		routePaneCloseButton.setOnAction(event -> {
+			mainViewController.pushCanvas();
+			closeRoutePane();
+		});
 	}
 
 	public void openRoutePane() {

@@ -1,13 +1,14 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
+import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
-import com.noticemedan.mappr.model.pathfinding.PathEdge;
+import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
-import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 
 // TODO: Split up - right now it does the job of both the V and VM layer
@@ -22,6 +26,7 @@ import java.util.List;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
+	@Getter
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
     private Rectangle2D viewRect;
@@ -30,13 +35,12 @@ public class CanvasView extends JComponent {
     @Setter
 	private double zoomLevel;
 	private boolean isShapeOpen;
-	private Shape poi;
-	private Point2D poiPos;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	private Point2D pointerPosition;
+	private BufferedImage pointer;
 
     //Performance test fields
-	//TODO @emil delete when finished performance tuning
 	public double timeDraw;
 	public double timeRangeSearch;
 	@Setter @Getter
@@ -45,6 +49,9 @@ public class CanvasView extends JComponent {
 	private boolean logZoomLevel = false;
 	@Setter @Getter
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
+	@Setter @Getter
+	private boolean logNearestNeighbor = false;
+
 	private DomainFacade domain;
 
 	//ShortestPath
@@ -53,8 +60,14 @@ public class CanvasView extends JComponent {
 	private Vector<Shape> randomSP;
 
 	public CanvasView(DomainFacade domainFacade) {
-		this.domain = domainFacade;
-		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		try {
+			this.domain = domainFacade;
+			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
+      		OsmElementProperty.standardColor();
+		} catch (URISyntaxException e) {
+			log.error("An error occurred", e);
+		}
 		repaint();
 	}
 
@@ -82,7 +95,7 @@ public class CanvasView extends JComponent {
 
 		if (this.showNetwork) drawNetwork();
 		if (this.showRandomSP) drawShortestPath(randomSP);
-		if (poiPos != null) drawPoi();
+		if (pointerPosition != null) drawPoi();
 
 		performanceTest();
 
@@ -119,14 +132,14 @@ public class CanvasView extends JComponent {
 
 	private void drawCoastlines() {
 		this.domain.getCoastLines().forEach(c -> {
-			this.g.setPaint(c.getColor());
+			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
 	}
 
     private void drawAllElements() {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
-		List<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
+		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
 
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
@@ -153,7 +166,7 @@ public class CanvasView extends JComponent {
 
 	}
 
-	private void paintClosedElements (List<Element> result, BasicStroke stroke) {
+	private void paintClosedElements (Vector<Element> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
 		paintByType(result,Type.PARK,stroke);
 		paintByType(result,Type.GRASSLAND,stroke);
@@ -187,15 +200,14 @@ public class CanvasView extends JComponent {
 		else return new BasicStroke(0.0007f);
 	}
 
-    private void paintByType(List<Element> elements, Type type, BasicStroke stroke) {
-		elements.stream()
-				.filter(e -> e.getType() == type)
+    private void paintByType(Vector<Element> elements, Type type, BasicStroke stroke) {
+		elements.filter(e -> e.getType() == type)
 				.forEach(e -> paintOsmElement(stroke, e));
 	}
 
 	private void paintOsmElement(BasicStroke stroke, Element element) {
 		this.g.setStroke(stroke);
-		this.g.setPaint(element.getColor());
+		this.g.setPaint(OsmElementProperty.deriveColorFromType(element.getType()));
 		if (element.getShape().intersects(this.viewRect)) {
 			if (isShapeOpen) {
 				this.g.draw(element.getShape());
@@ -220,10 +232,14 @@ public class CanvasView extends JComponent {
 	}
 
 	private void performanceTest() {
-		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea).size());
+		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
+
+    public void logNearestNeighbor(Coordinate queryPoint) {
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+	}
 
     public void toggleAntiAliasing() {
         antiAliasing = !antiAliasing;
@@ -252,12 +268,105 @@ public class CanvasView extends JComponent {
 		Point2D p1Altered = new Point2D.Double(p1.getX() + borderW, p1.getY() + borderW);
 		Point2D p2Altered = new Point2D.Double(p2.getX() - borderW, p2.getY() - borderW);
 
-		double x1 = (showReversedBorders) ? toModelCoords(p1Altered).getX() : toModelCoords(p1).getX() - 0.02;
-		double y1 = (showReversedBorders) ? toModelCoords(p1Altered).getY() : toModelCoords(p1).getY() - 0.02;
-		double x2 = (showReversedBorders) ? toModelCoords(p2Altered).getX() : toModelCoords(p2).getX() + 0.02;
-		double y2 = (showReversedBorders) ? toModelCoords(p2Altered).getY() : toModelCoords(p2).getY() + 0.02;
+		double x1 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p1Altered, transform).getX() : Coordinate.viewportPointToCanvasPoint(p1, transform).getX() - 0.02;
+		double y1 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p1Altered, transform).getY() : Coordinate.viewportPointToCanvasPoint(p1, transform).getY() - 0.02;
+		double x2 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p2Altered, transform).getX() : Coordinate.viewportPointToCanvasPoint(p2, transform).getX() + 0.02;
+		double y2 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p2Altered, transform).getY() : Coordinate.viewportPointToCanvasPoint(p2, transform).getY() + 0.02;
 
 		return new Rect(x1, y1, x2, y2);
+	}
+
+	/**
+	 * Go to a coordinate at a given zoom level in canvas.
+	 * @param coordinate		In WGS-84 format
+	 * @param zoomLevel			Zoom level in canvas
+	 */
+	public void zoomToCoordinate(Coordinate coordinate, int zoomLevel) {
+		centerCoordinateInCanvas(coordinate);
+		zoomToZoomLevel(zoomLevel);
+	}
+
+	/**
+	 * @param coordinate 		In WGS-84 format
+	 */
+	private void centerCoordinateInCanvas(Coordinate coordinate) {
+		//Go to coordinate at map's original zoomlevel. (The coordinate will be in the upper right corner)
+		transform = new AffineTransform();
+		pan(-coordinate.getX(), -Coordinate.latToCanvasLat(coordinate.getY()));
+		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+
+		//Define upper left and lower right viewport corners screen in canvas lat/lon
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0, 0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+		//Calculate new upper right corner coordinates lambda and phi such that the coordinate will be centered
+		double lambda = upperLeftViewPortCorner.getX()-((lowerRightViewPortCorner.getX()-upperLeftViewPortCorner.getX())/2);
+		double phi = upperLeftViewPortCorner.getY()-((lowerRightViewPortCorner.getY()-upperLeftViewPortCorner.getY())/2);
+
+		//Go to coordinate at map's original zoomlevel. (The coordinate will now be centered)
+		transform = new AffineTransform();
+		pan(-lambda, -phi);
+		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+
+		//Reset canvas zoom level because we have reset to the map's original zoomlevel
+		this.zoomLevel = (1 / (Entities.getMaxLon() - Entities.getMinLon()));
+	}
+
+	//Zoom canvas to a given zoom level
+	private void zoomToZoomLevel(int zoomLevel) {
+		//Assumes zoomLevel has been reset.
+		while(this.zoomLevel < zoomLevel) zoomToCenter(1.1);
+		repaint();
+	}
+
+	/**
+	 * Zoom as far in on canvas while still maintaining view of two coordinates.
+	 * @param coordinateA		In WGS-84 format
+	 * @param coordinateB		In WGS-84 format
+	 */
+	public void zoomToRoute(Coordinate coordinateA, Coordinate coordinateB) {
+		//Transform coordinates into canvas coordinates
+		coordinateA = new Coordinate(coordinateA.getX(), Coordinate.latToCanvasLat(coordinateA.getY()));
+		coordinateB = new Coordinate(coordinateB.getX(), Coordinate.latToCanvasLat(coordinateB.getY()));
+
+		Coordinate averageCoordinate = new Coordinate(
+				(coordinateA.getX() + coordinateB.getX())/2,
+				(coordinateA.getY() + coordinateB.getY())/2);
+
+		centerCoordinateInCanvas(averageCoordinate);
+
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+		Rect currentViewRect = new Rect(
+				upperLeftViewPortCorner.getX(),
+				upperLeftViewPortCorner.getY(),
+				lowerRightViewPortCorner.getX(),
+				lowerRightViewPortCorner.getY()
+		);
+
+		Rect routeRect = new Rect(
+				coordinateA.getX(),
+				Coordinate.latToCanvasLat(coordinateA.getY()),
+				coordinateB.getX(),
+				Coordinate.latToCanvasLat(coordinateB.getY())
+		);
+
+		// Zoom continuously in on the route Rectangle. If the route rectange intersects view rectangle stop zooming.
+		while (Rect.rectInRect(routeRect, currentViewRect)) {
+			zoomToCenter(1.1);
+			upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), transform);
+			lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+
+			currentViewRect = new Rect(
+					upperLeftViewPortCorner.getX(),
+					upperLeftViewPortCorner.getY(),
+					lowerRightViewPortCorner.getX(),
+					lowerRightViewPortCorner.getY()
+			);
+		}
+		zoomToCenter(1/1.3);
+		repaint();
 	}
 
 	public void toggleFPS() {
@@ -269,44 +378,20 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPoi() {
-		if (poiPos == null) return;
-		this.poi = createPoiShape();
-		this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
-		//Background color
-		this.g.setPaint(Color.decode("#D0021B"));
-		this.g.fill(this.poi);
-		//Outline color
-		this.g.setPaint(Color.WHITE);
-		this.g.draw(this.poi);
+		if (this.pointerPosition == null) return;
+		double size = this.viewRect.getWidth() * 0.0001;
+		double width = pointer.getWidth() * size;
+		double height = pointer.getHeight() * size;
+
+		AffineTransform at = new AffineTransform();
+		at.translate(this.pointerPosition.getX() - width/2,this.pointerPosition.getY()-height);
+		at.scale(size,size);
+
+		this.g.drawImage(this.pointer,at,null);
 	}
 
-	private Shape createPoiShape() {
-		double size = this.viewRect.getWidth() * 0.05;
-		double xPos = this.poiPos.getX() - size/2;
-		double yPos = this.poiPos.getY() - size * 1.2;
-
-		Shape oval = new Ellipse2D.Double(xPos, yPos, size, size);
-		Shape inner = new Ellipse2D.Double(xPos + size/2.7, yPos + size/2.7, size/4, size/4);
-
-		Path2D pointer = new Path2D.Double();
-		pointer.moveTo(xPos, yPos + size/1.5);
-		pointer.lineTo(poiPos.getX(), poiPos.getY());
-		pointer.lineTo(xPos + size, yPos + size/1.5);
-		pointer.closePath();
-
-		Area area = new Area(oval);
-		area.add(new Area(pointer));
-		area.subtract(new Area(inner));
-		return area;
-	}
-
-	public void setPoiPos(Point2D p) {
-		this.poiPos = toModelCoords(p);
-	}
-
-	public Point2D toModelCoords(Point2D p) {
-		return Try.of( () -> transform.inverseTransform(p, null))
-				.getOrNull();
+	public void setPointerPosition(Point2D p) {
+		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
 	}
 
 	public void toggleDijkstraNetwork() {

@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.dao;
 
+import com.noticemedan.mappr.model.kdtree.KdNode;
 import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.kdtree.KDTreeNode;
 import com.noticemedan.mappr.model.util.Coordinate;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -12,7 +12,7 @@ import static org.testng.Assert.assertEquals;
 
 public class MapDaoTest {
 
-	private KDTreeNode kdTreeNode;
+	private KdNode kdTreeNode;
 	private Element[] elements;
 	private Element[] before;
 	private Element[] after;
@@ -32,10 +32,10 @@ public class MapDaoTest {
 		elements[6].setAvgPoint(new Coordinate(7,2));
 		elements[7].setAvgPoint(new Coordinate(9,9));
 
-		this.kdTreeNode = new KDTreeNode(elements, 5);
+		this.kdTreeNode = new KdNode(elements, 5);
 
 
-		this.kdTreeNode = new KDTreeNode(elements, 5);
+		this.kdTreeNode = new KdNode(elements, 5);
 		System.out.println("ID: " + this.kdTreeNode.getBinaryID() + "\n");
 	}
 
