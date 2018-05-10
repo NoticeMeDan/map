@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model.pathfinding;
 
-import com.noticemedan.mappr.model.map.Type;
+import io.vavr.collection.Set;
 import lombok.Data;
 
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.geom.Line2D;
 public class PathEdge {
 	private double weight;
 	private double speedLimit;
-	private Type roadType;
+	private Set<TravelType> travelTypesAllowed;
 	private PathNode v;
 	private PathNode w;
 
