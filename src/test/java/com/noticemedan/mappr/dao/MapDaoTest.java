@@ -18,7 +18,7 @@ public class MapDaoTest {
 
 	@BeforeTest
 	void prepare() throws Exception {
-		this.original = new OsmDao().read(Paths.get(MapDaoTest.class.getResource("/osm/small.osm.zip").toURI()));
+		this.original = new OsmDao().read(Paths.get(MapDaoTest.class.getResource("/osm/testSmall.osm.zip").toURI()));
 		new MapDao().write(this.mapPath, this.original);
 		this.test = new MapDao().read(this.mapPath);
 	}
