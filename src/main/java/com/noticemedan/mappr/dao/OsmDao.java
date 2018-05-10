@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -108,6 +109,9 @@ public class OsmDao implements DataReader<MapData> {
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
 		private int maxspeed = 50; // default value
+		final String regex = "\\d+";
+		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -159,7 +163,10 @@ public class OsmDao implements DataReader<MapData> {
 
 					switch (keyValue) {
 						case "maxspeed":
-							this.maxspeed = Integer.parseInt(attributes.getValue("v"));
+							final Matcher matcher = pattern.matcher(attributes.getValue("v"));
+							while (matcher.find()) {
+								this.maxspeed = Integer.parseInt(matcher.group(0));
+							}
 							break;
 						case "highway":
 							type = Type.ROAD;
