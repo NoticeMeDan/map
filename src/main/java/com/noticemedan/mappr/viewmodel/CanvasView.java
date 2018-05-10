@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
+import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
@@ -102,19 +103,29 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
+    private Shape pointShape(Point2D point, Color color) {
+		this.g.setPaint(color);
+		double size = 0.005;
+		return new Ellipse2D.Double(point.getX() - (size/2), point.getY() - (size/2), size,size);
+	}
+
 	private void drawShortestPath(Vector<Shape> shape) {
-		this.g.setPaint(Color.decode("#2F9862"));
-		this.g.setStroke(getMediumLevelStroke());
+		if (shape.isEmpty()) return;
 		Path2D path = new GeneralPath();
 		boolean first = true;
-		 for(Shape s : shape) {
+		for(Shape s : shape) {
 			Line2D.Double line = (Line2D.Double) s;
 			if(first) {
+				this.g.fill(pointShape(new Point2D.Double(line.x1,line.y1), Color.MAGENTA));
 				path.moveTo(line.x1, line.y1);
 				first = false;
 			}
 			else path.lineTo(line.x1,line.y1);
 		}
+		this.g.fill(pointShape(path.getCurrentPoint(),Color.decode("#ff5733")));
+		this.g.setPaint(Color.decode("#2F9862"));
+		this.g.setStroke(getMediumLevelStroke());
+		if (this.zoomLevel < 5)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
 	}
 
