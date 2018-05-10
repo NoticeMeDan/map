@@ -29,7 +29,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -39,6 +38,7 @@ public class OsmDao implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
+	private String currentName;
 
 	@Override
 	public MapData read(Path input) throws IOException {
@@ -89,6 +89,8 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
+		osmElement.setName(currentName);
+		currentName = null;
 		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
 		else this.elements = elements.append(osmElement);
 	}
@@ -101,7 +103,6 @@ public class OsmDao implements DataReader<MapData> {
 		int path2DSize = 1;
 		private Type type = Type.UNKNOWN;
 		private long currentNodeID;
-
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
 
@@ -152,7 +153,6 @@ public class OsmDao implements DataReader<MapData> {
 						address.setLat(currentNode.getLat());
 						address.setLon(currentNode.getLon());
 					}
-
 					switch (keyValue) {
 						case "highway":
 							type = Type.ROAD;
@@ -186,7 +186,7 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
-
+							currentName = attributes.getValue("v");
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));
