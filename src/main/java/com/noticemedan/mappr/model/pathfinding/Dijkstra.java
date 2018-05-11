@@ -50,8 +50,9 @@ public class Dijkstra {
 
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
-		if (distTo[wId] > distTo[vId] + e.getWeight()) {
-			distTo[wId] = distTo[vId] + e.getWeight();
+		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight()/e.getSpeedLimit()) : e.getWeight();
+		if (distTo[wId] > distTo[vId] + weight) {
+			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;
 			if (priorityQueue.contains(wId)) priorityQueue.decreaseKey(wId, distTo[wId]);
 			else priorityQueue.insert(wId, distTo[wId]);
