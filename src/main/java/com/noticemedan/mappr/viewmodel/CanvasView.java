@@ -156,12 +156,11 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.PRIMARY, getMediumLevelStroke());
 		paintByType(result, Type.HIGHWAY,new BasicStroke(0.0001f));
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-
 		if(currentNN != null) paintNN();
 	}
 
 	private void paintNN() {
-		g.setStroke(new BasicStroke(0.0001f));
+		g.setStroke(getHighLevelStroke());
 		g.setPaint(Color.RED);
 		g.draw(currentNN.getShape());
 	}
