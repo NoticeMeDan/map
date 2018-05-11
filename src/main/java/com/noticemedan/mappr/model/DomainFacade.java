@@ -127,6 +127,12 @@ public class DomainFacade {
 	/* SECTION END: SHORTEST PATH */
 
 	/* SECTION START: IMAGE DAO */
+
+	/**
+	 * Derive a BufferedImage from a given filepath
+	 * @param input path to file
+	 * @return BufferedImage if file exists
+	 */
 	public Option<BufferedImage> getImageFromFS(Path input) {
 		ImageDao dao = new ImageDao();
 		return Try.of(() -> dao.read(input))
