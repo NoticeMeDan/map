@@ -134,7 +134,7 @@ public class CanvasView extends JComponent {
 		}
 		this.g.setPaint(Color.decode("#2F9862"));
 		this.g.setStroke(getMediumLevelStroke());
-		if (this.zoomLevel < 3)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		if (this.zoomLevel < 2)this.g.setStroke(new BasicStroke(0.005f, BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		this.g.draw(path);
 		drawImage(this.start, startpoint,0.00003,true);
 		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
