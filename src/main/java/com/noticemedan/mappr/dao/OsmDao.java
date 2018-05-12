@@ -75,7 +75,6 @@ public class OsmDao implements DataReader<MapData> {
 	}
 
 	public void add(Type type, Shape shape) {
-		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
 		double y1 = shapeBounds.getY();
@@ -87,9 +86,9 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setBounds(rect);
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
-		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
-		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
-		else this.elements = elements.append(osmElement);
+		osmElement.setColor(OsmElementProperty.deriveColorFromType(type));
+		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.prepend(osmElement);
+		else this.elements = elements.prepend(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -241,15 +240,13 @@ public class OsmDao implements DataReader<MapData> {
 							this.coastlines = coastlines.put(merged.get(0), merged);
 						}
 					} else {
-						if(!this.osmWay.isEmpty()) {
-							node = this.osmWay.get(0);
-							path.moveTo(node.getLon(), node.getLat());
-							for (int i = 1; i < osmWay.size(); i++) {
-								node = this.osmWay.get(i);
-								path.lineTo(node.getLon(), node.getLat());
-							}
-							add(type, path);
+						node = this.osmWay.get(0);
+						path.moveTo(node.getLon(), node.getLat());
+						for (int i = 1; i < osmWay.size(); i++) {
+							node = this.osmWay.get(i);
+							path.lineTo(node.getLon(), node.getLat());
 						}
+						add(type, path);
 					}
 					break;
 				case "relation":
