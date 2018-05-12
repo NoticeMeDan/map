@@ -22,6 +22,7 @@ public class OsmElementProperty {
 
 		typeColors.put(Type.BUILDING, new Color(238, 110, 59));
 
+
 		typeColors.put(Type.MOTORWAY, new Color(255, 226, 0));
 		typeColors.put(Type.PRIMARY, new Color(242, 255, 59));
 		typeColors.put(Type.SECONDARY, new Color(192, 78,201));
@@ -44,12 +45,25 @@ public class OsmElementProperty {
 
 		typeColors.put(Type.BUILDING, new Color(238,234,226));
 
-		typeColors.put(Type.MOTORWAY, new Color(255,205,42));
+		typeColors.put(Type.AERODROME, new Color(225, 230, 235));
+		typeColors.put(Type.TAXIWAY, new Color(215, 220, 224));
+		typeColors.put(Type.RUNWAY, new Color(215, 220, 224));
+		typeColors.put(Type.RAIL, new Color(208, 208, 208));
+
+		typeColors.put(Type.MOTORWAY, new Color(255, 207, 22));
 		typeColors.put(Type.PRIMARY, new Color(255,228,141));
+		typeColors.put(Type.TRUNK, new Color(255, 226, 104));
 		typeColors.put(Type.SECONDARY, new Color(201,201,201));
 		typeColors.put(Type.TERTIARY, new Color(230,230,230));
 		typeColors.put(Type.ROAD, new Color(212,203,191));
+		typeColors.put(Type.RESIDENTIAL, new Color(212,203,191));
+		typeColors.put(Type.FOOTPATH, new Color(238,229,217));
 		typeColors.put(Type.FOOTWAY, new Color(238,229,217));
+		typeColors.put(Type.PATH, new Color(238,229,217));
+		typeColors.put(Type.TRACK, new Color(238, 229, 217));
+		typeColors.put(Type.SERVICE, new Color(212,203,191));
+		typeColors.put(Type.UNCLASSIFIED, new Color(212,203,191));
+		typeColors.put(Type.CYCLEWAY, new Color(212, 203, 191));
 
 		typeColors.put(Type.UNKNOWN, new Color(230,0,160));
 	}

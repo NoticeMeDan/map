@@ -15,7 +15,7 @@ public class NetworkParser {
 
 	public NetworkParser(Vector<Element> elements) {
 		this.network = new Network();
-		elements.filter(this::isWay).forEach(e -> {
+		elements.filter(element -> element.isRoad()).forEach(e -> {
 			PathNode from = null;
 			for(PathIterator pi = e.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 				int type = pi.currentSegment(coords);
@@ -38,14 +38,6 @@ public class NetworkParser {
 				.lat(lat)
 				.edges(Vector.empty())
 				.build();
-	}
-
-	private boolean isWay(Element e) {
-		return e.getType() == Type.MOTORWAY ||
-				e.getType() == Type.PRIMARY ||
-				e.getType() == Type.SECONDARY ||
-				e.getType() == Type.TERTIARY ||
-				e.getType() == Type.ROAD;
 	}
 
 	//Testing purpose

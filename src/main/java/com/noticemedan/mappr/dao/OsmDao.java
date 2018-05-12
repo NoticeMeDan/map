@@ -167,25 +167,40 @@ public class OsmDao implements DataReader<MapData> {
 							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
 							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;
 							if (attributes.getValue("v").equals("path")) type = Type.PATH;
-							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
 							if (attributes.getValue("v").equals("road")) type = Type.ROAD;
+							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
+							break;
+						case "railway":
+							if (attributes.getValue("v").equals("rail")) type = Type.RAIL;
 							break;
 						case "natural":
 							if (attributes.getValue("v").equals("water")) type = Type.WATER;
 							else if (attributes.getValue("v").equals("heath")) type = Type.HEATH;
+							else if (attributes.getValue("v").equals("scrub")) type = Type.HEATH;
+							else if (attributes.getValue("v").equals("wood")) type = Type.FOREST;
 							else if (attributes.getValue("v").equals("tree_row")) type = Type.TREE_ROW;
 							else if (attributes.getValue("v").equals("grassland")) type = Type.GRASSLAND;
-							else if (attributes.getValue("v").equals("grassland")) type = Type.FOREST;
 							else if (attributes.getValue("v").equals("coastline")) type = Type.COASTLINE;
 							break;
 						case "leisure":
 							if (attributes.getValue("v").equals("park")) type = Type.PARK;
+							if (attributes.getValue("v").equals("common")) type = Type.PARK;
+							break;
+						case "amenity":
+							if (attributes.getValue("v").equals("grave_yard")) type = Type.PARK;
 							break;
 						case "building":
 							type = Type.BUILDING;
 							break;
 						case "landuse":
 							if (attributes.getValue("v").equals("forest")) type = Type.FOREST;
+							if (attributes.getValue("v").equals("village_green")) type = Type.GARDEN;
+							if (attributes.getValue("v").equals("grass")) type = Type.GRASSLAND;
+							break;
+						case "aeroway":
+							if (attributes.getValue("v").equals("aerodrome")) type = Type.AERODROME;
+							if (attributes.getValue("v").equals("taxiway")) type = Type.TAXIWAY;
+							if (attributes.getValue("v").equals("runway")) type = Type.RUNWAY;
 							break;
 						case "housenumber":
 							address.setHouseNumber(attributes.getValue("v"));

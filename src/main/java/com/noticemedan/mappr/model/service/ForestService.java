@@ -23,7 +23,6 @@ public class ForestService implements ForestInterface {
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;
 		Element[][] elementArray = new Element[5][];
-
 		Vector<Element> zoom0 = Vector.empty();
 		Vector<Element> zoom1 = Vector.empty();
 		Vector<Element> zoom2 = Vector.empty();
@@ -36,6 +35,7 @@ public class ForestService implements ForestInterface {
 					zoom0 = zoom0.append(osmElement);
 					break;
 				case PRIMARY:
+				case TRUNK:
 					zoom1 = zoom1.append(osmElement);
 					break;
 				case SECONDARY:
@@ -47,10 +47,22 @@ public class ForestService implements ForestInterface {
 				case HEATH:
 				case PARK:
 				case ROAD:
+				case FOOTWAY:
+				case FOOTPATH:
+				case PATH:
+				case RAIL:
 				case FOREST:
+				case AERODROME:
+				case TAXIWAY:
+				case RUNWAY:
+				case RESIDENTIAL:
+				case CYCLEWAY:
+				case UNCLASSIFIED:
+				case TRACK:
 					zoom3 = zoom3.append(osmElement);
 					break;
 				case BUILDING:
+				case SERVICE:
 				case PLAYGROUND:
 					zoom4 = zoom4.append(osmElement);
 					break;
@@ -75,8 +87,8 @@ public class ForestService implements ForestInterface {
 	public Vector<Element> rangeSearch(Rect searchQuery, double zoomLevel) {
 		Vector<Element> searchResults = Vector.empty();
 
-		if (zoomLevel > 50) searchResults = searchResults.appendAll(trees[4].rangeSearch(searchQuery));
-		if (zoomLevel > 15) searchResults = searchResults.appendAll(trees[3].rangeSearch(searchQuery));
+		if (zoomLevel > 40) searchResults = searchResults.appendAll(trees[4].rangeSearch(searchQuery));
+		if (zoomLevel > 6) searchResults = searchResults.appendAll(trees[3].rangeSearch(searchQuery));
 		if (zoomLevel > 1) searchResults = searchResults.appendAll(trees[2].rangeSearch(searchQuery));
 		if (zoomLevel > 0.5) searchResults = searchResults.appendAll(trees[1].rangeSearch(searchQuery));
 		if (zoomLevel > 0) searchResults = searchResults.appendAll(trees[0].rangeSearch(searchQuery));
@@ -100,7 +112,7 @@ public class ForestService implements ForestInterface {
 		Coordinate currentNNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 		for (int i = 0; i < currentRangeSearch.size(); i++) {
-			if (isWay(currentRangeSearch.get(i))) {
+			if (currentRangeSearch.get(i).isRoad() && currentRangeSearch.get(i).getType() != Type.SERVICE) {
 				for (PathIterator pi = currentRangeSearch.get(i).getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 					double[] currentShapePointCoordinateArray = new double[2];
 					pi.currentSegment(currentShapePointCoordinateArray); // Inserts current coordinates into currentShapePointCoordinateArray;
@@ -115,14 +127,6 @@ public class ForestService implements ForestInterface {
 			}
 		}
 		return currentNN;
-	}
-
-	private boolean isWay(Element e) {
-		return e.getType() == Type.MOTORWAY ||
-				e.getType() == Type.PRIMARY ||
-				e.getType() == Type.SECONDARY ||
-				e.getType() == Type.TERTIARY ||
-				e.getType() == Type.ROAD;
 	}
 
 	@Override

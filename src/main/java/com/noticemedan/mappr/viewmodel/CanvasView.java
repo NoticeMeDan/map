@@ -147,20 +147,28 @@ public class CanvasView extends JComponent {
 		//All open elements
 		this.isShapeOpen = true;
 		paintByType(result, Type.UNKNOWN, getLowLevelStroke());
-		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.SAND, getLowLevelStroke());
-		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00002f));
-		paintByType(result, Type.ROAD, new BasicStroke(0.00004f));
+		paintByType(result, Type.RAIL, new BasicStroke(0.00006f));
+		paintByType(result, Type.SERVICE, new BasicStroke(0.0001f));
+		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00007f));
+		paintByType(result, Type.PATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.TRACK, new BasicStroke(0.00007f));
+		paintByType(result, Type.CYCLEWAY, new BasicStroke(0.00008f));
+		paintByType(result, Type.RUNWAY, new BasicStroke(0.002f));
+		paintByType(result, Type.TAXIWAY, new BasicStroke(0.0003f));
+		paintByType(result, Type.FOOTPATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.ROAD, new BasicStroke(0.0001f));
+		paintByType(result, Type.RESIDENTIAL, new BasicStroke(0.0001f));
 		paintByType(result, Type.TERTIARY, getHighLevelStroke());
 		paintByType(result, Type.SECONDARY, getHighLevelStroke());
-		paintByType(result, Type.PRIMARY, getMediumLevelStroke());
-		paintByType(result, Type.HIGHWAY,new BasicStroke(0.0001f));
+		paintByType(result, Type.TRUNK, getLowLevelStroke());
+		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
 		if(currentNN != null) paintNN();
 	}
 
 	private void paintNN() {
-		g.setStroke(getHighLevelStroke());
+		g.setStroke(getLowLevelStroke());
 		g.setPaint(Color.RED);
 		g.draw(currentNN.getShape());
 	}
@@ -176,6 +184,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.PLAYGROUND, stroke);
 		paintByType(result, Type.WATER, stroke);
 		paintByType(result, Type.BUILDING, stroke);
+		paintByType(result, Type.AERODROME, stroke);
 	}
 
 	private BasicStroke getLowLevelStroke() {
@@ -193,7 +202,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private BasicStroke getHighLevelStroke() {
-		if (this.zoomLevel > 130) return new BasicStroke(0.00005f);
+		if (this.zoomLevel > 130) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 18) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 5) return new BasicStroke(0.0003f);
 		else return new BasicStroke(0.0007f);
@@ -237,7 +246,7 @@ public class CanvasView extends JComponent {
     }
 
     public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint));
 		currentNN = this.domain.doNearestNeighborSearch(queryPoint);
 		repaint();
 	}
