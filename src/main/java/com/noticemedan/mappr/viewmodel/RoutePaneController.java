@@ -105,6 +105,7 @@ public class RoutePaneController {
 	}
 
 	public void search() {
+		// TODO: Make dynamic by getting chosen traveltype
 		TravelType travelType = TravelType.ALL;
 
 		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), travelType);
