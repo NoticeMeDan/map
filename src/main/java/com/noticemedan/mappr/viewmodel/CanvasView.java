@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
-	@Getter
+	@Getter @Setter
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
     private Rectangle2D viewRect;
@@ -66,14 +66,14 @@ public class CanvasView extends JComponent {
 	private BufferedImage goal;
 
 	public CanvasView(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+		this.boundaries = this.domain.getBoundaries();
+		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		OsmElementProperty.standardColor();
 		try {
-			this.domain = domainFacade;
-			this.boundaries = this.domain.getBoundaries();
-			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
       		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
       		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
-			OsmElementProperty.standardColor();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
@@ -187,7 +187,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null) paintNN();
+		if(currentNN != null && currentNN.getShape() != null ) paintNN();
 	}
 
 	private void paintNN() {

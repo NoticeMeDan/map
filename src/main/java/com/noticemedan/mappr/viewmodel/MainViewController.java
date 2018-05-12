@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import javax.inject.Inject;
 
@@ -98,6 +99,7 @@ public class MainViewController {
 		routePaneController.setMainViewController(this);
 		searchPaneController.setMainViewController(this);
 		menuBarController.setMainViewController(this);
+		mapPaneController.setMainViewController(this);
 
 		eventListeners();
 	}
@@ -142,6 +144,7 @@ public class MainViewController {
 
 	void centerViewport() {
 		this.boundaries = this.domain.getBoundaries();
+		canvas.setTransform(new AffineTransform());
 		canvas.pan(-boundaries.getMinLon(), -boundaries.getMaxLat());
 		canvas.zoom(width / (boundaries.getMaxLon() - boundaries.getMinLon()), 0, 0);
 		canvas.setZoomLevel(1 / (boundaries.getMaxLon() - boundaries.getMinLon()));

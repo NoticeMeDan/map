@@ -141,7 +141,7 @@ public class MapPaneController {
 		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
 		this.domain.loadMap(map.getFileName());
 		this.mainViewController.centerViewport();
-		MainViewController.getCanvas().repaint();
+		this.mainViewController.getCanvas().repaint();
 	}
 
 	private void updateMap(ActionEvent event) {
