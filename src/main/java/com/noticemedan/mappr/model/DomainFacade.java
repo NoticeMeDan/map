@@ -6,6 +6,7 @@ import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
@@ -64,7 +65,7 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
-	public Element doNearestNeighborSearch(Coordinate queryPoint) { return this.forestService.nearestNeighbor(queryPoint); }
+	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {

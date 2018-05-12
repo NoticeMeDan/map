@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.kdtree.ForestInterface;
 import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.collection.Vector;
@@ -99,20 +100,44 @@ public class ForestService implements ForestInterface {
 
 	//Range search as if only having one zoom level.
 	public Vector<Element> rangeSearch(Rect searchQuery) {
-		return rangeSearch(searchQuery, 0);
+		return rangeSearch(searchQuery, Double.POSITIVE_INFINITY);
+	}
+
+	public Element nearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {
+		Element nearestNeighbor = new Element();
+		Coordinate NNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		nearestNeighbor.setAvgPoint(NNCoordinate);
+
+		double r = 0.01;
+		while (nearestNeighbor.getAvgPoint().getX() == Double.POSITIVE_INFINITY) {
+			Rect queryRect = new Rect(queryPoint.getX() - r, queryPoint.getY() - r, queryPoint.getX() + r, queryPoint.getY() + r );
+			rangeSearch(queryRect, Double.POSITIVE_INFINITY);
+			nearestNeighbor = nearestNeighborInCurrentRangeSearch(queryPoint, travelType);
+			r = r + 0.01;
+		}
+
+		return nearestNeighbor;
 	}
 
 	/**
-	 * Brute force nearest neighbor (more accurate, but slower than other NN method).
-	 * @param queryPoint
-	 * @return
+	 * Brute force nearest neighbor search
+	 * Is much more accurate but also slower than other nearest neighbor search
+	 * @param queryPoint			The point to search through nearest neighbor.
+	 * @return 						Nearest Element to input point according to travelType.
 	 */
-	public Element nearestNeighbor(Coordinate queryPoint) {
+	public Element nearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) {
 		Element currentNN = new Element();
 		Coordinate currentNNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		currentNN.setAvgPoint(currentNNCoordinate);
 
 		for (int i = 0; i < currentRangeSearch.size(); i++) {
-			if (currentRangeSearch.get(i).isRoad() && currentRangeSearch.get(i).getType() != Type.SERVICE) {
+			boolean searchCriteria = false;
+			if (travelType == TravelType.ALL) searchCriteria = currentRangeSearch.get(i).isRoad();
+			if (travelType == TravelType.CAR) searchCriteria = currentRangeSearch.get(i).isDrivable();
+			if (travelType == TravelType.WALK) searchCriteria = currentRangeSearch.get(i).isWalkable();
+			if (travelType == TravelType.BIKE) searchCriteria = currentRangeSearch.get(i).isCyclable();
+
+			if (searchCriteria) {
 				for (PathIterator pi = currentRangeSearch.get(i).getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 					double[] currentShapePointCoordinateArray = new double[2];
 					pi.currentSegment(currentShapePointCoordinateArray); // Inserts current coordinates into currentShapePointCoordinateArray;
@@ -142,7 +167,7 @@ public class ForestService implements ForestInterface {
 		Element currentNN = new Element();
 		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
 
-		//Get NN from each tree, than calculate NN from those elements
+		//Get NN from each tree, then calculate NN from those elements
 		for (int i = 0; i < trees.length-excludeTrees; i++) {
 			Element candidate = trees[i].nearestNeighbor(queryPoint);
 			double distanceCurrentNNToQueryPoint = Coordinate.euclidianDistance(currentNN.getAvgPoint(), queryPoint);

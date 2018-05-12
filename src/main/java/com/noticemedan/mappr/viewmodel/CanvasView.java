@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -246,8 +247,8 @@ public class CanvasView extends JComponent {
     }
 
     public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint));
-		currentNN = this.domain.doNearestNeighborSearch(queryPoint);
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
 		repaint();
 	}
 

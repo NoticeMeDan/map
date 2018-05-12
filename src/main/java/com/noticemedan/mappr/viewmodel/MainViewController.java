@@ -4,6 +4,7 @@ import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.TextFormatter;
@@ -173,8 +174,8 @@ public class MainViewController {
 	}
 
 	public void updateCurrentHoveredRoad(Coordinate queryPoint) {
-		String roadName = domain.doNearestNeighborSearch(queryPoint).getName();
-		if(roadName == null) roadName = "Vejen har ikke et navn";
+		String roadName = domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL).getName();
+		if(roadName == null) roadName = "Ukendt vejnavn";
 		currentHoveredRoadNamePane.setText(roadName);
 	}
 
