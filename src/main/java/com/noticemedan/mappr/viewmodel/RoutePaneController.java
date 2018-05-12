@@ -107,8 +107,8 @@ public class RoutePaneController {
 	}
 
 	public void search() {
-		Element startElement = this.domain.doNearestNeighborSearch(this.startAddress.getCoordinate(),4);
-		Element endElement = this.domain.doNearestNeighborSearch(this.endAddress.getCoordinate(),4);
+		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), TravelType.ALL);
+		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), TravelType.ALL);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 

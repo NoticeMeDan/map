@@ -64,6 +64,8 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
+	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
+	public Element doNearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {return this.forestService.nearestNeighborNewRangeSearch(queryPoint, travelType); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {

@@ -20,7 +20,7 @@ public class NetworkParser {
 
 	public NetworkParser(Vector<Element> elements) {
 		this.network = new Network();
-		elements.filter(this::isWay).forEach(e -> {
+		elements.filter(element -> element.isRoad()).forEach(e -> {
 			PathNode from = null;
 			for(PathIterator pi = e.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 				int type = pi.currentSegment(coords);
@@ -48,21 +48,6 @@ public class NetworkParser {
 				.build();
 	}
 
-	private boolean isWay(Element e) {
-		return e.getType() == Type.MOTORWAY ||
-				e.getType() == Type.PRIMARY ||
-				e.getType() == Type.SECONDARY ||
-				e.getType() == Type.TERTIARY ||
-				e.getType() == Type.ROAD ||
-				e.getType() == Type.FOOTWAY ||
-				e.getType() == Type.TRACK ||
-				e.getType() == Type.SERVICE ||
-				e.getType() == Type.RACEWAY ||
-				e.getType() == Type.CYCLEWAY ||
-				e.getType() == Type.PATH ||
-				e.getType() == Type.UNCLASSIFIED;
-	}
-
 	private Set<TravelType> getTravelType(Element e) {
 		Set<TravelType> allowedTypes = HashSet.empty();
 
@@ -71,7 +56,7 @@ public class NetworkParser {
 		if (e.getType() == Type.FOOTWAY) allowedTypes = allowedTypes.add(TravelType.WALK);
 		if (e.getType() == Type.CYCLEWAY) allowedTypes = allowedTypes.add(TravelType.BIKE);
 		if (e.getType() == Type.MOTORWAY || e.getType() == Type.SECONDARY || e.getType() == Type.PRIMARY) allowedTypes = allowedTypes.add(TravelType.CAR);
-		if (e.getType() == Type.ROAD || e.getType() == Type.SERVICE || e.getType() == Type.RACEWAY) {
+		if (e.getType() == Type.ROAD || e.getType() == Type.SERVICE) {
 			allowedTypes = allowedTypes.add(TravelType.CAR);
 			allowedTypes = allowedTypes.add(TravelType.BIKE);
 			allowedTypes = allowedTypes.add(TravelType.WALK);
