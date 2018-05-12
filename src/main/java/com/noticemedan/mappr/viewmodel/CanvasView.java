@@ -94,10 +94,9 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
-        drawPointer();
 
-		if (this.showNetwork) drawNetwork();
 		if (this.showRandomSP) drawShortestPath(randomSP);
+		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 
 		performanceTest();
@@ -133,8 +132,9 @@ public class CanvasView extends JComponent {
 			else path.lineTo(line.x1,line.y1);
 		}
 		this.g.setPaint(Color.decode("#2F9862"));
+		if (this.showNetwork) this.g.setPaint(Color.decode("#0522ff"));
 		this.g.setStroke(getMediumLevelStroke());
-		if (this.zoomLevel < 3)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
 		drawImage(this.start, startpoint,0.00003,true);
 		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
@@ -239,15 +239,15 @@ public class CanvasView extends JComponent {
 	private void drawNetwork() {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
-			this.g.setPaint(Color.GREEN);
-			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.CYAN);
-			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.RED);
+			this.g.setPaint(Color.decode("#03ff79"));
+			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.decode("#ffea00"));
+			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.decode("#ff4400"));
 			this.g.setStroke(new BasicStroke(0.00002f));
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes
 		this.domain.deriveAllDijkstraNodes().forEach(p -> {
-			this.g.setPaint(Color.BLUE);
+			this.g.setPaint(Color.decode("#ff00e6"));
 			this.g.fill(p.toShape());
 		});
 	}
@@ -399,7 +399,6 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPointer() {
-		if (this.pointerPosition == null) return;
 		drawImage(this.pointer,this.pointerPosition,0.00008,false);
 	}
 
