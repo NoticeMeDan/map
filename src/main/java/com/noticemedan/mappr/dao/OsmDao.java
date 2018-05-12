@@ -37,6 +37,7 @@ public class OsmDao implements DataReader<MapData> {
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
 	private Boundaries boundaries = new Boundaries();
+	private String currentName;
 
 	@Override
 	public MapData read(Path input) throws IOException {
@@ -90,10 +91,10 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
 		osmElement.setMaxspeed(maxspeed);
-		if (type.equals(Type.COASTLINE))
-			this.coastlineElements = coastlineElements.append(osmElement);
-		else
-			this.elements = elements.append(osmElement);
+		osmElement.setName(currentName);
+		currentName = null;
+		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
+		else this.elements = elements.append(osmElement);
 	}
 
 	public class OsmHandler extends DefaultHandler {
@@ -104,7 +105,6 @@ public class OsmDao implements DataReader<MapData> {
 		int path2DSize = 1;
 		private Type type = Type.UNKNOWN;
 		private long currentNodeID;
-
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
 		private int maxspeed = 50; // default value
@@ -159,7 +159,6 @@ public class OsmDao implements DataReader<MapData> {
 						address.setLat(currentNode.getLat());
 						address.setLon(currentNode.getLon());
 					}
-
 					switch (keyValue) {
 						case "maxspeed":
 							final Matcher matcher = pattern.matcher(attributes.getValue("v"));
@@ -168,36 +167,52 @@ public class OsmDao implements DataReader<MapData> {
 							}
 							break;
 						case "highway":
-							type = Type.ROAD;
+							type = Type.UNCLASSIFIED;
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
+							if (attributes.getValue("v").equals("trunk")) type = Type.TRUNK;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
-							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
 							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
+							if (attributes.getValue("v").equals("footpath")) type = Type.FOOTPATH;
+							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
 							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
 							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;
-							if (attributes.getValue("v").equals("raceway")) type = Type.RACEWAY;
-							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
 							if (attributes.getValue("v").equals("path")) type = Type.PATH;
-							if (attributes.getValue("v").equals("unclassified")) type = Type.UNCLASSIFIED;
+							if (attributes.getValue("v").equals("road")) type = Type.ROAD;
+							if (attributes.getValue("v").equals("residential")) type = Type.RESIDENTIAL;
+							break;
+						case "railway":
+							if (attributes.getValue("v").equals("rail")) type = Type.RAIL;
 							break;
 						case "natural":
 							if (attributes.getValue("v").equals("water")) type = Type.WATER;
 							else if (attributes.getValue("v").equals("heath")) type = Type.HEATH;
+							else if (attributes.getValue("v").equals("scrub")) type = Type.HEATH;
+							else if (attributes.getValue("v").equals("wood")) type = Type.FOREST;
 							else if (attributes.getValue("v").equals("tree_row")) type = Type.TREE_ROW;
 							else if (attributes.getValue("v").equals("grassland")) type = Type.GRASSLAND;
-							else if (attributes.getValue("v").equals("grassland")) type = Type.FOREST;
 							else if (attributes.getValue("v").equals("coastline")) type = Type.COASTLINE;
 							break;
 						case "leisure":
 							if (attributes.getValue("v").equals("park")) type = Type.PARK;
+							if (attributes.getValue("v").equals("common")) type = Type.PARK;
+							break;
+						case "amenity":
+							if (attributes.getValue("v").equals("grave_yard")) type = Type.PARK;
 							break;
 						case "building":
 							type = Type.BUILDING;
 							break;
 						case "landuse":
 							if (attributes.getValue("v").equals("forest")) type = Type.FOREST;
+							if (attributes.getValue("v").equals("village_green")) type = Type.GARDEN;
+							if (attributes.getValue("v").equals("grass")) type = Type.GRASSLAND;
+							break;
+						case "aeroway":
+							if (attributes.getValue("v").equals("aerodrome")) type = Type.AERODROME;
+							if (attributes.getValue("v").equals("taxiway")) type = Type.TAXIWAY;
+							if (attributes.getValue("v").equals("runway")) type = Type.RUNWAY;
 							break;
 						case "housenumber":
 							address.setHouseNumber(attributes.getValue("v"));
@@ -207,6 +222,7 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
+							currentName = attributes.getValue("v");
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));

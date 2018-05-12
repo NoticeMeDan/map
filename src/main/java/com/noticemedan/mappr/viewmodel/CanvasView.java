@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -51,6 +52,9 @@ public class CanvasView extends JComponent {
 	@Setter @Getter
 	private boolean logNearestNeighbor = false;
 
+	@Setter
+	private Element currentNN;
+
 	private DomainFacade domain;
 	private Boundaries boundaries;
 
@@ -58,6 +62,8 @@ public class CanvasView extends JComponent {
 	private boolean showNetwork;
 	private boolean showRandomSP;
 	private Vector<Shape> randomSP;
+	private BufferedImage start;
+	private BufferedImage goal;
 
 	public CanvasView(DomainFacade domainFacade) {
 		try {
@@ -65,7 +71,9 @@ public class CanvasView extends JComponent {
 			this.boundaries = this.domain.getBoundaries();
 			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
-      		OsmElementProperty.standardColor();
+      		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
+      		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
+			OsmElementProperty.standardColor();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
@@ -92,11 +100,10 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
-        drawPoi();
 
-		if (this.showNetwork) drawNetwork();
 		if (this.showRandomSP) drawShortestPath(randomSP);
-		if (pointerPosition != null) drawPoi();
+		if (this.showNetwork) drawNetwork();
+		if (pointerPosition != null) drawPointer();
 
 		performanceTest();
 
@@ -116,30 +123,27 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
-    private Shape pointShape(Point2D point, Color color) {
-		this.g.setPaint(color);
-		double size = 0.005;
-		return new Ellipse2D.Double(point.getX() - (size/2), point.getY() - (size/2), size,size);
-	}
-
 	private void drawShortestPath(Vector<Shape> shape) {
 		if (shape.isEmpty()) return;
 		Path2D path = new GeneralPath();
 		boolean first = true;
+		Coordinate startpoint = null;
 		for(Shape s : shape) {
 			Line2D.Double line = (Line2D.Double) s;
 			if(first) {
-				this.g.fill(pointShape(new Point2D.Double(line.x1,line.y1), Color.MAGENTA));
+				startpoint = new Coordinate(line.x1,line.y1);
 				path.moveTo(line.x1, line.y1);
 				first = false;
 			}
 			else path.lineTo(line.x1,line.y1);
 		}
-		this.g.fill(pointShape(path.getCurrentPoint(),Color.decode("#ff5733")));
 		this.g.setPaint(Color.decode("#2F9862"));
+		if (this.showNetwork) this.g.setPaint(Color.decode("#0522ff"));
 		this.g.setStroke(getMediumLevelStroke());
-		if (this.zoomLevel < 5)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
+		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
+		drawImage(this.start, startpoint,0.00003,true);
+		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
 	}
 
 	private void transformViewRect() {
@@ -162,42 +166,48 @@ public class CanvasView extends JComponent {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
 		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
-
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
-
 		//All open elements
 		this.isShapeOpen = true;
-		paintByType(result,Type.UNKNOWN,getLowLevelStroke());
-		paintByType(result,Type.TRUNK, getLowLevelStroke());
-		paintByType(result,Type.SAND, getLowLevelStroke());
-		paintByType(result,Type.FOOTWAY, new BasicStroke(0.00002f));
-		paintByType(result,Type.ROAD, new BasicStroke(0.00004f));
-		paintByType(result,Type.FOOTWAY, getLowLevelStroke());
-		paintByType(result,Type.TRACK, getLowLevelStroke());
-		paintByType(result,Type.SERVICE, getLowLevelStroke());
-		paintByType(result,Type.RACEWAY, getLowLevelStroke());
-		paintByType(result,Type.CYCLEWAY, getLowLevelStroke());
-		paintByType(result,Type.PATH, getLowLevelStroke());
-		paintByType(result,Type.UNCLASSIFIED, getLowLevelStroke());
-		paintByType(result,Type.TERTIARY, getHighLevelStroke());
-		paintByType(result,Type.SECONDARY, getHighLevelStroke());
-		paintByType(result,Type.PRIMARY, getMediumLevelStroke());
-		paintByType(result,Type.HIGHWAY,new BasicStroke(0.0001f));
-		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
+		paintByType(result, Type.UNKNOWN, getLowLevelStroke());
+		paintByType(result, Type.SAND, getLowLevelStroke());
+		paintByType(result, Type.RAIL, new BasicStroke(0.00006f));
+		paintByType(result, Type.SERVICE, new BasicStroke(0.0001f));
+		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00007f));
+		paintByType(result, Type.PATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.TRACK, new BasicStroke(0.00007f));
+		paintByType(result, Type.CYCLEWAY, new BasicStroke(0.00008f));
+		paintByType(result, Type.RUNWAY, new BasicStroke(0.002f));
+		paintByType(result, Type.TAXIWAY, new BasicStroke(0.0003f));
+		paintByType(result, Type.FOOTPATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.ROAD, new BasicStroke(0.0001f));
+		paintByType(result, Type.RESIDENTIAL, new BasicStroke(0.0001f));
+		paintByType(result, Type.TERTIARY, getHighLevelStroke());
+		paintByType(result, Type.SECONDARY, getHighLevelStroke());
+		paintByType(result, Type.TRUNK, getLowLevelStroke());
+		paintByType(result, Type.PRIMARY, getLowLevelStroke());
+		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
+		if(currentNN != null) paintNN();
+	}
 
+	private void paintNN() {
+		g.setStroke(getLowLevelStroke());
+		g.setPaint(Color.RED);
+		g.draw(currentNN.getShape());
 	}
 
 	private void paintClosedElements (Vector<Element> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
-		paintByType(result,Type.PARK,stroke);
-		paintByType(result,Type.GRASSLAND,stroke);
-		paintByType(result,Type.FOREST,stroke);
-		paintByType(result,Type.GARDEN,stroke);
-		paintByType(result,Type.HEATH,stroke);
-		paintByType(result,Type.TREE_ROW,stroke);
-		paintByType(result,Type.PLAYGROUND,stroke);
-		paintByType(result,Type.WATER,stroke);
-		paintByType(result,Type.BUILDING,stroke);
+		paintByType(result, Type.PARK, stroke);
+		paintByType(result, Type.GRASSLAND, stroke);
+		paintByType(result, Type.FOREST, stroke);
+		paintByType(result, Type.GARDEN, stroke);
+		paintByType(result, Type.HEATH, stroke);
+		paintByType(result, Type.TREE_ROW, stroke);
+		paintByType(result, Type.PLAYGROUND, stroke);
+		paintByType(result, Type.WATER, stroke);
+		paintByType(result, Type.BUILDING, stroke);
+		paintByType(result, Type.AERODROME, stroke);
 	}
 
 	private BasicStroke getLowLevelStroke() {
@@ -215,7 +225,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private BasicStroke getHighLevelStroke() {
-		if (this.zoomLevel > 130) return new BasicStroke(0.00005f);
+		if (this.zoomLevel > 130) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 18) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 5) return new BasicStroke(0.0003f);
 		else return new BasicStroke(0.0007f);
@@ -241,15 +251,15 @@ public class CanvasView extends JComponent {
 	private void drawNetwork() {
 		// Paint all edges
 		this.domain.deriveAllDijkstraEdges().forEach(e -> {
-			this.g.setPaint(Color.GREEN);
-			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.CYAN);
-			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.RED);
+			this.g.setPaint(Color.decode("#03ff79"));
+			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.decode("#ffea00"));
+			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.decode("#ff4400"));
 			this.g.setStroke(new BasicStroke(0.00002f));
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes
 		this.domain.deriveAllDijkstraNodes().forEach(p -> {
-			this.g.setPaint(Color.BLUE);
+			this.g.setPaint(Color.decode("#ff00e6"));
 			this.g.fill(p.toShape());
 		});
 	}
@@ -262,6 +272,8 @@ public class CanvasView extends JComponent {
 
     public void logNearestNeighbor(Coordinate queryPoint) {
 		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
+		repaint();
 	}
 
     public void toggleAntiAliasing() {
@@ -400,17 +412,21 @@ public class CanvasView extends JComponent {
 		this.showReversedBorders = !this.showReversedBorders;
 	}
 
-	private void drawPoi() {
-		if (this.pointerPosition == null) return;
-		double size = this.viewRect.getWidth() * 0.0001;
-		double width = pointer.getWidth() * size;
-		double height = pointer.getHeight() * size;
+	private void drawPointer() {
+		drawImage(this.pointer,this.pointerPosition,0.00008,false);
+	}
+
+	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
+		double scaling = (this.zoomLevel < 100) ? this.viewRect.getWidth() * size :	0.01 * size;
+		double width = pointer.getWidth() * scaling;
+		double height = pointer.getHeight() * scaling;
 
 		AffineTransform at = new AffineTransform();
-		at.translate(this.pointerPosition.getX() - width/2,this.pointerPosition.getY()-height);
-		at.scale(size,size);
+		if (center) at.translate(coordinate.getX() - width/2,coordinate.getY()-height/2);
+		else at.translate(coordinate.getX() - width/2,coordinate.getY()-height);
+		at.scale(scaling,scaling);
 
-		this.g.drawImage(this.pointer,at,null);
+		this.g.drawImage(img,at,null);
 	}
 
 	public void setPointerPosition(Point2D p) {

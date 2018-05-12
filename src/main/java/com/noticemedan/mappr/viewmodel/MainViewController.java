@@ -3,6 +3,7 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Boundaries;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.TextFormatter;
@@ -50,8 +51,10 @@ public class MainViewController {
 	@FXML Pane searchFieldImitator;
 
 	//scalaBar
-	@FXML
-	Text scalaBarDistanceText;
+	@FXML Text scalaBarDistanceText;
+
+	//currentHoveredRoad
+	@FXML Text currentHoveredRoadNamePane;
 
 	// OSM
 	@FXML Pane osmPaneContainer;
@@ -176,6 +179,12 @@ public class MainViewController {
 		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLatToLat(scalaBarFirstPoint.getY()));
 		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLatToLat(scalaBarSecondPoint.getY()));
 		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
+	}
+
+	public void updateCurrentHoveredRoad(Coordinate queryPoint) {
+		String roadName = domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL).getName();
+		if(roadName == null) roadName = "Ukendt vejnavn";
+		currentHoveredRoadNamePane.setText(roadName);
 	}
 
 	public void pushCanvas() {

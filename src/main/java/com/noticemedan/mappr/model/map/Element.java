@@ -55,4 +55,59 @@ public class Element implements Comparable<Element>, Serializable {
 				Objects.equals(avgPoint, element.avgPoint) &&
 				Objects.equals(bounds, element.bounds);
 	}
+
+		public boolean isRoad() {
+		return type == Type.MOTORWAY ||
+				type == Type.PRIMARY ||
+				type == Type.TRUNK ||
+				type == Type.SECONDARY ||
+				type == Type.TERTIARY ||
+				type == Type.FOOTWAY ||
+				type == Type.FOOTPATH ||
+				type == Type.CYCLEWAY ||
+				type == Type.TRACK ||
+				type == Type.SERVICE ||
+				type == Type.PATH ||
+				type == Type.RESIDENTIAL ||
+				type == Type.ROAD ||
+				type == Type.UNCLASSIFIED;
+	}
+
+	public boolean isDrivable() {
+		return type == Type.MOTORWAY ||
+				type == Type.PRIMARY ||
+				type == Type.TRUNK ||
+				type == Type.SECONDARY ||
+				type == Type.TERTIARY ||
+				type == Type.SERVICE ||
+				type == Type.RESIDENTIAL ||
+				type == Type.ROAD ||
+				type == Type.UNCLASSIFIED;
+	}
+
+	public boolean isCyclable() {
+		return type == Type.SECONDARY ||
+				type == Type.TERTIARY ||
+				type == Type.CYCLEWAY ||
+				type == Type.TRACK ||
+				type == Type.SERVICE ||
+				type == Type.PATH ||
+				type == Type.RESIDENTIAL ||
+				type == Type.ROAD ||
+				type == Type.UNCLASSIFIED;
+	}
+
+	public boolean isWalkable() {
+		return type == Type.SECONDARY ||
+				type == Type.TERTIARY ||
+				type == Type.FOOTWAY ||
+				type == Type.FOOTPATH ||
+				type == Type.CYCLEWAY ||
+				type == Type.TRACK ||
+				type == Type.SERVICE ||
+				type == Type.PATH ||
+				type == Type.RESIDENTIAL ||
+				type == Type.ROAD ||
+				type == Type.UNCLASSIFIED;
+	}
 }

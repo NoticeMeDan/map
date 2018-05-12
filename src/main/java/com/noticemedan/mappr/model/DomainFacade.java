@@ -32,7 +32,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 @Slf4j
@@ -72,6 +71,7 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
+	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
 
 	/* SECTION END: VIEWPORT DATA */
 	/* SECTION START: ADDRESS SEARCHING */
@@ -141,9 +141,9 @@ public class DomainFacade {
 	/* SECTION START: IMAGE DAO */
 
 	/**
-	 * Gets image from FS and returns a BufferedImage
-	 * @param input Path to input image
-	 * @return Option containing either Nothing or a BufferedImage
+	 * Derive a BufferedImage from a given filepath
+	 * @param input path to file
+	 * @return BufferedImage if file exists
 	 */
 	public Option<BufferedImage> getImageFromFS(Path input) {
 		ImageDao dao = new ImageDao();

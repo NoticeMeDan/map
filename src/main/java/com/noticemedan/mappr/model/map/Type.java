@@ -3,21 +3,28 @@ package com.noticemedan.mappr.model.map;
 import java.io.Serializable;
 
 public enum Type implements Serializable {
-	ROAD,
-	FOOTWAY,
-	HIGHWAY,
+	//ROADS (see wiki)
+	MOTORWAY,
 	PRIMARY,
+	TRUNK,
 	SECONDARY,
 	TERTIARY,
-	RESIDENTIAL,
-	MOTORWAY,
+	FOOTWAY,
+	FOOTPATH,
+	CYCLEWAY,
 	TRACK,
 	SERVICE,
-	RACEWAY,
-	CYCLEWAY,
-	UNCLASSIFIED,
 	PATH,
-	TRUNK,
+	RESIDENTIAL,
+	ROAD,
+	UNCLASSIFIED,
+
+	//Non-used roads
+	RUNWAY,
+	TAXIWAY,
+	RAIL,
+
+	//OTHER TYPES
 	WATER,
 	GRASSLAND,
 	SAND,
@@ -30,5 +37,6 @@ public enum Type implements Serializable {
 	PARK,
 	FOREST,
 	ADDRESS,
+	AERODROME,
 	UNKNOWN
 }
