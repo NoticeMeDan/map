@@ -7,32 +7,27 @@ import lombok.Getter;
 public class Guide {
 
 	private double distance;
-	private String direction;
+	private Vector<String> directions = Vector.empty();
 	@Getter
+	//test only
 	private double traveleddistance;
 
 	Vector<String> getDirections(Vector<PathEdge> route) {
-		Vector<String> directions = Vector.empty();
 		this.traveleddistance = 0;
 		this.distance = 0;
 
-		for (int i = 0; i < route.length(); i++) {
-			if (i == route.length()-1) {
-				this.distance = (route.get(i).getWeight());
-				this.direction = "You have arrived";
-				directions = directions.append("After " + this.distance + "m " + this.direction);
-				this.traveleddistance += this.distance;
-				break;
-			}
-
-			this.direction = (route.get(i).getW().getEdges().length() > 2) ? "turn" : "Go straight";
-			this.distance += (route.get(i).getWeight());
-			if (this.direction.equals("turn")) {
-				directions = directions.append("After " + this.distance + "m " + this.direction);
+		route.forEach(e-> {
+			this.distance += e.getWeight();
+			if ((e.getW().getEdges().length() > 2)) {
+				this.directions = directions.append("Follow the road " + this.distance + "m, turn_left_or_right");
 				this.traveleddistance += this.distance;
 				this.distance = 0;
 			}
-		}
+		});
+		if(this.distance != 0) this.directions = directions.append("Follow the road " + this.distance + "m ");
+		this.traveleddistance += this.distance;
+		this.directions = directions.append("You have arrived");
+
 		return directions;
 	}
 }

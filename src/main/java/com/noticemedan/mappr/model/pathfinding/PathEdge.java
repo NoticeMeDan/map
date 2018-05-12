@@ -28,7 +28,7 @@ public class PathEdge {
 		double y2 = Coordinate.canvasLatToLat(w.getLat());
 		Coordinate a = new Coordinate(x1,y1);
 		Coordinate b = new Coordinate(x2,y2);
-		return Coordinate.haversineDistance(a,b,6378.137);
+		return Coordinate.haversineDistance(a,b,6371000);
 	}
 
 	public Shape toShape() {
