@@ -162,3 +162,14 @@ ListView .scroll-bar:vertical .thumb {
 	-fx-background-position: center;
 	-fx-background-repeat: no-repeat;
 }
+
+/*-------------------------------------------- */
+/* CURRENT HOVERED ROAD
+/*-------------------------------------------- */
+
+#currentHoveredRoadPane {
+	-fx-background-color: rgba(255, 255, 255, 0.8);
+	-fx-border-radius: 3px;
+	-fx-background-radius: 3px;
+}
+

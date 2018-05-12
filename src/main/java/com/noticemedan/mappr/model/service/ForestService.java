@@ -3,17 +3,21 @@ package com.noticemedan.mappr.model.service;
 import com.noticemedan.mappr.model.kdtree.ForestInterface;
 import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import java.awt.geom.PathIterator;
 
 @Slf4j
 public class ForestService implements ForestInterface {
 	private KdTree trees[];
 	@Getter
 	private Vector<Element> coastlines;
+	private Vector<Element> currentRangeSearch;
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
 		//TODO create different amounts of leafs for zoom levels
@@ -33,6 +37,7 @@ public class ForestService implements ForestInterface {
 					zoom0 = zoom0.append(osmElement);
 					break;
 				case PRIMARY:
+				case TRUNK:
 					zoom1 = zoom1.append(osmElement);
 					break;
 				case SECONDARY:
@@ -44,17 +49,22 @@ public class ForestService implements ForestInterface {
 				case HEATH:
 				case PARK:
 				case ROAD:
-				case FOREST:
 				case FOOTWAY:
-				case TRACK:
-				case SERVICE:
-				case RACEWAY:
-				case CYCLEWAY:
+				case FOOTPATH:
 				case PATH:
+				case RAIL:
+				case FOREST:
+				case AERODROME:
+				case TAXIWAY:
+				case RUNWAY:
+				case RESIDENTIAL:
+				case CYCLEWAY:
 				case UNCLASSIFIED:
+				case TRACK:
 					zoom3 = zoom3.append(osmElement);
 					break;
 				case BUILDING:
+				case SERVICE:
 				case PLAYGROUND:
 					zoom4 = zoom4.append(osmElement);
 					break;
@@ -79,18 +89,70 @@ public class ForestService implements ForestInterface {
 	public Vector<Element> rangeSearch(Rect searchQuery, double zoomLevel) {
 		Vector<Element> searchResults = Vector.empty();
 
-		if (zoomLevel > 50) searchResults = searchResults.appendAll(trees[4].rangeSearch(searchQuery));
-		if (zoomLevel > 15) searchResults = searchResults.appendAll(trees[3].rangeSearch(searchQuery));
+		if (zoomLevel > 40) searchResults = searchResults.appendAll(trees[4].rangeSearch(searchQuery));
+		if (zoomLevel > 6) searchResults = searchResults.appendAll(trees[3].rangeSearch(searchQuery));
 		if (zoomLevel > 1) searchResults = searchResults.appendAll(trees[2].rangeSearch(searchQuery));
 		if (zoomLevel > 0.5) searchResults = searchResults.appendAll(trees[1].rangeSearch(searchQuery));
 		if (zoomLevel > 0) searchResults = searchResults.appendAll(trees[0].rangeSearch(searchQuery));
 
+		currentRangeSearch = searchResults;
 		return searchResults;
 	}
 
 	//Range search as if only having one zoom level.
 	public Vector<Element> rangeSearch(Rect searchQuery) {
-		return rangeSearch(searchQuery, trees.length-1);
+		return rangeSearch(searchQuery, Double.POSITIVE_INFINITY);
+	}
+
+	public Element nearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {
+		Element nearestNeighbor = new Element();
+		Coordinate NNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		nearestNeighbor.setAvgPoint(NNCoordinate);
+
+		double r = 0.01;
+		while (nearestNeighbor.getAvgPoint().getX() == Double.POSITIVE_INFINITY) {
+			Rect queryRect = new Rect(queryPoint.getX() - r, queryPoint.getY() - r, queryPoint.getX() + r, queryPoint.getY() + r );
+			rangeSearch(queryRect, Double.POSITIVE_INFINITY);
+			nearestNeighbor = nearestNeighborInCurrentRangeSearch(queryPoint, travelType);
+			r = r + 0.01;
+		}
+
+		return nearestNeighbor;
+	}
+
+	/**
+	 * Brute force nearest neighbor search
+	 * Is much more accurate but also slower than other nearest neighbor search
+	 * @param queryPoint			The point to search through nearest neighbor.
+	 * @return 						Nearest Element to input point according to travelType.
+	 */
+	public Element nearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) {
+		Element currentNN = new Element();
+		Coordinate currentNNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		currentNN.setAvgPoint(currentNNCoordinate);
+
+		for (int i = 0; i < currentRangeSearch.size(); i++) {
+			boolean searchCriteria = false;
+			if (travelType == TravelType.ALL) searchCriteria = currentRangeSearch.get(i).isRoad();
+			if (travelType == TravelType.CAR) searchCriteria = currentRangeSearch.get(i).isDrivable();
+			if (travelType == TravelType.WALK) searchCriteria = currentRangeSearch.get(i).isWalkable();
+			if (travelType == TravelType.BIKE) searchCriteria = currentRangeSearch.get(i).isCyclable();
+
+			if (searchCriteria) {
+				for (PathIterator pi = currentRangeSearch.get(i).getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
+					double[] currentShapePointCoordinateArray = new double[2];
+					pi.currentSegment(currentShapePointCoordinateArray); // Inserts current coordinates into currentShapePointCoordinateArray;
+					Coordinate currentShapePointCoordinate = new Coordinate(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
+					double distanceCurrentNNToQueryPoint = Coordinate.euclidianDistance(currentNNCoordinate, queryPoint);
+					double distanceCandidateToQueryPoint = Coordinate.euclidianDistance(currentShapePointCoordinate, queryPoint);
+					if (distanceCandidateToQueryPoint < distanceCurrentNNToQueryPoint) {
+						currentNNCoordinate = currentShapePointCoordinate;
+						currentNN = currentRangeSearch.get(i);
+					}
+				}
+			}
+		}
+		return currentNN;
 	}
 
 	@Override
@@ -106,13 +168,14 @@ public class ForestService implements ForestInterface {
 		Element currentNN = new Element();
 		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
 
-		//Get NN from each tree, than calculate NN from those elements
+		//Get NN from each tree, then calculate NN from those elements
 		for (int i = 0; i < trees.length-excludeTrees; i++) {
 			Element candidate = trees[i].nearestNeighbor(queryPoint);
 			double distanceCurrentNNToQueryPoint = Coordinate.euclidianDistance(currentNN.getAvgPoint(), queryPoint);
 			double distanceCandidateToQueryPoint = Coordinate.euclidianDistance(candidate.getAvgPoint(), queryPoint);
 			if (distanceCandidateToQueryPoint < distanceCurrentNNToQueryPoint) currentNN = candidate;
 		}
+
 		return currentNN;
 	}
 }

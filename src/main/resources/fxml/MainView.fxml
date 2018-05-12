@@ -29,6 +29,10 @@
 			<Pane fx:id="scalaBarImagePane" layoutY="5" prefWidth="130.0" prefHeight="10.0" />
 		</Pane>
 
+		<AnchorPane fx:id="currentHoveredRoadPane" prefHeight="27.0" AnchorPane.rightAnchor="15" AnchorPane.bottomAnchor="15">
+			<Text fx:id="currentHoveredRoadNamePane" textAlignment="RIGHT" layoutY="18" AnchorPane.rightAnchor="15" AnchorPane.leftAnchor="15" />
+		</AnchorPane>
+
 		<fx:include fx:id="poiBoxView" source="PoiBox.fxml" AnchorPane.topAnchor="65.0" AnchorPane.leftAnchor="15.0" />
 		<fx:include fx:id="favoritePoiPane" source="FavoritePoiPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
 		<fx:include fx:id="searchPane" source="SearchPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />

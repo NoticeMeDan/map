@@ -39,7 +39,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/denmark-latest.osm").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
@@ -65,14 +65,13 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
+	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
 	}
-
-	// Favorite POI
 
 	/* SECTION START: SHORTEST PATH */
 

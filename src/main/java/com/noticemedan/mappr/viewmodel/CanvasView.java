@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
@@ -50,6 +51,9 @@ public class CanvasView extends JComponent {
 	private boolean logPerformanceTimeDrawVSRangeSearch = false;
 	@Setter @Getter
 	private boolean logNearestNeighbor = false;
+
+	@Setter
+	private Element currentNN;
 
 	private DomainFacade domain;
 
@@ -160,42 +164,48 @@ public class CanvasView extends JComponent {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
 		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
-
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
-
 		//All open elements
 		this.isShapeOpen = true;
-		paintByType(result,Type.UNKNOWN,getLowLevelStroke());
-		paintByType(result,Type.TRUNK, getLowLevelStroke());
-		paintByType(result,Type.SAND, getLowLevelStroke());
-		paintByType(result,Type.FOOTWAY, new BasicStroke(0.00002f));
-		paintByType(result,Type.ROAD, new BasicStroke(0.00004f));
-		paintByType(result,Type.FOOTWAY, getLowLevelStroke());
-		paintByType(result,Type.TRACK, getLowLevelStroke());
-		paintByType(result,Type.SERVICE, getLowLevelStroke());
-		paintByType(result,Type.RACEWAY, getLowLevelStroke());
-		paintByType(result,Type.CYCLEWAY, getLowLevelStroke());
-		paintByType(result,Type.PATH, getLowLevelStroke());
-		paintByType(result,Type.UNCLASSIFIED, getLowLevelStroke());
-		paintByType(result,Type.TERTIARY, getHighLevelStroke());
-		paintByType(result,Type.SECONDARY, getHighLevelStroke());
-		paintByType(result,Type.PRIMARY, getMediumLevelStroke());
-		paintByType(result,Type.HIGHWAY,new BasicStroke(0.0001f));
-		paintByType(result,Type.MOTORWAY, getLowLevelStroke());
+		paintByType(result, Type.UNKNOWN, getLowLevelStroke());
+		paintByType(result, Type.SAND, getLowLevelStroke());
+		paintByType(result, Type.RAIL, new BasicStroke(0.00006f));
+		paintByType(result, Type.SERVICE, new BasicStroke(0.0001f));
+		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00007f));
+		paintByType(result, Type.PATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.TRACK, new BasicStroke(0.00007f));
+		paintByType(result, Type.CYCLEWAY, new BasicStroke(0.00008f));
+		paintByType(result, Type.RUNWAY, new BasicStroke(0.002f));
+		paintByType(result, Type.TAXIWAY, new BasicStroke(0.0003f));
+		paintByType(result, Type.FOOTPATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.ROAD, new BasicStroke(0.0001f));
+		paintByType(result, Type.RESIDENTIAL, new BasicStroke(0.0001f));
+		paintByType(result, Type.TERTIARY, getHighLevelStroke());
+		paintByType(result, Type.SECONDARY, getHighLevelStroke());
+		paintByType(result, Type.TRUNK, getLowLevelStroke());
+		paintByType(result, Type.PRIMARY, getLowLevelStroke());
+		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
+		if(currentNN != null) paintNN();
+	}
 
+	private void paintNN() {
+		g.setStroke(getLowLevelStroke());
+		g.setPaint(Color.RED);
+		g.draw(currentNN.getShape());
 	}
 
 	private void paintClosedElements (Vector<Element> result, BasicStroke stroke) {
 		this.isShapeOpen = false;
-		paintByType(result,Type.PARK,stroke);
-		paintByType(result,Type.GRASSLAND,stroke);
-		paintByType(result,Type.FOREST,stroke);
-		paintByType(result,Type.GARDEN,stroke);
-		paintByType(result,Type.HEATH,stroke);
-		paintByType(result,Type.TREE_ROW,stroke);
-		paintByType(result,Type.PLAYGROUND,stroke);
-		paintByType(result,Type.WATER,stroke);
-		paintByType(result,Type.BUILDING,stroke);
+		paintByType(result, Type.PARK, stroke);
+		paintByType(result, Type.GRASSLAND, stroke);
+		paintByType(result, Type.FOREST, stroke);
+		paintByType(result, Type.GARDEN, stroke);
+		paintByType(result, Type.HEATH, stroke);
+		paintByType(result, Type.TREE_ROW, stroke);
+		paintByType(result, Type.PLAYGROUND, stroke);
+		paintByType(result, Type.WATER, stroke);
+		paintByType(result, Type.BUILDING, stroke);
+		paintByType(result, Type.AERODROME, stroke);
 	}
 
 	private BasicStroke getLowLevelStroke() {
@@ -213,7 +223,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private BasicStroke getHighLevelStroke() {
-		if (this.zoomLevel > 130) return new BasicStroke(0.00005f);
+		if (this.zoomLevel > 130) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 18) return new BasicStroke(0.0001f);
 		else if (this.zoomLevel > 5) return new BasicStroke(0.0003f);
 		else return new BasicStroke(0.0007f);
@@ -260,6 +270,8 @@ public class CanvasView extends JComponent {
 
     public void logNearestNeighbor(Coordinate queryPoint) {
 		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
+		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
+		repaint();
 	}
 
     public void toggleAntiAliasing() {
