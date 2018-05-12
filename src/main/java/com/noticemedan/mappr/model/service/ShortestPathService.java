@@ -73,12 +73,8 @@ public class ShortestPathService {
 		log.info("startNode: " + from.toString());
 		log.info("endNode: " + to.toString());
 		log.info("Travel by: " + type);
-		log.info("Distance: " + getPathDistance(new Coordinate(from.getLon(),from.getLat()),new Coordinate(to.getLon(),to.getLat()),type) + "km");
-		if (!this.dijkstra.pathExists(to)) {
-			log.info("There exists NO path");
-			log.info("..............................");
-			randomSP = getRandomSP(type);
-		}
+		log.info("Distance: " + getPathDistance(new Coordinate(from.getLon(),from.getLat()),new Coordinate(to.getLon(),to.getLat()),type) + " km");
+		if (!this.dijkstra.pathExists(to)) log.info("There exists NO path");
 		else log.info("There exists a path from startNode to endNode");
 		log.info("..............................");
 		return randomSP;
