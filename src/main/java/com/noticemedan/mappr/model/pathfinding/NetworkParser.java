@@ -56,7 +56,7 @@ public class NetworkParser {
 		if (e.getType() == Type.FOOTWAY) allowedTypes = allowedTypes.add(TravelType.WALK);
 		if (e.getType() == Type.CYCLEWAY) allowedTypes = allowedTypes.add(TravelType.BIKE);
 		if (e.getType() == Type.MOTORWAY || e.getType() == Type.SECONDARY || e.getType() == Type.PRIMARY) allowedTypes = allowedTypes.add(TravelType.CAR);
-		if (e.getType() == Type.ROAD || e.getType() == Type.SERVICE || e.getType() == Type.RACEWAY) {
+		if (e.getType() == Type.ROAD || e.getType() == Type.SERVICE) {
 			allowedTypes = allowedTypes.add(TravelType.CAR);
 			allowedTypes = allowedTypes.add(TravelType.BIKE);
 			allowedTypes = allowedTypes.add(TravelType.WALK);
