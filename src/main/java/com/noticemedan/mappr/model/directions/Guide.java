@@ -9,7 +9,7 @@ public class Guide {
 	private double distance;
 	private Vector<String> directions = Vector.empty();
 	@Getter
-	//test only
+	//TODO DELETE THIS : test only
 	private double traveleddistance;
 
 	Vector<String> getDirections(Vector<PathEdge> route) {
@@ -24,6 +24,7 @@ public class Guide {
 				this.distance = 0;
 			}
 		});
+
 		if(this.distance != 0) this.directions = directions.append("Follow the road " + this.distance + "m ");
 		this.traveleddistance += this.distance;
 		this.directions = directions.append("You have arrived");
