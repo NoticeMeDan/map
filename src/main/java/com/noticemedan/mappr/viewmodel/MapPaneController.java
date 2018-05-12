@@ -66,7 +66,10 @@ public class MapPaneController {
 		saveMapButton.setOnAction(this::updateMap);
 		deleteMapButton.setOnAction(this::deleteMap);
 
-		mapPaneCloseButton.setOnAction(event -> closeMapPane());
+		mapPaneCloseButton.setOnAction(event -> {
+			closeMapPane();
+			mainViewController.pushCanvas();
+		});
 	}
 
 	public void openMapPane() {

@@ -99,5 +99,6 @@ public class MenuBarController {
 	private void toggleMapPane() {
 		this.showMapPane = !this.showMapPane;
 		mainViewController.getMapPaneController().openMapPane();
+		mainViewController.pushCanvas();
 	}
 }
