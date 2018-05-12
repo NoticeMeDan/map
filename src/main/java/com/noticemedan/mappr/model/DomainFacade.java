@@ -85,10 +85,6 @@ public class DomainFacade {
 		return shortestPathService.getShortestPath(from, to, type);
 	}
 
-	public Vector<PathEdge> getRandomSP() {
-		return shortestPathService.getRandomSP(TravelType.ALL);
-	}
-
 	/**
 	 * Derive the distance of the shortest path between two given coordinates
 	 * @param from coordinate of the from-destination

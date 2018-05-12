@@ -50,6 +50,8 @@ public class Dijkstra {
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
 		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight();
+		if (e.getSpeedLimit() == 0)
+			System.out.println("Division by zero!");
 		if (distTo[wId] > distTo[vId] + weight) {
 			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;

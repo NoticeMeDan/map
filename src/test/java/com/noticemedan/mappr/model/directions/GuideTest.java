@@ -7,9 +7,9 @@ import org.testng.annotations.Test;
 
 public class GuideTest {
 
-	private final DomainFacade domain = new DomainFacade();
+	 /*private final DomainFacade domain = new DomainFacade();
 	private Guide guide = new Guide();
-	private Vector<PathEdge> route = domain.getRandomSP();
+	private Vector<PathEdge> route = domain.deriveRandomShortestPathShapes();
 
 	@Test
 	void testDirections() {
@@ -18,5 +18,5 @@ public class GuideTest {
 		}
 		System.out.println();
 		System.out.println("Distance: " + this.guide.getTraveleddistance());
-	}
+	}*/
 }

@@ -19,6 +19,7 @@ public class PathEdge {
 		this.v = v;
 		this.w = w;
 		this.weight = computeWeight(v, w);
+		//System.out.println(v.getMaxspeed());
 		this.speedLimit = v.getMaxspeed();
 	}
 
