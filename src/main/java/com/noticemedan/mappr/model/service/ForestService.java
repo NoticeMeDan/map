@@ -105,7 +105,7 @@ public class ForestService implements ForestInterface {
 		return rangeSearch(searchQuery, Double.POSITIVE_INFINITY);
 	}
 
-	public Coordinate nearestNode(Coordinate queryPoint, TravelType travelType) {
+	public Element nearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {
 		Element nearestNeighbor = new Element();
 		Coordinate NNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		nearestNeighbor.setAvgPoint(NNCoordinate);
@@ -118,7 +118,7 @@ public class ForestService implements ForestInterface {
 			r = r + 0.01;
 		}
 
-		return nearestNeighbor.getAvgPoint();
+		return nearestNeighbor;
 	}
 
 	/**
