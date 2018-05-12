@@ -113,7 +113,7 @@ public class RoutePaneController {
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
 		this.djik = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, TravelType.ALL);
-		MainViewController.getCanvas().drawShortestPath(this.djik);
+		MainViewController.getCanvas().showPath(this.djik);
 		System.out.println("hey");
 	}
 

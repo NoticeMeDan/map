@@ -64,6 +64,13 @@ public class CanvasView extends JComponent {
 	private BufferedImage start;
 	private BufferedImage goal;
 
+	private boolean showPath = false;
+	private Vector<Shape> djik;
+
+	public void showPath(Vector<Shape> djik) {
+		showPath = true;
+		this.djik = djik;
+	}
 	public CanvasView(DomainFacade domainFacade) {
 		try {
 			this.domain = domainFacade;
@@ -98,8 +105,9 @@ public class CanvasView extends JComponent {
 		transformViewRect();
         drawCoastlines();
         drawAllElements();
+        if(showPath) drawShortestPath();
 
-		if (this.showRandomSP) drawShortestPath(randomSP);
+		//if (this.showRandomSP) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 
@@ -121,12 +129,12 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
-	public void drawShortestPath(Vector<Shape> shape) {
-		if (shape.isEmpty()) return;
+	public void drawShortestPath() {
+		if (this.djik.isEmpty()) return;
 		Path2D path = new GeneralPath();
 		boolean first = true;
 		Coordinate startpoint = null;
-		for(Shape s : shape) {
+		for(Shape s : this.djik) {
 			Line2D.Double line = (Line2D.Double) s;
 			if(first) {
 				startpoint = new Coordinate(line.x1,line.y1);
