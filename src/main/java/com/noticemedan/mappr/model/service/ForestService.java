@@ -24,6 +24,7 @@ public class ForestService implements ForestInterface {
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;
 		Element[][] elementArray = new Element[5][];
+
 		Vector<Element> zoom0 = Vector.empty();
 		Vector<Element> zoom1 = Vector.empty();
 		Vector<Element> zoom2 = Vector.empty();

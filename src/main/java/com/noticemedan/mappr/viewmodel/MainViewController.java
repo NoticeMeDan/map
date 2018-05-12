@@ -66,12 +66,17 @@ public class MainViewController {
 	@FXML Pane favoritePoiPane;
 	@FXML Pane poiBoxView;
 	@FXML Pane searchPane;
+	@FXML Pane mapPane;
+	@FXML MenuBar menuBar;
 
 	//Component controllers
 	@FXML private PoiBoxViewController poiBoxViewController;
 	@FXML private FavoritePoiPaneController favoritePoiPaneController;
 	@FXML private SearchPaneController searchPaneController;
 	@FXML private RoutePaneController routePaneController;
+	@Getter
+	@FXML private MapPaneController mapPaneController;
+	@FXML private MenuBarController menuBarController;
 
 	//Canvas controllers
 	private MouseHandler mouseHandler;
@@ -86,12 +91,14 @@ public class MainViewController {
 
 	public void initialize() {
 		favoritePoiManager = new FavoritePoiManager();
-		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
-		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePOIs());
+		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
+		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
 		insertOSMPane();
 		favoritePoiPaneController.setMainViewController(this);
 		routePaneController.setMainViewController(this);
 		searchPaneController.setMainViewController(this);
+		menuBarController.setMainViewController(this);
+
 		eventListeners();
 	}
 

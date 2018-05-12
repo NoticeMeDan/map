@@ -3,36 +3,44 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
+import lombok.Setter;
 
 public class MenuBarController {
-	@FXML MenuItem menuShowFPS;
-	@FXML MenuItem menuShowReversedBorders;
-	@FXML MenuItem menuShowDijkstraNetwork;
-	@FXML MenuItem menuShowShortestPath;
-	@FXML MenuItem colorBlind;
-	@FXML MenuItem standardColor;
+	@FXML MenuItem showFPSMenuItem;
+	@FXML MenuItem showReversedBordersMenuItem;
+	@FXML MenuItem showDijkstraNetworkMenuItem;
+	@FXML MenuItem showShortestPathMenuItem;
+	@FXML MenuItem showColorBlindModeMenuItem;
+	@FXML MenuItem showStandardColorMenuItem;
+	@FXML MenuItem showMapMenuItem;
+
+	@Setter
+	MainViewController mainViewController;
 
 	private boolean showFPS = false;
 	private boolean showReversedBorders = false;
 	private boolean showDijkstra = false;
 	private boolean showShortestPath = false;
+	private boolean showMapPane = false;
 
 	public void initialize() {
 		eventListeners();
 	}
 
 	private void eventListeners() {
-		menuShowFPS.setOnAction(event -> toggleFPS());
-		menuShowReversedBorders.setOnAction(event -> toggleReversedBorders());
-		menuShowDijkstraNetwork.setOnAction(event -> toggleDijkstra());
-		menuShowShortestPath.setOnAction(event -> toggleShortestPath());
-		colorBlind.setOnAction(event -> colorProfile("colorBlind"));
-		standardColor.setOnAction(event -> colorProfile("standard"));
+		showFPSMenuItem.setOnAction(event -> toggleFPS());
+		showReversedBordersMenuItem.setOnAction(event -> toggleReversedBorders());
+		showDijkstraNetworkMenuItem.setOnAction(event -> toggleDijkstra());
+		showShortestPathMenuItem.setOnAction(event -> toggleShortestPath());
+		showColorBlindModeMenuItem.setOnAction(event -> colorProfile("showColorBlindModeMenuItem"));
+		showStandardColorMenuItem.setOnAction(event -> colorProfile("standard"));
+		showMapMenuItem.setOnAction(event -> toggleMapPane());
+
 	}
 
 	private void colorProfile(String colorProfile) {
 		switch (colorProfile) {
-			case "colorBlind":
+			case "showColorBlindModeMenuItem":
 				OsmElementProperty.colorBlind();
 				break;
 
@@ -48,7 +56,7 @@ public class MenuBarController {
 		String labelStart = (this.showReversedBorders) ? "Fjern" : "Vis";
 		MainViewController.getCanvas().toggleReversedBorders();
 		MainViewController.getCanvas().repaint();
-		menuShowReversedBorders.setText(labelStart + " range-search");
+		showReversedBordersMenuItem.setText(labelStart + " range-search");
 	}
 
 	private void toggleFPS() {
@@ -56,7 +64,7 @@ public class MenuBarController {
 		String labelStart = (this.showFPS) ? "Fjern" : "Vis";
 		MainViewController.getCanvas().toggleFPS();
 		MainViewController.getCanvas().repaint();
-		menuShowFPS.setText(labelStart + " FPS");
+		showFPSMenuItem.setText(labelStart + " FPS");
 	}
 
 	private void toggleDijkstra() {
@@ -64,7 +72,7 @@ public class MenuBarController {
 		String labelStart = (this.showDijkstra) ? "Fjern" : "Vis";
 		MainViewController.getCanvas().toggleDijkstraNetwork();
 		MainViewController.getCanvas().repaint();
-		menuShowDijkstraNetwork.setText(labelStart + " dijkstra-netværk");
+		showDijkstraNetworkMenuItem.setText(labelStart + " dijkstra-netværk");
 	}
 
 	private void toggleShortestPath() {
@@ -72,6 +80,12 @@ public class MenuBarController {
 		String labelStart = (this.showShortestPath) ? "Fjern" : "Vis";
 		MainViewController.getCanvas().toggleRandomShortestPath();
 		MainViewController.getCanvas().repaint();
-		menuShowShortestPath.setText(labelStart + " shortest path");
+		showShortestPathMenuItem.setText(labelStart + " shortest path");
+	}
+
+	private void toggleMapPane() {
+		this.showMapPane = !this.showMapPane;
+		mainViewController.getMapPaneController().openMapPane();
+		showMapMenuItem.setText("Vis kort");
 	}
 }

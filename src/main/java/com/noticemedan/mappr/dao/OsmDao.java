@@ -29,6 +29,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
@@ -75,7 +77,7 @@ public class OsmDao implements DataReader<MapData> {
 		}
 	}
 
-	public void add(Type type, Shape shape) {
+	public void add(Type type, Shape shape, int maxspeed) {
 		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
@@ -89,6 +91,7 @@ public class OsmDao implements DataReader<MapData> {
 		osmElement.setAvgPoint(rect.getAveragePoint());
 		osmElement.setShape(shape);
 		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
+		osmElement.setMaxspeed(maxspeed);
 		osmElement.setName(currentName);
 		currentName = null;
 		if (type.equals(Type.COASTLINE)) this.coastlineElements = coastlineElements.append(osmElement);
@@ -105,6 +108,10 @@ public class OsmDao implements DataReader<MapData> {
 		private long currentNodeID;
 		private Vector<Node> osmWay;
 		private Vector<Vector<Node>> osmRelation;
+		private int maxspeed = 50; // default value
+		final String regex = "\\d+";
+		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -154,6 +161,12 @@ public class OsmDao implements DataReader<MapData> {
 						address.setLon(currentNode.getLon());
 					}
 					switch (keyValue) {
+						case "maxspeed":
+							final Matcher matcher = pattern.matcher(attributes.getValue("v"));
+							while (matcher.find()) {
+								this.maxspeed = Integer.parseInt(matcher.group(0));
+							}
+							break;
 						case "highway":
 							type = Type.UNCLASSIFIED;
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
@@ -275,7 +288,7 @@ public class OsmDao implements DataReader<MapData> {
 								node = this.osmWay.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(type, path);
+							add(type, path, maxspeed);
 						}
 					}
 					break;
@@ -288,7 +301,7 @@ public class OsmDao implements DataReader<MapData> {
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
-					add(type, path);
+					add(type, path, maxspeed);
 					break;
 				case "osm":
 					// convert all coastlines found to paths
@@ -305,7 +318,7 @@ public class OsmDao implements DataReader<MapData> {
 								node = way.get(i);
 								path.lineTo(node.getLon(), node.getLat());
 							}
-							add(Type.COASTLINE, path);
+							add(Type.COASTLINE, path, 0);
 						}
 					}
 					break;

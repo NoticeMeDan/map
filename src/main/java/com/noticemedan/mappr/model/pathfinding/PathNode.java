@@ -13,6 +13,7 @@ public class PathNode {
 	private int id;
 	private double lon;
 	private double lat;
+	private int maxspeed;
 	Vector<PathEdge> edges;
 
 	public int degree() {

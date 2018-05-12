@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<Pane fx:id="cell"
+	  xmlns="http://javafx.com/javafx"
+	  xmlns:fx="http://javafx.com/fxml">
+	<stylesheets>
+		<URL value="@../css/map-cell.css" />
+	</stylesheets>
+	<Label fx:id="mapNameLabel" prefWidth="${mapNameLabel.parent.width}"/>
+	<Label fx:id="mapCreatedLabel" prefWidth="${mapCreatedLabel.parent.width}" layoutY="25" />
+	<Label fx:id="mapSizeLabel" prefWidth="${mapSizeLabel.parent.width}" layoutY="45" />
+</Pane>
+
