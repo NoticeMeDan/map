@@ -39,8 +39,6 @@ public class RoutePaneController {
 	private DomainFacade domain;
 	private Address startAddress;
 	private Address endAddress;
-	@Getter
-	private Vector<Shape> djik;
 
 	@Setter
 	MainViewController mainViewController;
@@ -57,7 +55,6 @@ public class RoutePaneController {
 		//navigationInstructionsListView.setItems(navigationInstructions);
 		//navigationInstructionsListView.setCellFactory(listView -> new NavigationInstructionCell());
 		closeRoutePane();
-		toggleListView("search-start");
 		eventListeners();
 	}
 
@@ -65,6 +62,7 @@ public class RoutePaneController {
 		routePaneCloseButton.setOnAction(event -> {
 			mainViewController.pushCanvas();
 			closeRoutePane();
+			this.mainViewController.getCanvas().hidePath();
 		});
 
 		// On Key Press
@@ -107,14 +105,16 @@ public class RoutePaneController {
 	}
 
 	public void search() {
-		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), TravelType.ALL);
-		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), TravelType.ALL);
+		TravelType travelType = TravelType.ALL;
+
+		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), travelType);
+		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), travelType);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
-		this.djik = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, TravelType.ALL);
-		MainViewController.getCanvas().showPath(this.djik);
-		System.out.println("hey");
+		Vector<Shape> shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, travelType);
+		MainViewController.getCanvas().showPath(shortestPath);
+		toggleListView("route");
 	}
 
 	public void openRoutePane() {
