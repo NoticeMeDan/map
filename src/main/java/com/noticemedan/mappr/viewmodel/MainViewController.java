@@ -87,7 +87,6 @@ public class MainViewController {
 	@Inject
 	public MainViewController(DomainFacade domainFacade) {
 		this.domain = domainFacade;
-		this.boundaries = this.domain.getBoundaries();
 	}
 
 	public void initialize() {
@@ -141,20 +140,11 @@ public class MainViewController {
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
 
-	private void centerViewport() {
+	void centerViewport() {
+		this.boundaries = this.domain.getBoundaries();
 		canvas.pan(-boundaries.getMinLon(), -boundaries.getMaxLat());
 		canvas.zoom(width / (boundaries.getMaxLon() - boundaries.getMinLon()), 0, 0);
 		canvas.setZoomLevel(1 / (boundaries.getMaxLon() - boundaries.getMinLon()));
-	}
-
-	public void replaceOsmPane() {
-		swingNode = new SwingNode();
-		canvas = new CanvasView(this.domain);
-		this.centerViewport();
-		canvas.setPreferredSize(new Dimension(width, height));
-		swingNode.setContent(canvas);
-		osmPaneContainer.getChildren().clear();
-		osmPaneContainer.getChildren().addAll(swingNode);
 	}
 
 	private void eventListeners() {

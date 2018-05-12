@@ -140,7 +140,7 @@ public class MapPaneController {
 	private void loadMap(ActionEvent event) {
 		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
 		this.domain.loadMap(map.getFileName());
-		this.mainViewController.replaceOsmPane();
+		this.mainViewController.centerViewport();
 		MainViewController.getCanvas().repaint();
 	}
 
