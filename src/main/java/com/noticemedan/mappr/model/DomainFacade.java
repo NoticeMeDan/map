@@ -6,8 +6,9 @@ import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
-import com.noticemedan.mappr.model.service.ForestService;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
+import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
@@ -82,9 +83,20 @@ public class DomainFacade {
 	 * @param to coordinate of the to-destination
 	 * @return Vector of Shapes
 	 */
-	public Vector<Shape> deriveShortestPathShapes(Coordinate from, Coordinate to) {
-		return shortestPathService.getShortestPath(from, to);
+	public Vector<Shape> deriveShortestPathShapes(Coordinate from, Coordinate to, TravelType type) {
+		return shortestPathService.getShortestPath(from, to, type);
 	}
+
+	/**
+	 * Derive the distance of the shortest path between two given coordinates
+	 * @param from coordinate of the from-destination
+	 * @param to coordinate of the to-destination
+	 * @return the distance of the path
+	 */
+	public double deriveShortestPathDistance(Coordinate from, Coordinate to, TravelType type) {
+		return shortestPathService.getPathDistance(from, to, type);
+	}
+
 	/**
 	 * DEVELOPMENT OPTION
 	 * Derive a random shortest path as a Vector of Shapes
@@ -92,7 +104,7 @@ public class DomainFacade {
 	 * @return Vector of Shapes of random shortest path
 	 */
 	public Vector<Shape> deriveRandomShortestPathShapes() {
-		return shortestPathService.getRandomShortestPath();
+		return shortestPathService.getRandomShortestPath(TravelType.ALL);
 	}
 
 	/**
@@ -116,6 +128,12 @@ public class DomainFacade {
 	/* SECTION END: SHORTEST PATH */
 
 	/* SECTION START: IMAGE DAO */
+
+	/**
+	 * Derive a BufferedImage from a given filepath
+	 * @param input path to file
+	 * @return BufferedImage if file exists
+	 */
 	public Option<BufferedImage> getImageFromFS(Path input) {
 		ImageDao dao = new ImageDao();
 		return Try.of(() -> dao.read(input))

@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.control.Try;
@@ -35,9 +36,9 @@ public class FavoritePoiCellController {
 		Try.of(fxmlLoader::load);
 	}
 
-	public void setInformation(FavoritePoi favoritePoi) {
-		favoritePoiNameLabel.setText(favoritePoi.getName());
-		Coordinate coordinate = favoritePoi.getCoordinate();
+	public void setInformation(Element element) {
+		favoritePoiNameLabel.setText(element.getName());
+		Coordinate coordinate = element.getAvgPoint();
 
 		String shortCoordinateX = String.valueOf(coordinate.getX());
 		shortCoordinateX = shortCoordinateX.substring(0, 9);

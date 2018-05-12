@@ -11,7 +11,7 @@
 	<stylesheets>
 		<URL value="@../css/style.css" />
 	</stylesheets>
-	<fx:include source="MenuBar.fxml" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"/>
+	<fx:include fx:id="menuBar" source="MenuBar.fxml" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"/>
 	<AnchorPane id="contentPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
 		<Pane fx:id="osmPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 
@@ -33,5 +33,6 @@
 		<fx:include fx:id="favoritePoiPane" source="FavoritePoiPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
 		<fx:include fx:id="searchPane" source="SearchPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
 		<fx:include fx:id="routePane" source="RoutePane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		<fx:include fx:id="mapPane" source="MapPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
 	</AnchorPane>
 </AnchorPane>

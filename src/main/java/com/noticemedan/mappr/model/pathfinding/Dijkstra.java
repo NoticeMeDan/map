@@ -5,7 +5,7 @@ import io.vavr.collection.Vector;
 
 /**
  * Dijkstra shortest path
- *
+ *zx
  * This implementation is an abbreviation of Dijkstra's algorithm from algs4 at
  * http://algs4.cs.princeton.edu/44sp/DijkstraSP.java
  * Algorithms, 4th Edition by Sedgewick & Wayne.
@@ -16,14 +16,16 @@ public class Dijkstra {
 	private double[] distTo;
 	private PathEdge[] edgeTo;
 	private IndexMinPQ<Double> priorityQueue;
+	private TravelType travelType;
 
-	public Dijkstra(Network n, PathNode s) {
+	public Dijkstra(Network n, PathNode s, TravelType travelType) {
 		n.getAllEdges().forEach(e -> {
 			if (e.getWeight() < 0) throw new IllegalArgumentException("Weight less than zero");
 		});
 
-		distTo = new double[n.getAllNodes().size()];
-		edgeTo = new PathEdge[n.getAllNodes().size()];
+		this.distTo = new double[n.getAllNodes().size()];
+		this.edgeTo = new PathEdge[n.getAllNodes().size()];
+		this.travelType = travelType;
 
 		validatePathNode(s.getId());
 
@@ -40,10 +42,16 @@ public class Dijkstra {
 	}
 
 	private void relax(PathEdge e) {
+		if (!e.getTravelTypesAllowed().contains(travelType)) {
+			System.out.println("Does not contain type " + travelType);
+			return;
+		}
+
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
-		if (distTo[wId] > distTo[vId] + e.getWeight()) {
-			distTo[wId] = distTo[vId] + e.getWeight();
+		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight()/e.getSpeedLimit()) : e.getWeight();
+		if (distTo[wId] > distTo[vId] + weight) {
+			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;
 			if (priorityQueue.contains(wId)) priorityQueue.decreaseKey(wId, distTo[wId]);
 			else priorityQueue.insert(wId, distTo[wId]);

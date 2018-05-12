@@ -5,6 +5,7 @@ import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.collection.List;
 import io.vavr.collection.Vector;
@@ -106,12 +107,12 @@ public class RoutePaneController {
 	}
 
 	public void search() {
-		Element startElement = this.domain.doNearestNeighborSearch(this.startAddress.getCoordinate(),0);
-		Element endElement = this.domain.doNearestNeighborSearch(this.endAddress.getCoordinate(),0);
+		Element startElement = this.domain.doNearestNeighborSearch(this.startAddress.getCoordinate(),4);
+		Element endElement = this.domain.doNearestNeighborSearch(this.endAddress.getCoordinate(),4);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
-		this.djik = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate);
+		this.djik = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, TravelType.ALL);
 		MainViewController.getCanvas().drawShortestPath(this.djik);
 		System.out.println("hey");
 	}

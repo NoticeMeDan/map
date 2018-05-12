@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
+import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.viewmodel.MainViewController;
 import javafx.beans.value.ChangeListener;
@@ -22,7 +23,7 @@ public class FavoritePoiPaneController {
 	@FXML Button removeFavoritePoiButton;
 	@FXML StackPane noFavoritesYetPane;
 	@Setter
-	ObservableList<FavoritePoi> favoritePois;
+	ObservableList<Element> favoritePois;
 	@Setter
 	MainViewController mainViewController;
 
@@ -36,10 +37,11 @@ public class FavoritePoiPaneController {
 	}
 
 	private void eventListeners() {
-		ChangeListener<FavoritePoi> favoritePoiListener = (ObservableValue<? extends FavoritePoi> observable, FavoritePoi oldValue, FavoritePoi newValue) -> {
+		ChangeListener<Element> favoritePoiListener = (ObservableValue<? extends Element> observable, Element oldValue, Element newValue) -> {
 			zoomToPoi();
 			enableActionMenu();
 		};
+
 		favoritePoiListView.getSelectionModel().selectedItemProperty().addListener(favoritePoiListener);
 
 		removeFavoritePoiButton.setOnAction(event -> {
@@ -56,10 +58,9 @@ public class FavoritePoiPaneController {
 		});
 	}
 	private void zoomToPoi() {
-		FavoritePoi currentSelectedFavoritePoi = (FavoritePoi) favoritePoiListView.getSelectionModel().getSelectedItem();
-		mainViewController.getCanvas().zoomToCoordinate(currentSelectedFavoritePoi.getCoordinate(), 30);
+		Element currentSelectedFavoritePoi = (Element) favoritePoiListView.getSelectionModel().getSelectedItem();
+		if (currentSelectedFavoritePoi != null) mainViewController.getCanvas().zoomToCoordinate(currentSelectedFavoritePoi.getAvgPoint(), 30);
 	}
-
 
 	public void openFavoritePane() {
 		refresh();
