@@ -62,36 +62,40 @@ public class NearestNeighborTest {
 		elements = elements.append(roadway);
 
 		forestService = new ForestService(elements, coastlines);
-		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 	}
 
 
 	@Test
 	public void testNearestNeighbor_All_Positive1() {
+		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 		Element element = forestService.nearestNeighborInCurrentRangeSearch(new Coordinate(4,3), TravelType.ALL);
 		assertEquals(Type.FOOTWAY, element.getType());
 	}
 
 	@Test
 	public void testNearestNeighbor_All_Positive2() {
+		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 		Element element = forestService.nearestNeighborInCurrentRangeSearch(new Coordinate(1,4), TravelType.ALL);
 		assertEquals(Type.MOTORWAY, element.getType());
 	}
 
 	@Test
 	public void testNearestNeighbor_Walk_Positive() {
+		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 		Element element = forestService.nearestNeighborInCurrentRangeSearch(new Coordinate(1,4), TravelType.WALK);
 		assertEquals(Type.FOOTWAY, element.getType());
 	}
 
 	@Test
 	public void testNearestNeighbor_Bike_Positive1() {
+		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 		Element element = forestService.nearestNeighborInCurrentRangeSearch(new Coordinate(3,1), TravelType.BIKE);
 		assertEquals(Type.CYCLEWAY, element.getType());
 	}
 
 	@Test
 	public void testNearestNeighbor_Bike_Positive2() {
+		forestService.rangeSearch(new Rect(0,0,10,10), Double.POSITIVE_INFINITY);
 		Element element = forestService.nearestNeighborInCurrentRangeSearch(new Coordinate(7,6), TravelType.BIKE);
 		assertEquals(Type.ROAD, element.getType());
 	}
