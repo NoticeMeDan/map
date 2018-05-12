@@ -20,7 +20,6 @@ public class ForestService implements ForestInterface {
 	private Vector<Element> currentRangeSearch;
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
-		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;
 		Element[][] elementArray = new Element[5][];
@@ -152,7 +151,11 @@ public class ForestService implements ForestInterface {
 				}
 			}
 		}
-		return currentNN;
+
+		//Copy object contents to new element object
+		Element nearestNeighbor = Element.cloneElement(currentNN);
+		nearestNeighbor.setAvgPoint(currentNNCoordinate);
+		return nearestNeighbor;
 	}
 
 	@Override

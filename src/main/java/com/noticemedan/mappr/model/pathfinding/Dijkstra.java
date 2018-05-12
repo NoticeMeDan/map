@@ -3,6 +3,8 @@ package com.noticemedan.mappr.model.pathfinding;
 import com.noticemedan.mappr.model.util.IndexMinPQ;
 import io.vavr.collection.Vector;
 
+import java.nio.file.Path;
+
 /**
  * Dijkstra shortest path
  *zx
@@ -37,25 +39,24 @@ public class Dijkstra {
 		priorityQueue.insert(s.getId(), distTo[s.getId()]);
 		while (!priorityQueue.isEmpty()) {
 			int vId = priorityQueue.delMin();
-			n.getAllNodes().get(vId).getEdges().forEach(this::relax);
+			n.getAllNodes().get(vId).getEdges().filter(this::hasTravelType).forEach(this::relax);
 		}
 	}
 
 	private void relax(PathEdge e) {
-		if (!e.getTravelTypesAllowed().contains(travelType)) {
-			System.out.println("Does not contain type " + travelType);
-			return;
-		}
-
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
-		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight()/e.getSpeedLimit()) : e.getWeight();
+		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight(); // <- This one seems to cause trouble
 		if (distTo[wId] > distTo[vId] + weight) {
 			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;
 			if (priorityQueue.contains(wId)) priorityQueue.decreaseKey(wId, distTo[wId]);
 			else priorityQueue.insert(wId, distTo[wId]);
 		}
+	}
+
+	private boolean hasTravelType(PathEdge e) {
+		return e.getTravelTypesAllowed().contains(this.travelType);
 	}
 
 	private void validatePathNode(int index) {

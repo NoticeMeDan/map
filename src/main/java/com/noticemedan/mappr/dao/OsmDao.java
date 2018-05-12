@@ -85,8 +85,7 @@ public class OsmDao implements DataReader<MapData> {
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		Element osmElement = new Element();
 		osmElement.setType(type);
-		osmElement.setBounds(rect);
-		osmElement.setAvgPoint(rect.getAveragePoint());
+		osmElement.setAvgPoint(new Coordinate(shape.getBounds2D().getCenterX(), shape.getBounds2D().getCenterY()));
 		osmElement.setShape(shape);
 		osmElement.setColor(OsmElementProperty.deriveColorFromType(type));
 		osmElement.setMaxspeed(maxspeed);
