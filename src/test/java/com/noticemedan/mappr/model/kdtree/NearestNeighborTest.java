@@ -101,20 +101,23 @@ public class NearestNeighborTest {
 	}
 
 	@Test
-	public void testExpandingRectNearestNeighbor_All_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(7,6), TravelType.ALL);
-		assertEquals(Type.ROAD, element.getType());
+	public void testExpandingRectNearestNeighborNode_All_Positive1() {
+		Coordinate coordinate = forestService.nearestNode(new Coordinate(7,5.5), TravelType.ALL);
+		assertEquals(coordinate.getX(), 7.0);
+		assertEquals(coordinate.getY(), 5.0);
 	}
 
 	@Test
-	public void testExpandingRectNearestNeighbor_Car_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(-100,50), TravelType.CAR);
-		assertEquals(Type.MOTORWAY, element.getType());
+	public void testExpandingRectNearestNeighborNode_Car_Positive1() {
+		Coordinate coordinate = forestService.nearestNode(new Coordinate(-100,50), TravelType.CAR);
+		assertEquals(coordinate.getX(), 1.0);
+		assertEquals(coordinate.getY(), 1.0);
 	}
 
 	@Test
-	public void testExpandingRectNearestNeighbor_Bike_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(-100,50), TravelType.BIKE);
-		assertEquals(Type.CYCLEWAY, element.getType());
+	public void testExpandingRectNearestNeighborNode_Bike_Positive1() {
+		Coordinate coordinate = forestService.nearestNode(new Coordinate(-100,50), TravelType.BIKE);
+		assertEquals(coordinate.getX(), 5.0);
+		assertEquals(coordinate.getY(), 2.0);
 	}
 }

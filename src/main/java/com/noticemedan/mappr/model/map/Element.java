@@ -33,6 +33,18 @@ public class Element implements Comparable<Element>, Serializable {
 		return 0;
 	}
 
+	public static Element cloneElement(Element other) {
+		Element element = new Element();
+		element.setType(other.getType());
+		element.setName(other.getName());
+		element.setShape(other.getShape());
+		element.setMaxspeed(other.getMaxspeed());
+		element.setColor(other.getColor());
+		element.setAvgPoint(other.getAvgPoint());
+		element.setDepthEven(other.isDepthEven());
+		return element;
+	}
+
 	public boolean isRoad() {
 		return type == Type.MOTORWAY ||
 				type == Type.PRIMARY ||
