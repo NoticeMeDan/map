@@ -15,7 +15,7 @@
 	</stylesheets>
 	<HBox prefHeight="55.0" prefWidth="240.0">
 		<Pane prefHeight="100.0" prefWidth="340.0">
-			<Label styleClass="paneTitle" text="Kort" />
+			<Label styleClass="paneTitle" text="Mine Kort" />
 			<Button fx:id="mapPaneCloseButton" styleClass="closeButton" layoutX="255.0" layoutY="20.0" mnemonicParsing="false"/>
 		</Pane>
 	</HBox>
@@ -23,6 +23,9 @@
 		<Button fx:id="createMapButton" styleClass="actionMenuButton" text="Opret kort" />
 		<Button fx:id="loadMapButton" styleClass="actionMenuButton" text="Indlæs kort" />
 		<Button fx:id="deleteMapButton" styleClass="actionMenuButton" text="Slet kort" />
+	</HBox>
+	<HBox fx:id="secondaryActionMenu" layoutY="55">
+		<Button fx:id="saveMapButton" styleClass="actionMenuButton" text="Gem kort" />
 	</HBox>
 	<StackPane fx:id="noMapsYetPane" VBox.vgrow="ALWAYS">
 		<Text id="noMapsText" wrappingWidth="210" textAlignment="CENTER" text="Ingen kort er fundet. Tilføj et via knappen ovenover." />

@@ -14,7 +14,7 @@ import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.model.util.FileInfo;
+import com.noticemedan.mappr.model.map.FileInfo;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -26,12 +26,14 @@ import io.vavr.control.Try;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @Slf4j
@@ -155,13 +157,13 @@ public class DomainFacade {
 	/* SECTION START: .map HANDLING */
 
 	/**
-	 * Builds .map from .osm/.osm.zip in background, and notifies on completion
+	 * Builds .map from .osm/.zip in background, and notifies on completion
 	 * @param from The path to get the .osm file from
 	 * @param onSuccess What to do on success
 	 * @param onFailed What to do on failure
 	 */
 	public void buildMapFromOsmPath(Path from, EventHandler<WorkerStateEvent> onSuccess, EventHandler<WorkerStateEvent> onFailed) {
-		String filename = from.getFileName().toString().split("\\.")[0] + ".map";
+		String filename = FilenameUtils.getBaseName(from.toString()) + "__" + UUID.randomUUID() + ".map";
 		Path to = Paths.get(MAPPR_DIR.toString(), filename);
 		MapImportService importer = new MapImportService(from, to, new OsmDao(), new MapDao());
 		importer.setOnSucceeded(onSuccess);
@@ -176,6 +178,17 @@ public class DomainFacade {
 			return Option.of(path);
 		} catch (IOException e) {
 			log.error("An error occurred while loading .map: ", e);
+			return Option.none();
+		}
+	}
+
+	public Option<Path> updateMap(String name) {
+		Path path = Paths.get(MAPPR_DIR.toString(), name);
+		try {
+			new MapDao().write(path, this.mapData);
+			return Option.of(path);
+		} catch (IOException e) {
+			log.error("An error occurred while saving .map: ", e);
 			return Option.none();
 		}
 	}

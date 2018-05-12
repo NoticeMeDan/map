@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.viewmodel;
 
-import com.noticemedan.mappr.model.util.FileInfo;
+import com.noticemedan.mappr.model.map.FileInfo;
 import javafx.scene.control.ListCell;
 
 /**

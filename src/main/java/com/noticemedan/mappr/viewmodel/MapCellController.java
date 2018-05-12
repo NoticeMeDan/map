@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.viewmodel;
 
-import com.noticemedan.mappr.model.util.FileInfo;
+import com.noticemedan.mappr.model.map.FileInfo;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,6 @@ import lombok.Getter;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -46,7 +45,7 @@ class MapCellController {
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		NumberFormat numberFormatter = new DecimalFormat("#.#");
 		double SIZE_MB = Math.pow(1024, 2);
-		mapNameLabel.setText(map.getName());
+		mapNameLabel.setText(map.getDisplayName());
 		mapCreatedLabel.setText(dateFormatter.format(map.getLastEdited()));
 		mapSizeLabel.setText("Størrelse: " + numberFormatter.format(map.getSize()/SIZE_MB) + " MB");
 	}

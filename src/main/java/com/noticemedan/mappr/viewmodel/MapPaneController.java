@@ -1,10 +1,9 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.util.FileInfo;
+import com.noticemedan.mappr.model.map.FileInfo;
 import com.noticemedan.mappr.view.util.FilePicker;
 import com.noticemedan.mappr.view.util.InfoBox;
-import io.vavr.collection.List;
 import io.vavr.control.Option;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,19 +22,16 @@ import lombok.Setter;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class MapPaneController {
 	@FXML Pane mapPane;
 	@FXML ListView mapListView;
 	@Getter
 	@FXML Button mapPaneCloseButton;
-	@FXML Button loadMapButton;
-	@FXML Button deleteMapButton;
 	@FXML Button createMapButton;
+	@FXML Button loadMapButton;
+	@FXML Button saveMapButton;
+	@FXML Button deleteMapButton;
 	@FXML StackPane noMapsYetPane;
 
 	ObservableList<FileInfo> maps;
@@ -67,6 +63,7 @@ public class MapPaneController {
 
 		createMapButton.setOnAction(this::createMapFromOsm);
 		loadMapButton.setOnAction(this::loadMap);
+		saveMapButton.setOnAction(this::updateMap);
 		deleteMapButton.setOnAction(this::deleteMap);
 
 		mapPaneCloseButton.setOnAction(event -> closeMapPane());
@@ -126,7 +123,7 @@ public class MapPaneController {
 	private void createMapFromOsm(ActionEvent event) {
 		Stage stage = (Stage) this.mapPane.getScene().getWindow();
 		FilePicker picker = new FilePicker(new FileChooser
-				.ExtensionFilter("OSM Files (*.osm or *.osm.zip)", "*.osm", "*.osm.zip"));
+				.ExtensionFilter("OSM Files (*.osm or *.zip)", "*.osm", "*.zip"));
 
 		Option<Path> path = picker.getPath(stage);
 		if (!path.isEmpty()) {
@@ -142,12 +139,19 @@ public class MapPaneController {
 
 	private void loadMap(ActionEvent event) {
 		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
-		this.domain.loadMap(map.getName());
+		this.domain.loadMap(map.getFileName());
+		this.mainViewController.replaceOsmPane();
+		MainViewController.getCanvas().repaint();
+	}
+
+	private void updateMap(ActionEvent event) {
+		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
+		this.domain.updateMap(map.getFileName());
 	}
 
 	private void deleteMap(ActionEvent event) {
 		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
-		this.domain.deleteMap(map.getName());
+		this.domain.deleteMap(map.getFileName());
 		readFiles();
 	}
 }

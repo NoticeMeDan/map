@@ -6,6 +6,9 @@
 
 <MenuBar fx:id="menuBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1"
 		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
+	<Menu mnemonicParsing="false" text="Fil">
+		<MenuItem fx:id="loadFromOsm" mnemonicParsing="false" text="Load fra OSM"/>
+	</Menu>
 	<Menu mnemonicParsing="false" text="Vindue">
 		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis mine kort"/>
 		<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder"/>

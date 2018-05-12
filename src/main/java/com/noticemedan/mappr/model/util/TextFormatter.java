@@ -3,8 +3,8 @@ package com.noticemedan.mappr.model.util;
 import java.util.Locale;
 
 public class TextFormatter {
-	static public String formatDistance(Double distance, int decimals) {
-		if(decimals < 0) new RuntimeException("Number of decimals cannot be 0");
+	public static String formatDistance(Double distance, int decimals) {
+		if(decimals < 0) throw new NumberFormatException("Number of decimals cannot be 0");
 		String distanceAbbreviation = "km";
 		if (distance < 1) {
 			distanceAbbreviation = "m";

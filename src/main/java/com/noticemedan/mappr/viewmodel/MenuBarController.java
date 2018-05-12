@@ -99,6 +99,5 @@ public class MenuBarController {
 	private void toggleMapPane() {
 		this.showMapPane = !this.showMapPane;
 		mainViewController.getMapPaneController().openMapPane();
-		showMapMenuItem.setText("Vis kort");
 	}
 }

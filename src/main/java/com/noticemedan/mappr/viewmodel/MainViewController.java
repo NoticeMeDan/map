@@ -135,11 +135,25 @@ public class MainViewController {
 	private void insertOSMPane() {
 		swingNode = new SwingNode();
 		canvas = new CanvasView(this.domain);
+		this.centerViewport();
+		canvas.setPreferredSize(new Dimension(width, height));
+		swingNode.setContent(canvas);
+		osmPaneContainer.getChildren().addAll(swingNode);
+	}
+
+	private void centerViewport() {
 		canvas.pan(-boundaries.getMinLon(), -boundaries.getMaxLat());
 		canvas.zoom(width / (boundaries.getMaxLon() - boundaries.getMinLon()), 0, 0);
 		canvas.setZoomLevel(1 / (boundaries.getMaxLon() - boundaries.getMinLon()));
+	}
+
+	public void replaceOsmPane() {
+		swingNode = new SwingNode();
+		canvas = new CanvasView(this.domain);
+		this.centerViewport();
 		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
+		osmPaneContainer.getChildren().clear();
 		osmPaneContainer.getChildren().addAll(swingNode);
 	}
 
