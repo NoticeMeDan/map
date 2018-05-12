@@ -39,7 +39,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/denmark-latest.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm.zip").toURI());
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
@@ -102,7 +102,7 @@ public class DomainFacade {
 	 * @return Vector of Shapes of random shortest path
 	 */
 	public Vector<Shape> deriveRandomShortestPathShapes() {
-		return shortestPathService.getRandomShortestPath(TravelType.ALL);
+		return shortestPathService.getRandomShortestPath(TravelType.CAR);
 	}
 
 	/**
