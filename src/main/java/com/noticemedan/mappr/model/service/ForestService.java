@@ -3,7 +3,6 @@ package com.noticemedan.mappr.model.service;
 import com.noticemedan.mappr.model.kdtree.ForestInterface;
 import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
@@ -11,7 +10,6 @@ import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.awt.geom.PathIterator;
 
 @Slf4j

@@ -1,6 +1,14 @@
 package com.noticemedan.mappr.viewmodel;
 
+import com.google.inject.Inject;
+import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.NavigationAction;
+import com.noticemedan.mappr.model.map.Address;
+import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.pathfinding.TravelType;
+import com.noticemedan.mappr.model.util.Coordinate;
+import io.vavr.collection.List;
+import io.vavr.collection.Vector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,30 +21,40 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class RoutePaneController {
 	@FXML Pane routePane;
+	@FXML Pane routeInfoPane;
 	@FXML Button routePaneCloseButton;
 	@FXML ToggleButton routeCarToggleButton;
 	@FXML ToggleButton routeWalkToggleButton;
 	@FXML ToggleButton routeBicycleToggleButton;
 	@FXML TextField searchStartPointAddressField;
 	@FXML TextField searchEndPointAddressField;
-	@FXML ListView routeSearchResultsListView;
+	@FXML ListView routeStartSearchResultsListView;
+	@FXML ListView routeEndSearchResultsListView;
 	@FXML ListView navigationInstructionsListView;
+	private DomainFacade domain;
+	private Address startAddress;
+	private Address endAddress;
 
 	@Setter
 	MainViewController mainViewController;
 
 	ObservableList<NavigationInstruction> navigationInstructions;
 
+	@Inject
+	public RoutePaneController(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+	}
+
 	public void initialize() {
-		dummyNavigationInstructions();
-		navigationInstructionsListView.setItems(navigationInstructions);
-		navigationInstructionsListView.setCellFactory(listView -> new NavigationInstructionCell());
+		//dummyNavigationInstructions();
+		//navigationInstructionsListView.setItems(navigationInstructions);
+		//navigationInstructionsListView.setCellFactory(listView -> new NavigationInstructionCell());
 		closeRoutePane();
-		hideAddressSearchResults();
 		eventListeners();
 	}
 
@@ -44,7 +62,60 @@ public class RoutePaneController {
 		routePaneCloseButton.setOnAction(event -> {
 			mainViewController.pushCanvas();
 			closeRoutePane();
+			this.mainViewController.getCanvas().hidePath();
 		});
+
+		// On Key Press
+		searchStartPointAddressField.setOnKeyTyped(event -> handleAddressSearch(searchStartPointAddressField, routeStartSearchResultsListView));
+		searchEndPointAddressField.setOnKeyTyped(event -> handleAddressSearch(searchEndPointAddressField, routeEndSearchResultsListView));
+
+		// On focus
+		searchStartPointAddressField.focusedProperty()
+				.addListener((obs, oldVal, newVal) -> toggleListView("search-start"));
+
+		searchEndPointAddressField.focusedProperty()
+				.addListener((obs, oldVal, newVal) -> toggleListView("search-end"));
+
+		// Choose item
+		routeStartSearchResultsListView.getSelectionModel()
+				.selectedItemProperty()
+				.addListener((obs, oldVal, newVal) -> {
+					searchStartPointAddressField.setText(newVal.toString());
+					this.startAddress = this.domain.getAddress(newVal.toString());
+				});
+
+		routeEndSearchResultsListView.getSelectionModel()
+				.selectedItemProperty()
+				.addListener((obs, oldVal, newVal) -> {
+					searchEndPointAddressField.setText(newVal.toString());
+					this.endAddress = this.domain.getAddress(newVal.toString());
+					search();
+				});
+	}
+
+	private void handleAddressSearch(TextField field, ListView resultList) {
+		String search = field.getText();
+		if (search.isEmpty()) resultList.getItems().clear();
+		else {
+			List<String> results = this.domain.doAddressSearch(search).take(20);
+			resultList.setItems(
+					FXCollections.observableArrayList(results.toJavaList())
+			);
+		}
+	}
+
+	public void search() {
+		// TODO: Make dynamic by getting chosen traveltype
+		TravelType travelType = TravelType.ALL;
+
+		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), travelType);
+		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), travelType);
+		Coordinate startCoordinate = startElement.getAvgPoint();
+		Coordinate endCoordinate = endElement.getAvgPoint();
+
+		Vector<Shape> shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, travelType);
+		MainViewController.getCanvas().showPath(shortestPath);
+		toggleListView("route");
 	}
 
 	public void openRoutePane() {
@@ -53,23 +124,50 @@ public class RoutePaneController {
 		searchStartPointAddressField.requestFocus();
 	}
 
+	public void toggleListView(String type) {
+		if (type.equals("route")) {
+			toggleRoute(true);
+			toggleAddressStartSearchResults(false);
+			toggleAddressEndSearchResults(false);
+		}
+		if (type.equals("search-start")) {
+			toggleRoute(false);
+			toggleAddressStartSearchResults(true);
+			toggleAddressEndSearchResults(false);
+		}
+		if (type.equals("search-end")) {
+			toggleRoute(false);
+			toggleAddressStartSearchResults(false);
+			toggleAddressEndSearchResults(true);
+		}
+	}
+
 	private void closeRoutePane() {
 		routePane.setVisible(false);
 		routePane.setManaged(false);
 		searchStartPointAddressField.clear();
 		searchEndPointAddressField.clear();
-		routeSearchResultsListView.getItems().clear();
+		routeStartSearchResultsListView.getItems().clear();
 	}
 
-	private void hideAddressSearchResults() {
-		routeSearchResultsListView.setVisible(false);
-		routeSearchResultsListView.setManaged(false);
-		routeSearchResultsListView.getItems().clear();
+	private void toggleRoute(boolean toggle) {
+		navigationInstructionsListView.setVisible(toggle);
+		navigationInstructionsListView.setManaged(toggle);
+		routeInfoPane.setVisible(toggle);
+		routeInfoPane.setManaged(toggle);
+		if (!toggle) navigationInstructionsListView.getItems().clear();
 	}
 
-	private void showAddressSearchResults() {
-		routeSearchResultsListView.setVisible(true);
-		routeSearchResultsListView.setManaged(true);
+	private void toggleAddressStartSearchResults(boolean toggle) {
+		routeStartSearchResultsListView.setVisible(toggle);
+		routeStartSearchResultsListView.setManaged(toggle);
+		if (!toggle) routeStartSearchResultsListView.getItems().clear();
+	}
+
+	private void toggleAddressEndSearchResults(boolean toggle) {
+		routeEndSearchResultsListView.setVisible(toggle);
+		routeEndSearchResultsListView.setManaged(toggle);
+		if (!toggle) routeEndSearchResultsListView.getItems().clear();
 	}
 
 	// TODO @emil delete this inner class when proper class has been implemented

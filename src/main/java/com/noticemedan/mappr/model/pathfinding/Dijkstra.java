@@ -1,7 +1,6 @@
 package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.util.IndexMinPQ;
-import io.vavr.collection.Iterator;
 import io.vavr.collection.Vector;
 
 import java.nio.file.Path;

@@ -20,7 +20,6 @@ public class MenuBarController {
 	private boolean showFPS = false;
 	private boolean showReversedBorders = false;
 	private boolean showDijkstra = false;
-	private boolean showShortestPath = false;
 	private boolean showMapPane = false;
 
 	public void initialize() {
@@ -76,11 +75,9 @@ public class MenuBarController {
 	}
 
 	private void toggleShortestPath() {
-		this.showShortestPath = !this.showShortestPath;
-		String labelStart = (this.showShortestPath) ? "Fjern" : "Vis";
 		MainViewController.getCanvas().toggleRandomShortestPath();
 		MainViewController.getCanvas().repaint();
-		showShortestPathMenuItem.setText(labelStart + " shortest path");
+		showShortestPathMenuItem.setText("Toggle shortest path");
 	}
 
 	private void toggleMapPane() {

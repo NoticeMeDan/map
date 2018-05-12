@@ -25,7 +25,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 public class DomainFacade {
@@ -39,7 +38,8 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/fyn.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/copenhagen-large.osm.zip").toURI());
+
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
@@ -66,11 +66,16 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
+	public Element doNearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {return this.forestService.nearestNeighborNewRangeSearch(queryPoint, travelType); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
+	}
+
+	public Address getAddress(String search) {
+		return this.addressSearch.getAddress(search);
 	}
 
 	/* SECTION START: SHORTEST PATH */

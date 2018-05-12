@@ -3,7 +3,6 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.Entities;
-import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
@@ -17,7 +16,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -28,9 +28,9 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
 import javax.inject.Inject;
+import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class MainViewController {
 	@Getter
