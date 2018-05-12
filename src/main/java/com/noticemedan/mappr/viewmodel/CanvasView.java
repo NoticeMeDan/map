@@ -59,10 +59,11 @@ public class CanvasView extends JComponent {
 
 	//ShortestPath
 	private boolean showNetwork;
-	private boolean showRandomSP;
-	private Vector<Shape> randomSP;
 	private BufferedImage start;
 	private BufferedImage goal;
+
+	private boolean showPath = false;
+	private Vector<Shape> shortestPath;
 
 	public CanvasView(DomainFacade domainFacade) {
 		try {
@@ -99,7 +100,7 @@ public class CanvasView extends JComponent {
         drawCoastlines();
         drawAllElements();
 
-		if (this.showRandomSP) drawShortestPath(randomSP);
+        if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 
@@ -121,12 +122,21 @@ public class CanvasView extends JComponent {
 		timeDraw = stopwatchDraw.elapsedTime();
     }
 
-	private void drawShortestPath(Vector<Shape> shape) {
-		if (shape.isEmpty()) return;
+	public void showPath(Vector<Shape> shortestPath) {
+		this.showPath = true;
+		this.shortestPath = shortestPath;
+	}
+
+	public void hidePath() {
+		this.showPath = false;
+	}
+
+	public void drawShortestPath() {
+		if (this.shortestPath.isEmpty()) return;
 		Path2D path = new GeneralPath();
 		boolean first = true;
 		Coordinate startpoint = null;
-		for(Shape s : shape) {
+		for(Shape s : this.shortestPath) {
 			Line2D.Double line = (Line2D.Double) s;
 			if(first) {
 				startpoint = new Coordinate(line.x1,line.y1);
@@ -436,8 +446,8 @@ public class CanvasView extends JComponent {
 	}
 
 	public void toggleRandomShortestPath() {
-		this.showRandomSP = !this.showRandomSP;
+		this.showPath = !this.showPath;
 
-		if (this.showRandomSP) this.randomSP = domain.deriveRandomShortestPathShapes();
+		if (this.showPath) this.shortestPath = domain.deriveRandomShortestPathShapes();
 	}
 }

@@ -29,7 +29,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
@@ -78,7 +77,6 @@ public class OsmDao implements DataReader<MapData> {
 	}
 
 	public void add(Type type, Shape shape, int maxspeed) {
-		OsmElementProperty osmElementProperty = new OsmElementProperty();
 		Rectangle2D shapeBounds = shape.getBounds2D();
 		double x1 = shapeBounds.getX();
 		double y1 = shapeBounds.getY();
@@ -87,9 +85,9 @@ public class OsmDao implements DataReader<MapData> {
 		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		Element osmElement = new Element();
 		osmElement.setType(type);
-		osmElement.setAvgPoint(rect.getAveragePoint());
+		osmElement.setAvgPoint(new Coordinate(shape.getBounds2D().getCenterX(), shape.getBounds2D().getCenterY()));
 		osmElement.setShape(shape);
-		osmElement.setColor(osmElementProperty.deriveColorFromType(type));
+		osmElement.setColor(OsmElementProperty.deriveColorFromType(type));
 		osmElement.setMaxspeed(maxspeed);
 		osmElement.setName(currentName);
 		currentName = null;
@@ -156,8 +154,7 @@ public class OsmDao implements DataReader<MapData> {
 						keyValue = keyValue.substring(5);
 						Node currentNode = idToNode.get(currentNodeID);
 						type = Type.ADDRESS;
-						address.setLat(currentNode.getLat());
-						address.setLon(currentNode.getLon());
+						address.setCoordinate(new Coordinate(currentNode.getLon(),currentNode.getLat()));
 					}
 					switch (keyValue) {
 						case "maxspeed":
@@ -280,15 +277,13 @@ public class OsmDao implements DataReader<MapData> {
 							this.coastlines = coastlines.put(merged.get(0), merged);
 						}
 					} else {
-						if(!this.osmWay.isEmpty()) {
-							node = this.osmWay.get(0);
-							path.moveTo(node.getLon(), node.getLat());
-							for (int i = 1; i < osmWay.size(); i++) {
-								node = this.osmWay.get(i);
-								path.lineTo(node.getLon(), node.getLat());
-							}
-							add(type, path, maxspeed);
+						node = this.osmWay.get(0);
+						path.moveTo(node.getLon(), node.getLat());
+						for (int i = 1; i < osmWay.size(); i++) {
+							node = this.osmWay.get(i);
+							path.lineTo(node.getLon(), node.getLat());
 						}
+						add(type, path, maxspeed);
 					}
 					break;
 				case "relation":

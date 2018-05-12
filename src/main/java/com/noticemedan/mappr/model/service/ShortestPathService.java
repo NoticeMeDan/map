@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
 import java.util.Random;
 
 @Slf4j

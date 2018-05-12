@@ -33,5 +33,6 @@
 		<Label fx:id="estimatedDistanceLabel" text="200km" layoutX="120.0" layoutY="27.0" />
 	</Pane>
 	<ListView fx:id="navigationInstructionsListView" VBox.vgrow="ALWAYS" />
-	<ListView fx:id="routeSearchResultsListView" VBox.vgrow="ALWAYS" />
+	<ListView fx:id="routeStartSearchResultsListView" VBox.vgrow="ALWAYS" />
+	<ListView fx:id="routeEndSearchResultsListView" VBox.vgrow="ALWAYS" />
 </VBox>
