@@ -3,6 +3,7 @@ package com.noticemedan.mappr.model.pathfinding;
 import com.noticemedan.mappr.model.util.IndexMinPQ;
 import io.vavr.collection.Iterator;
 import io.vavr.collection.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 
@@ -15,6 +16,7 @@ import java.nio.file.Path;
  *
  * @author Simon, Magnus
  */
+@Slf4j
 public class Dijkstra {
 	private double[] distTo;
 	private PathEdge[] edgeTo;
@@ -47,7 +49,7 @@ public class Dijkstra {
 	private void relax(PathEdge e) {
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
-		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight(); // <- This one seems to cause trouble
+		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight();
 		if (distTo[wId] > distTo[vId] + weight) {
 			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;
