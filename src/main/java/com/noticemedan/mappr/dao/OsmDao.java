@@ -184,7 +184,6 @@ public class OsmDao implements DataReader<MapData> {
 							break;
 						case "name":
 							address.setName(attributes.getValue("v"));
-
 							break;
 						case "postcode":
 							address.setPostcode(attributes.getValue("v"));
