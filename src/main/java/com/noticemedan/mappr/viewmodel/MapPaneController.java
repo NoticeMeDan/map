@@ -66,11 +66,8 @@ public class MapPaneController {
 		mapListView.getSelectionModel().selectedItemProperty().addListener(favoritePoiListener);
 
 		createMapButton.setOnAction(this::createMapFromOsm);
-		deleteMapButton.setOnAction(event -> {
-			FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
-			this.domain.deleteMap(map.getName());
-			readFiles();
-		});
+		loadMapButton.setOnAction(this::loadMap);
+		deleteMapButton.setOnAction(this::deleteMap);
 
 		mapPaneCloseButton.setOnAction(event -> closeMapPane());
 	}
@@ -141,5 +138,16 @@ public class MapPaneController {
 				this.readFiles();
 			}, x -> onFailed.show());
 		}
+	}
+
+	private void loadMap(ActionEvent event) {
+		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
+		this.domain.loadMap(map.getName());
+	}
+
+	private void deleteMap(ActionEvent event) {
+		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
+		this.domain.deleteMap(map.getName());
+		readFiles();
 	}
 }

@@ -49,18 +49,14 @@ public class DomainFacade {
 	private final Path MAPPR_DIR = Paths.get(System.getProperty("user.home"), "/mappr/");
 
 	public DomainFacade() {
-		Path path = Try.of(() -> Paths.get(DomainFacade.class.getResource("/default.map").toURI()))
-				.getOrNull();
-		this.initialize(path);
+		Try.of(() -> Paths.get(DomainFacade.class.getResource("/default.map").toURI()))
+				.mapTry(new MapDao()::read)
+				.onSuccess(this::initialize)
+				.onFailure(e -> log.error("An error occurred while initializing program: ", e));
 	}
 
-	private void initialize(Path path) {
-		try {
-			this.mapData = new MapDao().read(path); // Switch to MapData
-		} catch (IOException e) {
-			log.error("An error occurred loading .map file", e);
-		}
-
+	private void initialize(MapData mapdata) {
+		this.mapData = mapdata;
 		this.forestService = new ForestService(
 				this.mapData.getElements(),
 				this.mapData.getCoastlineElements());
@@ -171,6 +167,17 @@ public class DomainFacade {
 		importer.setOnSucceeded(onSuccess);
 		importer.setOnFailed(onFailed);
 		Executors.newSingleThreadExecutor().execute(importer);
+	}
+
+	public Option<Path> loadMap(String name) {
+		Path path = Paths.get(MAPPR_DIR.toString(), name);
+		try {
+			this.initialize(new MapDao().read(path));
+			return Option.of(path);
+		} catch (IOException e) {
+			log.error("An error occurred while loading .map: ", e);
+			return Option.none();
+		}
 	}
 
 	public Option<Path> deleteMap(String name) {
