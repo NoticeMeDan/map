@@ -63,7 +63,7 @@ public class ShortestPathService {
 		dijkstra = new Dijkstra(this.networkParser.getNetwork(), from, type);
 		return dijkstra.derivePath(to);
 	}
-	private Vector<PathEdge> getRandomSP(TravelType type) {
+	public Vector<PathEdge> getRandomSP(TravelType type) {
 		Random random = new Random();
 		PathNode from = this.network.getAllNodes().get(random.nextInt(this.network.getAllNodes().size() - 1));
 		PathNode to = this.network.getAllNodes().get(random.nextInt(this.network.getAllNodes().size() - 1));
