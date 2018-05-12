@@ -61,7 +61,7 @@ public class Network {
 
 		if (!v.getEdges().contains(pathEdgeV)) v.setEdges(v.getEdges().prepend(pathEdgeV));
 		if (!w.getEdges().contains(pathEdgeW)) w.setEdges(w.getEdges().prepend(pathEdgeW));
-		pathEdgeV.setSpeedLimit(v.getMaxspeed());
+
 		allEdges = allEdges.append(pathEdgeV);
 	}
 
