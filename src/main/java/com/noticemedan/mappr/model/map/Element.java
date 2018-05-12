@@ -16,9 +16,7 @@ public class Element implements Comparable<Element>, Serializable {
 	private Shape shape;
 	private int maxspeed;
 	private Color color;
-	private boolean open; // TODO @Simon
 	private Coordinate avgPoint;
-	private Rect bounds;
 	private boolean depthEven = true; // Is this object at even depth in KD-Tree?
 
 	@Override
@@ -33,12 +31,6 @@ public class Element implements Comparable<Element>, Serializable {
 			if (this.avgPoint.getY() < that.avgPoint.getY()) return -1;
 		}
 		return 0;
-	}
-
-	public double getDiagonalSize() {
-		double lengthX = bounds.getX2() - bounds.getX1();
-		double lengthY = bounds.getY2() - bounds.getY1();
-		return Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2));
 	}
 
 	public boolean isRoad() {
