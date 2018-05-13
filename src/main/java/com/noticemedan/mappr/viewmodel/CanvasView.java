@@ -37,6 +37,7 @@ public class CanvasView extends JComponent {
 	private boolean isShapeOpen;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	@Setter
 	private Point2D pointerPosition;
 	private BufferedImage pointer;
 
@@ -195,7 +196,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null) paintNN();
+		if(currentNN != null && currentNN.getShape() != null) paintNN();
 	}
 
 	private void paintNN() {
@@ -368,9 +369,6 @@ public class CanvasView extends JComponent {
 	 * @param coordinateB		In WGS-84 format
 	 */
 	public void zoomToRoute(Coordinate coordinateA, Coordinate coordinateB) {
-		//Transform coordinates into canvas coordinates
-		coordinateA = new Coordinate(coordinateA.getX(), Coordinate.latToCanvasLat(coordinateA.getY()));
-		coordinateB = new Coordinate(coordinateB.getX(), Coordinate.latToCanvasLat(coordinateB.getY()));
 
 		Coordinate averageCoordinate = new Coordinate(
 				(coordinateA.getX() + coordinateB.getX())/2,
@@ -415,13 +413,12 @@ public class CanvasView extends JComponent {
 	public void toggleFPS() {
 		this.showFPS = !this.showFPS;
 	}
-
 	public void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
 	}
 
 	private void drawPointer() {
-		drawImage(this.pointer,this.pointerPosition,0.00008,false);
+		drawImage(this.pointer, this.pointerPosition,0.00008,false);
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
@@ -432,13 +429,9 @@ public class CanvasView extends JComponent {
 		AffineTransform at = new AffineTransform();
 		if (center) at.translate(coordinate.getX() - width/2,coordinate.getY()-height/2);
 		else at.translate(coordinate.getX() - width/2,coordinate.getY()-height);
-		at.scale(scaling,scaling);
+		at.scale(scaling, scaling);
 
-		this.g.drawImage(img,at,null);
-	}
-
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
+		this.g.drawImage(img, at,null);
 	}
 
 	public void toggleDijkstraNetwork() {

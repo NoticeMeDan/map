@@ -80,7 +80,7 @@ public class RoutePaneController {
 		routeStartSearchResultsListView.getSelectionModel()
 				.selectedItemProperty()
 				.addListener((obs, oldVal, newVal) -> {
-					searchStartPointAddressField.setText(newVal.toString());
+					if (newVal.toString() != null) searchStartPointAddressField.setText(newVal.toString());
 					this.startAddress = this.domain.getAddress(newVal.toString());
 				});
 
@@ -112,6 +112,15 @@ public class RoutePaneController {
 		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), travelType);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
+
+		mainViewController.getCanvas().zoomToRoute(
+				new Coordinate(
+						endCoordinate.getX(),
+						Coordinate.canvasLatToLat(endCoordinate.getY())),
+				new Coordinate(
+						startCoordinate.getX(),
+						Coordinate.canvasLatToLat(startCoordinate.getY()))
+		);
 
 		Vector<Shape> shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, travelType);
 		MainViewController.getCanvas().showPath(shortestPath);

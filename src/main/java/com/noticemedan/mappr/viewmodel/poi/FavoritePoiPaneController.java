@@ -57,6 +57,7 @@ public class FavoritePoiPaneController {
 			mainViewController.pushCanvas();
 		});
 	}
+
 	private void zoomToPoi() {
 		Element currentSelectedFavoritePoi = (Element) favoritePoiListView.getSelectionModel().getSelectedItem();
 		if (currentSelectedFavoritePoi != null) mainViewController.getCanvas().zoomToCoordinate(currentSelectedFavoritePoi.getAvgPoint(), 30);
