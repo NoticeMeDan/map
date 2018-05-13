@@ -94,9 +94,6 @@ public class MainViewController {
 	}
 
 	public void initialize() {
-		favoritePoiManager = new FavoritePoiManager();
-		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
-		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
 		insertOSMPane();
 		favoritePoiPaneController.setMainViewController(this);
 		routePaneController.setMainViewController(this);

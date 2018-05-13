@@ -13,6 +13,7 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
 import com.noticemedan.mappr.model.service.TextSearchService;
+import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.map.FileInfo;
 import com.noticemedan.mappr.model.util.Rect;
@@ -223,4 +224,23 @@ public class DomainFacade {
 	}
 
 	/* SECTION END: LOAD FROM OSM HANDLING */
+	/* SECTION START: FAVORITE POI */
+
+	public List<FavoritePoi> getAllPoi() {
+		return this.mapData.getPoi() != null
+				? this.mapData.getPoi()
+				: List.empty();
+	}
+
+	public List<FavoritePoi> addPoi(FavoritePoi poi) {
+		this.mapData.setPoi(this.mapData.getPoi().append(poi));
+		return getAllPoi();
+	}
+
+	public List<FavoritePoi> removePoi(FavoritePoi poi) {
+		this.mapData.setPoi(this.mapData.getPoi().remove(poi));
+		return getAllPoi();
+	}
+
+	/* SECTION END: FAVORITE POI */
 }

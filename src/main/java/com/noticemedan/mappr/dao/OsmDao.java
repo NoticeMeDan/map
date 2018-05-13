@@ -8,6 +8,7 @@ import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
 import javafx.concurrent.Task;
@@ -63,6 +64,7 @@ public class OsmDao implements DataReader<MapData> {
 				.elements(this.elements.filter(x -> x.getType() != Type.UNKNOWN))
 				.coastlineElements(this.coastlineElements)
 				.addresses(this.addresses)
+				.poi(List.empty())
 				.build();
 	}
 
