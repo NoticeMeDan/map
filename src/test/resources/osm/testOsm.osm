@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm>
+	<bounds minlat="55.6631000" minlon="12.5730000" maxlat="55.6804000" maxlon="12.6031000"/>
+	<node id="697547" visible="true" version="7" changeset="3531468" timestamp="2010-01-03T18:54:57Z"
+		  user="Claus Hindsgaul" uid="185440" lat="55.6736517" lon="12.5722541">
+		<tag k="highway" v="traffic_signals"/>
+	</node>
+	<way id="1813863" visible="true" version="6" changeset="19598962" timestamp="2013-12-23T12:11:58Z" user="Hjart"
+		 uid="207581">
+		<nd ref="697547"/>
+		<tag k="name" v="Reykjaviksgade"/>
+	</way>
+	<relation id="22836" visible="true" version="5" changeset="28825121" timestamp="2015-02-13T16:47:33Z"
+			  user="Niels Elgaard Larsen" uid="1288">
+		<member type="way" ref="1813863" role="outer"/>
+		<tag k="wikipedia" v="da:Charlottenborg"/>
+	</relation>
+</osm>

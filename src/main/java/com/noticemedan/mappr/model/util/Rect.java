@@ -4,9 +4,11 @@ import com.noticemedan.mappr.model.map.Element;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class Rect {
+public class Rect implements Serializable {
 	double x1;
 	double y1;
 	double x2;
