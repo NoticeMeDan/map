@@ -25,7 +25,7 @@ public class Network {
 	 * @param from PathNode from
 	 * @param to   PathNode to
 	 */
-	public void addPath(PathNode from, PathNode to, Set<TravelType> type) {
+	public void addPath(PathNode from, PathNode to, Set<TravelType> type, String roadName) {
 		PathNode fromNode = this.getNodeFromCoords(new Coordinate(from.getLon(), from.getLat()));
 		PathNode toNode = this.getNodeFromCoords(new Coordinate(to.getLon(), to.getLat()));
 
@@ -39,7 +39,7 @@ public class Network {
 			toNode = to;
 		}
 
-		addEdge(fromNode, toNode, type);
+		addEdge(fromNode, toNode, type, roadName);
 	}
 
 	/**
@@ -52,12 +52,14 @@ public class Network {
 		return Try.of(() -> this.allNodes.get(this.nodeFromCoordMap.get(c).get())).getOrNull();
 	}
 
-	public void addEdge(PathNode v, PathNode w, Set<TravelType> type) {
+	public void addEdge(PathNode v, PathNode w, Set<TravelType> type, String roadName) {
 		PathEdge pathEdgeV = new PathEdge(v, w);
 		PathEdge pathEdgeW = new PathEdge(w, v);
 
 		pathEdgeV.setTravelTypesAllowed(type);
 		pathEdgeW.setTravelTypesAllowed(type);
+		pathEdgeV.setRoadName(roadName);
+		pathEdgeW.setRoadName(roadName);
 
 		if (!v.getEdges().contains(pathEdgeV)) v.setEdges(v.getEdges().prepend(pathEdgeV));
 		if (!w.getEdges().contains(pathEdgeW)) w.setEdges(w.getEdges().prepend(pathEdgeW));

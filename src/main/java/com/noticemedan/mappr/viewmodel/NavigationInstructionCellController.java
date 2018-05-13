@@ -1,6 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.NavigationAction;
+import com.noticemedan.mappr.model.directions.NavigationInstruction;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,9 +18,9 @@ public class 	NavigationInstructionCellController {
 	@FXML Label distanceToNextNavigationAction;
 	@FXML Text navigationActionDescription;
 
-	private RoutePaneController.NavigationInstruction navigationInstruction; // The object that this cell represents
+	private NavigationInstruction navigationInstruction; // The object that this cell represents
 
-	public NavigationInstructionCellController(RoutePaneController.NavigationInstruction navigationInstruction) {
+	public NavigationInstructionCellController(NavigationInstruction navigationInstruction) {
 		this.navigationInstruction = navigationInstruction;
 		initialiseCell();
 		setInformation();
@@ -44,13 +45,11 @@ public class 	NavigationInstructionCellController {
 
 	private void setTextualDescription() {
 		if (navigationInstruction.getType() == NavigationAction.TURN_LEFT)
-			navigationActionDescription.setText("Drej til venstre ind på " + navigationInstruction.getRoad());
+			navigationActionDescription.setText("Drej til venstre ved " + navigationInstruction.getRoad());
 		if (navigationInstruction.getType() == NavigationAction.TURN_RIGHT)
-			navigationActionDescription.setText("Drej til højre ind på " + navigationInstruction.getRoad());
-		if (navigationInstruction.getType() == NavigationAction.ROUNDABOUT)
-			navigationActionDescription.setText("I rundkørsel tag " + navigationInstruction.getRoundAbout() + ". afkørsel ind på " + navigationInstruction.getRoad());
+			navigationActionDescription.setText("Drej til højre ved " + navigationInstruction.getRoad());
 		if (navigationInstruction.getType() == NavigationAction.STRAIGHT)
-			navigationActionDescription.setText("Forsæt ligeud ind på " + navigationInstruction.getRoad());
+			navigationActionDescription.setText("Forsæt ligeud ved " + navigationInstruction.getRoad());
 		if (navigationInstruction.getType() == NavigationAction.DESTINATION)
 			navigationActionDescription.setText("Destinationen er længere nede af vejen.");
 	}

@@ -2,10 +2,12 @@ package com.noticemedan.mappr.model;
 
 import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.OsmDao;
+import com.noticemedan.mappr.model.directions.NavigationInstruction;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
+import com.noticemedan.mappr.model.pathfinding.ShortestPath;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
@@ -38,7 +40,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/copenhagen-large.osm.zip").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
 
 			this.initialize(path);
 		} catch (Exception e) {
@@ -81,23 +83,13 @@ public class DomainFacade {
 	/* SECTION START: SHORTEST PATH */
 
 	/**
-	 * Derive shortest path as a Vector of Shapes given two coordinates
+	 * Derive shortest path as a ShortestPath object given two coordinates
 	 * @param from coordinate of the from-destination
 	 * @param to coordinate of the to-destination
-	 * @return Vector of Shapes
+	 * @return ShortestPath
 	 */
-	public Vector<Shape> deriveShortestPathShapes(Coordinate from, Coordinate to, TravelType type) {
+	public ShortestPath deriveShortestPathShapes(Coordinate from, Coordinate to, TravelType type) {
 		return shortestPathService.getShortestPath(from, to, type);
-	}
-
-	/**
-	 * Derive the distance of the shortest path between two given coordinates
-	 * @param from coordinate of the from-destination
-	 * @param to coordinate of the to-destination
-	 * @return the distance of the path
-	 */
-	public double deriveShortestPathDistance(Coordinate from, Coordinate to, TravelType type) {
-		return shortestPathService.getPathDistance(from, to, type);
 	}
 
 	/**

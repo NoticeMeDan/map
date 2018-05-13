@@ -1,33 +1,26 @@
 package com.noticemedan.mappr.model.directions;
 
+import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import io.vavr.collection.Vector;
-import lombok.Getter;
 
 public class Guide {
 
 	private double distance;
-	private Vector<String> directions = Vector.empty();
-	@Getter
-	//TODO DELETE THIS : test only
-	private double traveleddistance;
+	private Vector<NavigationInstruction> directions = Vector.empty();
 
-	Vector<String> getDirections(Vector<PathEdge> route) {
-		this.traveleddistance = 0;
+	public Vector<NavigationInstruction> getDirections(Vector<PathEdge> route) {
 		this.distance = 0;
 
 		route.forEach(e-> {
 			this.distance += e.getWeight();
 			if ((e.getW().getEdges().length() > 2)) {
-				this.directions = directions.append("Follow the road " + this.distance + "m, turn_left_or_right");
-				this.traveleddistance += this.distance;
+				this.directions = directions.prepend(new NavigationInstruction(NavigationAction.TURN_LEFT, this.distance, e.getRoadName()));
 				this.distance = 0;
 			}
 		});
 
-		if(this.distance != 0) this.directions = directions.append("Follow the road " + this.distance + "m ");
-		this.traveleddistance += this.distance;
-		this.directions = directions.append("You have arrived");
+		this.directions = directions.append(new NavigationInstruction(NavigationAction.DESTINATION, this.distance, "Ankommet"));
 
 		return directions;
 	}

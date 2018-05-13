@@ -3,8 +3,11 @@ package com.noticemedan.mappr.viewmodel;
 import com.google.inject.Inject;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.NavigationAction;
+import com.noticemedan.mappr.model.directions.Guide;
+import com.noticemedan.mappr.model.directions.NavigationInstruction;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.pathfinding.ShortestPath;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.collection.List;
@@ -13,10 +16,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,13 +41,15 @@ public class RoutePaneController {
 	@FXML ListView routeStartSearchResultsListView;
 	@FXML ListView routeEndSearchResultsListView;
 	@FXML ListView navigationInstructionsListView;
+	@FXML Label estimatedTimeLabel;
+	@FXML Label estimatedDistanceLabel;
 	private DomainFacade domain;
 	private Address startAddress;
 	private Address endAddress;
+	private TravelType chosenTravelType = TravelType.CAR;
 
 	@Setter
 	MainViewController mainViewController;
-
 	ObservableList<NavigationInstruction> navigationInstructions;
 
 	@Inject
@@ -51,9 +58,6 @@ public class RoutePaneController {
 	}
 
 	public void initialize() {
-		//dummyNavigationInstructions();
-		//navigationInstructionsListView.setItems(navigationInstructions);
-		//navigationInstructionsListView.setCellFactory(listView -> new NavigationInstructionCell());
 		closeRoutePane();
 		eventListeners();
 	}
@@ -84,6 +88,11 @@ public class RoutePaneController {
 					this.startAddress = this.domain.getAddress(newVal.toString());
 				});
 
+		// Choose travel type
+		routeWalkToggleButton.setOnMouseClicked(e -> setTravelType(TravelType.WALK));
+		routeBicycleToggleButton.setOnMouseClicked(e -> setTravelType(TravelType.BIKE));
+		routeCarToggleButton.setOnMouseClicked(e -> setTravelType(TravelType.CAR));
+
 		routeEndSearchResultsListView.getSelectionModel()
 				.selectedItemProperty()
 				.addListener((obs, oldVal, newVal) -> {
@@ -91,6 +100,12 @@ public class RoutePaneController {
 					this.endAddress = this.domain.getAddress(newVal.toString());
 					search();
 				});
+	}
+
+	private void setTravelType(TravelType type) {
+		if (this.chosenTravelType == type) this.chosenTravelType = TravelType.ALL;
+		else this.chosenTravelType = type;
+		search();
 	}
 
 	private void handleAddressSearch(TextField field, ListView resultList) {
@@ -105,17 +120,22 @@ public class RoutePaneController {
 	}
 
 	public void search() {
-		// TODO: Make dynamic by getting chosen traveltype
-		TravelType travelType = TravelType.ALL;
-
-		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), travelType);
-		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), travelType);
+		if (startAddress == null || endAddress == null) return;
+		navigationInstructionsListView.getItems().clear();
+		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), this.chosenTravelType);
+		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), this.chosenTravelType);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
-		Vector<Shape> shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, travelType);
-		MainViewController.getCanvas().showPath(shortestPath);
+		ShortestPath shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, this.chosenTravelType);
+
+		Vector<Shape> shortestPathShapes = shortestPath.getShortestPathShapes();
+		MainViewController.getCanvas().showPath(shortestPathShapes);
+		MainViewController.getCanvas().repaint();
 		toggleListView("route");
+		setNavigationInstructions(shortestPath.getTravelInstructions());
+		estimatedTimeLabel.setText(shortestPath.getTimeToTravel());
+		estimatedDistanceLabel.setText(shortestPath.getDistanceToTravel());
 	}
 
 	public void openRoutePane() {
@@ -158,6 +178,15 @@ public class RoutePaneController {
 		if (!toggle) navigationInstructionsListView.getItems().clear();
 	}
 
+	private void setNavigationInstructions(Vector<NavigationInstruction> instructions) {
+		navigationInstructionsListView.getItems().clear();
+		if (navigationInstructions != null) navigationInstructions.clear();
+		else navigationInstructions = FXCollections.observableArrayList();
+		instructions.forEach(i -> navigationInstructions.add(i));
+		navigationInstructionsListView.setItems(navigationInstructions);
+		navigationInstructionsListView.setCellFactory(listView -> new NavigationInstructionCell());
+	}
+
 	private void toggleAddressStartSearchResults(boolean toggle) {
 		routeStartSearchResultsListView.setVisible(toggle);
 		routeStartSearchResultsListView.setManaged(toggle);
@@ -168,33 +197,5 @@ public class RoutePaneController {
 		routeEndSearchResultsListView.setVisible(toggle);
 		routeEndSearchResultsListView.setManaged(toggle);
 		if (!toggle) routeEndSearchResultsListView.getItems().clear();
-	}
-
-	// TODO @emil delete this inner class when proper class has been implemented
-	@AllArgsConstructor
-	public class NavigationInstruction {
-		@Getter
-		NavigationAction type;
-		@Getter
-		Double distance; //TODO @emil is this distance universally in meters or km? Or should we have a field for this? A double?
-		@Getter
-		String road;
-		@Getter
-		int roundAbout;
-		// Coordinate is needed as well!
-	}
-
-	//TODO: Delete this when proper instruction class has been implemented.
-	private void dummyNavigationInstructions() {
-		ArrayList<NavigationInstruction> instructions = new ArrayList<>();
-		instructions.add(new NavigationInstruction(NavigationAction.TURN_LEFT, 0.3, "Madvigsens Allé", 0));
-		instructions.add(new NavigationInstruction(NavigationAction.ROUNDABOUT, 22.3, "Gaardagsvej", 1));
-		instructions.add(new NavigationInstruction(NavigationAction.TURN_RIGHT, 2.5, "Holbæk motorvejen", 0));
-		instructions.add(new NavigationInstruction(NavigationAction.STRAIGHT, 30.3, "Vigerslev gade", 0));
-		instructions.add(new NavigationInstruction(NavigationAction.ROUNDABOUT, 0.76, "Jakobsens Allé", 3));
-		instructions.add(new NavigationInstruction(NavigationAction.TURN_LEFT, 0.344, "Gunnersvanget", 0));
-		instructions.add(new NavigationInstruction(NavigationAction.DESTINATION, 1.3, "Madvigsvej", 0));
-		navigationInstructions = FXCollections.observableArrayList();
-		navigationInstructions.addAll(instructions);
 	}
 }
