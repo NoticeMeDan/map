@@ -108,8 +108,8 @@ public class RoutePaneController {
 		// TODO: Make dynamic by getting chosen traveltype
 		TravelType travelType = TravelType.ALL;
 
-		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), travelType);
-		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), travelType);
+		Element startElement = this.domain.doNearestNeighborUsingRangeSearch(this.startAddress.getCoordinate(), travelType, Double.POSITIVE_INFINITY);
+		Element endElement = this.domain.doNearestNeighborUsingRangeSearch(this.endAddress.getCoordinate(), travelType, Double.POSITIVE_INFINITY);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 

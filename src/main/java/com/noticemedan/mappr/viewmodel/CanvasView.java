@@ -283,7 +283,8 @@ public class CanvasView extends JComponent {
 
     public void logNearestNeighbor(Coordinate queryPoint) {
 		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL));
-		currentNN = this.domain.doNearestNeighborNewRangeSearch(queryPoint, TravelType.ALL);
+
+		currentNN = this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
 		repaint();
 	}
 

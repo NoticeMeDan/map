@@ -102,21 +102,21 @@ public class NearestNeighborTest {
 
 	@Test
 	public void testExpandingRectNearestNeighborNode_All_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(7,5.5), TravelType.ALL);
+		Element element = forestService.nearestNeighborUsingRangeSearch(new Coordinate(7,5.5), TravelType.ALL, Double.POSITIVE_INFINITY);
 		assertEquals(element.getAvgPoint().getX(), 7.0);
 		assertEquals(element.getAvgPoint().getY(), 5.0);
 	}
 
 	@Test
 	public void testExpandingRectNearestNeighborNode_Car_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(-100,50), TravelType.CAR);
+		Element element = forestService.nearestNeighborUsingRangeSearch(new Coordinate(-100,50), TravelType.CAR, Double.POSITIVE_INFINITY);
 		assertEquals(element.getAvgPoint().getX(), 1.0);
 		assertEquals(element.getAvgPoint().getY(), 1.0);
 	}
 
 	@Test
 	public void testExpandingRectNearestNeighborNode_Bike_Positive1() {
-		Element element = forestService.nearestNeighborNewRangeSearch(new Coordinate(-100,50), TravelType.BIKE);
+		Element element = forestService.nearestNeighborUsingRangeSearch(new Coordinate(-100,50), TravelType.BIKE, Double.POSITIVE_INFINITY);
 		assertEquals(element.getAvgPoint().getX(), 5.0);
 		assertEquals(element.getAvgPoint().getY(), 2.0);
 	}

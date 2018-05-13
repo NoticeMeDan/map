@@ -38,7 +38,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/copenhagen.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/denmark-latest.osm").toURI());
 
 			this.initialize(path);
 		} catch (Exception e) {
@@ -62,11 +62,10 @@ public class DomainFacade {
 
 	// Viewport Data
 	public Vector<Element> getCoastLines() { return this.forestService.getCoastlines(); }
-	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
-	public Element doNearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {return this.forestService.nearestNeighborNewRangeSearch(queryPoint, travelType); }
+	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, TravelType travelType, double zoomLevel) {return this.forestService.nearestNeighborUsingRangeSearch(queryPoint, travelType, zoomLevel); }
 
 	// Address Search
 	public io.vavr.collection.List<String> doAddressSearch(String search) {

@@ -49,11 +49,10 @@ public class ForestService implements ForestInterface {
 			case MOTORWAY:
 			case PRIMARY:
 			case TRUNK:
-			case SECONDARY:
 				return 0;
+			case SECONDARY:
 			case TERTIARY:
 				return 1;
-
 				//return 2;
 			case GRASSLAND:
 			case FOREST:
@@ -68,11 +67,11 @@ public class ForestService implements ForestInterface {
 			case RESIDENTIAL:
 			case CYCLEWAY:
 			case UNCLASSIFIED:
+			case SERVICE:
 				return 3;
 			case PATH:
 			case TRACK:
 			case BUILDING:
-			case SERVICE:
 			case PLAYGROUND:
 			case FOOTWAY:
 			case FOOTPATH:
@@ -143,7 +142,7 @@ public class ForestService implements ForestInterface {
 		return rangeSearch(searchQuery, Double.POSITIVE_INFINITY);
 	}
 
-	public Element nearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {
+	public Element nearestNeighborUsingRangeSearch(Coordinate queryPoint, TravelType travelType, double zoomLevel) {
 		Element nearestNeighbor = new Element();
 		Coordinate NNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		nearestNeighbor.setAvgPoint(NNCoordinate);
@@ -151,7 +150,7 @@ public class ForestService implements ForestInterface {
 		double r = 0.01;
 		while (nearestNeighbor.getAvgPoint().getX() == Double.POSITIVE_INFINITY) {
 			Rect queryRect = new Rect(queryPoint.getX() - r, queryPoint.getY() - r, queryPoint.getX() + r, queryPoint.getY() + r );
-			rangeSearch(queryRect, Double.POSITIVE_INFINITY);
+			rangeSearch(queryRect, zoomLevel);
 			nearestNeighbor = nearestNeighborInCurrentRangeSearch(queryPoint, travelType);
 			r = r + 0.01;
 		}
@@ -205,8 +204,8 @@ public class ForestService implements ForestInterface {
 		if (zoomLevel > 0) excludeTrees = 4;
 		if (zoomLevel > 0.5) excludeTrees = 3;
 		if (zoomLevel > 1) excludeTrees = 2;
-		if (zoomLevel > 15) excludeTrees = 1;
-		if (zoomLevel > 50) excludeTrees = 0;
+		if (zoomLevel > 6) excludeTrees = 1;
+		if (zoomLevel > 40) excludeTrees = 0;
 
 		Element currentNN = new Element();
 		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
