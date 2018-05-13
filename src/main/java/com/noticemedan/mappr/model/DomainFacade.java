@@ -74,6 +74,7 @@ public class DomainFacade {
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
+	public Element doNearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {return this.forestService.nearestNeighborNewRangeSearch(queryPoint, travelType); }
 
 	/* SECTION END: VIEWPORT DATA */
 	/* SECTION START: ADDRESS SEARCHING */
@@ -88,7 +89,11 @@ public class DomainFacade {
 				.map(Tuple2::_1);
 	}
 
-	/* SECTION END:  ADDRESS SEARCHING */
+	public Address getAddress(String search) {
+		return this.addressSearch.getAddress(search);
+	}
+
+	/* SECTION END: ADDRESS SEARCHING */
 	/* SECTION START: SHORTEST PATH */
 
 	/**

@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.model.map;
 
+import com.noticemedan.mappr.model.util.Coordinate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,10 +14,7 @@ public class Address implements Serializable {
 	private String postcode;
 	private String city;
 	private String name;
-	private double lat;
-	private double lon;
-	private double onCanvasLat;
-	private double onCanvasLon;
+	private Coordinate coordinate;
 
 	public String toFullAddress() {
 		return String.format(

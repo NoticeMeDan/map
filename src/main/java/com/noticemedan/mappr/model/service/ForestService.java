@@ -3,13 +3,13 @@ package com.noticemedan.mappr.model.service;
 import com.noticemedan.mappr.model.kdtree.ForestInterface;
 import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import java.awt.geom.PathIterator;
 
 @Slf4j
@@ -20,7 +20,6 @@ public class ForestService implements ForestInterface {
 	private Vector<Element> currentRangeSearch;
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
-		//TODO create different amounts of leafs for zoom levels
 		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;
 		Element[][] elementArray = new Element[5][];
@@ -152,7 +151,11 @@ public class ForestService implements ForestInterface {
 				}
 			}
 		}
-		return currentNN;
+
+		//Copy object contents to new element object
+		Element nearestNeighbor = Element.cloneElement(currentNN);
+		nearestNeighbor.setAvgPoint(currentNNCoordinate);
+		return nearestNeighbor;
 	}
 
 	@Override
