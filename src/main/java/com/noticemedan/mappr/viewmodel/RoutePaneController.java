@@ -98,7 +98,6 @@ public class RoutePaneController {
 				.addListener((obs, oldVal, newVal) -> {
 					searchEndPointAddressField.setText(newVal.toString());
 					this.endAddress = this.domain.getAddress(newVal.toString());
-					search();
 				});
 	}
 
@@ -121,7 +120,6 @@ public class RoutePaneController {
 
 	public void search() {
 		if (startAddress == null || endAddress == null) return;
-		navigationInstructionsListView.getItems().clear();
 		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), this.chosenTravelType);
 		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), this.chosenTravelType);
 		Coordinate startCoordinate = startElement.getAvgPoint();
@@ -144,7 +142,7 @@ public class RoutePaneController {
 		searchStartPointAddressField.requestFocus();
 	}
 
-	public void toggleListView(String type) {
+	private void toggleListView(String type) {
 		if (type.equals("route")) {
 			toggleRoute(true);
 			toggleAddressStartSearchResults(false);
@@ -168,6 +166,7 @@ public class RoutePaneController {
 		searchStartPointAddressField.clear();
 		searchEndPointAddressField.clear();
 		routeStartSearchResultsListView.getItems().clear();
+		navigationInstructionsListView.getItems().clear();
 	}
 
 	private void toggleRoute(boolean toggle) {
@@ -175,7 +174,6 @@ public class RoutePaneController {
 		navigationInstructionsListView.setManaged(toggle);
 		routeInfoPane.setVisible(toggle);
 		routeInfoPane.setManaged(toggle);
-		if (!toggle) navigationInstructionsListView.getItems().clear();
 	}
 
 	private void setNavigationInstructions(Vector<NavigationInstruction> instructions) {
@@ -190,12 +188,10 @@ public class RoutePaneController {
 	private void toggleAddressStartSearchResults(boolean toggle) {
 		routeStartSearchResultsListView.setVisible(toggle);
 		routeStartSearchResultsListView.setManaged(toggle);
-		if (!toggle) routeStartSearchResultsListView.getItems().clear();
 	}
 
 	private void toggleAddressEndSearchResults(boolean toggle) {
 		routeEndSearchResultsListView.setVisible(toggle);
 		routeEndSearchResultsListView.setManaged(toggle);
-		if (!toggle) routeEndSearchResultsListView.getItems().clear();
 	}
 }

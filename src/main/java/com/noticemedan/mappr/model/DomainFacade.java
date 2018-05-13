@@ -39,7 +39,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/denmark.osm.zip").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
 
 			this.initialize(path);
 		} catch (Exception e) {

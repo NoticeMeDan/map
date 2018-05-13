@@ -3,33 +3,49 @@ package com.noticemedan.mappr.model.directions;
 import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
+import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.collection.Vector;
 
 public class Guide {
 
 	private double distance;
 	private Vector<NavigationInstruction> directions = Vector.empty();
-	PathEdge edgeBefore;
+	private PathEdge edgeBefore;
 
 	public Vector<NavigationInstruction> getDirections(Vector<PathEdge> route, TravelType type) {
 		this.distance = 0;
 
-
 		route.forEach(e-> {
 			this.distance += e.getWeight();
-			if (e.getRoadName() == null) return;
-			if (this.distance == 0) return;
 			if (e.getV().degree() > 3) {
-				this.directions = directions.append(new NavigationInstruction(determineMapDirection(e), this.distance, e.getRoadName(), type));
+				if (e.getRoadName() == null) return;
+				if (this.distance < 0.01) return;
+				this.directions = directions.append(
+								new NavigationInstruction(determineMapDirection(e),
+								this.distance, e.getRoadName(),
+								type,
+								new Coordinate(e.getV().getLon(), e.getV().getLat())));
 				this.distance = 0;
 			}
 			if (e.getW().degree() == 3) {
-				this.directions = directions.append(new NavigationInstruction(determineLeftRightDirection(e, edgeBefore), this.distance, e.getRoadName(), type));
+				if (e.getRoadName() == null) return;
+				if (this.distance < 0.01) return;
+				this.directions = directions.append(
+								new NavigationInstruction(determineLeftRightDirection(e, edgeBefore),
+								this.distance,
+								e.getRoadName(),
+								type,
+								new Coordinate(e.getV().getLon(), e.getV().getLat())));
 			}
 			edgeBefore = e;
 		});
 
-		this.directions = directions.append(new NavigationInstruction(NavigationAction.DESTINATION, this.distance, "Ankommet", type));
+		this.directions = directions.append(
+						new NavigationInstruction(NavigationAction.DESTINATION,
+						this.distance,
+						"Ankommet",
+						type,
+						new Coordinate(route.get(route.length() - 1).getW().getLon(), route.get(route.length() - 1).getW().getLat())));
 		return directions;
 	}
 

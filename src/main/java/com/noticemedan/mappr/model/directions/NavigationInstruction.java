@@ -2,6 +2,7 @@ package com.noticemedan.mappr.model.directions;
 
 import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
+import com.noticemedan.mappr.model.util.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class NavigationInstruction {
 	@Getter Double distance;
 	@Getter String road;
 	@Getter TravelType travelType;
+	@Getter Coordinate coordinate;
 
 	public String getDescription() {
 		String direction = "";
@@ -27,7 +29,7 @@ public class NavigationInstruction {
 		if (this.type == NavigationAction.SOUTH) direction = "syd";
 		if (this.type == NavigationAction.EAST) direction = "øst";
 		if (this.type == NavigationAction.NORTHEAST) direction = "nordøst";
-		if (this.type == NavigationAction.SOUTHEAST) direction = "sydvest";
+		if (this.type == NavigationAction.SOUTHEAST) direction = "sydøst";
 		if (this.type == NavigationAction.NORTHWEST) direction = "nordvest";
 		if (this.type == NavigationAction.SOUTHWEST) direction = "sydvest";
 		if (this.type == NavigationAction.UNKNOWN) direction = "?";
