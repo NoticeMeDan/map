@@ -61,7 +61,7 @@ public class DomainFacade {
 	}
 
 	// Viewport Data
-	public Vector<Element> getCoastLines() { return this.forestService.getCoastlines(); }
+	public Vector<Element> getCoastLines(double zoomLevel) { return this.forestService.getCoastlines(zoomLevel); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }

@@ -19,7 +19,7 @@ public class NetworkParser {
 	private double[] coords = new double[6];
 
 	public NetworkParser(Vector<Element> elements) {
-		this.network = new Network();
+		/*this.network = new Network();
 		elements.filter(Element::isRoad).forEach(e -> {
 			PathNode from = null;
 			for(PathIterator pi = e.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
@@ -35,7 +35,7 @@ public class NetworkParser {
 		});
 
 		log.info("Dijkstra node size: " + network.getAllNodes().length());
-		log.info("Dijkstra edge size: " + network.getAllEdges().length());
+		log.info("Dijkstra edge size: " + network.getAllEdges().length());*/
 	}
 
 	private PathNode createPathNode(double lon, double lat, int maxspeed) {

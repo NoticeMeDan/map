@@ -15,9 +15,9 @@ public class TextSearchService<T> {
 	private RadixTree<Tuple2> radixTree;
 
 	public TextSearchService(Map<String, T> searchMap) {
-		this.radixTree = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
+		/*this.radixTree = new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 		searchMap.forEach((k, v) -> this.radixTree.put(k.toLowerCase(), Tuple.of(k, v)));
-		log.info("Radix size: " + this.radixTree.size());
+		log.info("Radix size: " + this.radixTree.size());*/
 	}
 
 	public List<Tuple2<String, T>> search(String search) {

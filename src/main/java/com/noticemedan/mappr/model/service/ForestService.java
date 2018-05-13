@@ -7,24 +7,60 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.collection.Vector;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
 @Slf4j
 public class ForestService implements ForestInterface {
 	private KdTree trees[];
-	@Getter
-	private Vector<Element> coastlines;
+	private ArrayList<ArrayList<Element>> coastlines;
 	private Vector<Element> currentRangeSearch;
-	private int N = 5;
+	private int N = 5; // Zoom-levels of elements in map
+	private int C = 4; // Number of coastline resolutions
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
-		this.coastlines = coastlineElements;
+		coastlines = new ArrayList<>();
+		for (int i = 0; i < C; i++) coastlines.add(new ArrayList<>());
+		coastlines.get(0).addAll(coastlineElements.toJavaList());
 		sortElementsIntoZoomLevels(elements);
+		createCoastlineResolutions(coastlineElements);
+	}
+
+	public Vector<Element> getCoastlines(double zoomLevel) {
+		Vector<Element> coastlinesAtZoomLevel = Vector.empty();
+		if 		(0.2 > zoomLevel && zoomLevel >= 0.0) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-1));
+		else if (0.45 > zoomLevel && zoomLevel >= 0.2) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-2));
+		else if (2 > zoomLevel && zoomLevel >= 0.45) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-3));
+		return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(0));
+	}
+
+	private void createCoastlineResolutions(Vector<Element> coastlineElements) {
+		for (Element coastline : coastlineElements) {
+			coastlines.get(1).add(elementToLowerResolution(coastline, 25));
+			coastlines.get(2).add(elementToLowerResolution(coastline, 50));
+			coastlines.get(3).add(elementToLowerResolution(coastline, 75));
+		}
+	}
+
+	private Element elementToLowerResolution(Element element, int j) {
+		Element elementLowerResolution = Element.cloneElement(element);
+		Path2D elementPath = new Path2D.Double(Path2D.WIND_EVEN_ODD);
+		int i = 0;
+		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
+			double[] currentShapePointCoordinateArray = new double[2];
+			pi.currentSegment(currentShapePointCoordinateArray);
+			if (i == 0) elementPath.moveTo(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
+			if (i % j == 0 && i != 0) {
+				elementPath.lineTo(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
+			}
+			i++;
+		}
+		elementLowerResolution.setShape(elementPath);
+		return elementLowerResolution;
 	}
 
 	private void sortElementsIntoZoomLevels(Vector<Element> elements) {
@@ -93,11 +129,11 @@ public class ForestService implements ForestInterface {
 						new Coordinate(roadBounds.getX(), roadBounds.getY()),
 						new Coordinate(roadBounds.getX() + roadBounds.getWidth(), roadBounds.getY() + roadBounds.getHeight()));
 
-		if (roadBoundsEuclidianLength > 0.03) identicalRoads.addAll(closeElements(road, 20));
+		if (roadBoundsEuclidianLength > 0.03) identicalRoads.addAll(cloneElementWithDifferentRepresentativePoint(road, 20));
 		return identicalRoads;
 	}
 
-	private ArrayList<Element> closeElements(Element element, int j) {
+	private ArrayList<Element> cloneElementWithDifferentRepresentativePoint(Element element, int j) {
 		ArrayList<Element> clonedElements =  new ArrayList<>();
 		int i = 0;
 		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {

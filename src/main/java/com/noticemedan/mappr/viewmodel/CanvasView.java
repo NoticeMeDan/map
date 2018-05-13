@@ -165,7 +165,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawCoastlines() {
-		this.domain.getCoastLines().forEach(c -> {
+		this.domain.getCoastLines(zoomLevel).forEach(c -> {
 			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
