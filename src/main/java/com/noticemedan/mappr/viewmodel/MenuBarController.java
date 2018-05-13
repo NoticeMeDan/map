@@ -1,11 +1,25 @@
 package com.noticemedan.mappr.viewmodel;
 
+import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
+import com.noticemedan.mappr.view.util.FilePicker;
+import com.noticemedan.mappr.view.util.InfoBox;
+import io.vavr.control.Option;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import lombok.Setter;
 
+import javax.inject.Inject;
+import java.nio.file.Path;
+
+@Slf4j
 public class MenuBarController {
+	@FXML MenuBar menuBar;
 	@FXML MenuItem showFPSMenuItem;
 	@FXML MenuItem showReversedBordersMenuItem;
 	@FXML MenuItem showDijkstraNetworkMenuItem;
@@ -13,6 +27,7 @@ public class MenuBarController {
 	@FXML MenuItem showColorBlindModeMenuItem;
 	@FXML MenuItem showStandardColorMenuItem;
 	@FXML MenuItem showMapMenuItem;
+	@FXML MenuItem loadFromOsmMenuItem;
 
 	@Setter
 	MainViewController mainViewController;
@@ -22,6 +37,11 @@ public class MenuBarController {
 	private boolean showDijkstra = false;
 	private boolean showShortestPath = false;
 	private boolean showMapPane = false;
+
+	private DomainFacade domain;
+
+	@Inject
+	public MenuBarController(DomainFacade domainFacade) { this.domain = domainFacade; }
 
 	public void initialize() {
 		eventListeners();
@@ -35,7 +55,7 @@ public class MenuBarController {
 		showColorBlindModeMenuItem.setOnAction(event -> colorProfile("showColorBlindModeMenuItem"));
 		showStandardColorMenuItem.setOnAction(event -> colorProfile("standard"));
 		showMapMenuItem.setOnAction(event -> toggleMapPane());
-
+		loadFromOsmMenuItem.setOnAction(event -> loadFromOsm());
 	}
 
 	private void colorProfile(String colorProfile) {
@@ -86,6 +106,19 @@ public class MenuBarController {
 	private void toggleMapPane() {
 		this.showMapPane = !this.showMapPane;
 		mainViewController.getMapPaneController().openMapPane();
-		showMapMenuItem.setText("Vis kort");
+		mainViewController.pushCanvas();
+	}
+
+	private void loadFromOsm() {
+		Stage stage = (Stage) this.menuBar.getScene().getWindow();
+		FilePicker picker = new FilePicker(new FileChooser
+				.ExtensionFilter("OSM Filer (*.osm or *.zip)", "*.osm", "*.zip"));
+
+		Option<Path> path = picker.getPath(stage);
+		if (!path.isEmpty()) {
+			this.domain.loadMapFromOsm(path.get());
+			this.mainViewController.centerViewport();
+			MainViewController.getCanvas().repaint();
+		}
 	}
 }

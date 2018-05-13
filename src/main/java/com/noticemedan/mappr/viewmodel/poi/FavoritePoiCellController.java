@@ -36,9 +36,9 @@ public class FavoritePoiCellController {
 		Try.of(fxmlLoader::load);
 	}
 
-	public void setInformation(Element element) {
-		favoritePoiNameLabel.setText(element.getName());
-		Coordinate coordinate = element.getAvgPoint();
+	public void setInformation(FavoritePoi poi) {
+		favoritePoiNameLabel.setText(poi.getName());
+		Coordinate coordinate = poi.getCoordinate();
 
 		String shortCoordinateX = String.valueOf(coordinate.getX());
 		shortCoordinateX = shortCoordinateX.substring(0, 9);

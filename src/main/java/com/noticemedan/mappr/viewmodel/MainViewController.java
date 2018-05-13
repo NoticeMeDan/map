@@ -2,7 +2,7 @@ package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.Entities;
+import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
@@ -28,9 +28,10 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.inject.Inject;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import javax.inject.Inject;
 
 public class MainViewController {
 	@Getter
@@ -68,6 +69,8 @@ public class MainViewController {
 	@FXML Pane searchPane;
 	@FXML Pane mapPane;
 	@FXML MenuBar menuBar;
+	@FXML private AnchorPane loadingMessagePane;
+
 
 	//Component controllers
 	@FXML private PoiBoxViewController poiBoxViewController;
@@ -83,6 +86,7 @@ public class MainViewController {
 
 	// Model Facade
 	private DomainFacade domain;
+	private Boundaries boundaries;
 
 	@Inject
 	public MainViewController(DomainFacade domainFacade) {
@@ -90,14 +94,12 @@ public class MainViewController {
 	}
 
 	public void initialize() {
-		favoritePoiManager = new FavoritePoiManager();
-		poiBoxViewController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
-		favoritePoiPaneController.setFavoritePois(favoritePoiManager.getObservableFavoritePois());
 		insertOSMPane();
 		favoritePoiPaneController.setMainViewController(this);
 		routePaneController.setMainViewController(this);
 		searchPaneController.setMainViewController(this);
 		menuBarController.setMainViewController(this);
+		mapPaneController.setMainViewController(this);
 
 		eventListeners();
 	}
@@ -134,12 +136,18 @@ public class MainViewController {
 	private void insertOSMPane() {
 		swingNode = new SwingNode();
 		canvas = new CanvasView(this.domain);
-		canvas.pan(-Entities.getMinLon(), -Entities.getMaxLat());
-		canvas.zoom(width / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
-		canvas.setZoomLevel(1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		this.centerViewport();
 		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
 		osmPaneContainer.getChildren().addAll(swingNode);
+	}
+
+	void centerViewport() {
+		this.boundaries = this.domain.getBoundaries();
+		canvas.setTransform(new AffineTransform());
+		canvas.pan(-boundaries.getMinLon(), -boundaries.getMaxLat());
+		canvas.zoom(width / (boundaries.getMaxLon() - boundaries.getMinLon()), 0, 0);
+		canvas.setZoomLevel(1 / (boundaries.getMaxLon() - boundaries.getMinLon()));
 	}
 
 	private void eventListeners() {
@@ -189,6 +197,7 @@ public class MainViewController {
 	public void pushCanvas() {
 		if(!sidePaneOpen) {
 			AnchorPane.setLeftAnchor(osmPaneContainer, 250d);
+			AnchorPane.setLeftAnchor(loadingMessagePane, 290d);
 			sidePaneWidth = 250;
 			sidePaneOpen = !sidePaneOpen;
 			// Annoying hack to make canvas actually resize. Tried to call nodeResize directly here
@@ -197,10 +206,19 @@ public class MainViewController {
 			stage.setWidth(stage.getWidth()-1);
 		} else {
 			AnchorPane.setLeftAnchor(osmPaneContainer,0d);
+			AnchorPane.setLeftAnchor(loadingMessagePane,15d);
 			sidePaneWidth = 0;
 			sidePaneOpen = !sidePaneOpen;
 			stage.setWidth(stage.getWidth()+1);
 			stage.setWidth(stage.getWidth()-1);
+		}
+	}
+
+	void toggleLoadingMessage() {
+		if (this.loadingMessagePane.isVisible()) {
+			this.loadingMessagePane.setVisible(false);
+		} else {
+			this.loadingMessagePane.setVisible(true);
 		}
 	}
 }

@@ -41,3 +41,8 @@ META_INF
 # OSM stuff
 *.osm
 *.osm.zip
+
+# Test asset exceptions
+!testOsm.osm
+!testOsm.osm.zip
+!testSmall.osm.zip
