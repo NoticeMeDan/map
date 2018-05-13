@@ -33,7 +33,7 @@
 			<Text fx:id="currentHoveredRoadNamePane" textAlignment="RIGHT" layoutY="18" AnchorPane.rightAnchor="15" AnchorPane.leftAnchor="15" />
 		</AnchorPane>
 
-		<AnchorPane fx:id="loadingMessagePane" prefHeight="27.0" AnchorPane.leftAnchor="15" AnchorPane.bottomAnchor="15">
+		<AnchorPane visible="false" fx:id="loadingMessagePane" prefHeight="27.0" AnchorPane.leftAnchor="15" AnchorPane.bottomAnchor="15">
 			<Text fx:id="loadingMessageText" textAlignment="LEFT" text="Behandler nyt kort..." layoutY="25" AnchorPane.rightAnchor="15" AnchorPane.leftAnchor="40" />
 			<ImageView id="boxImage" preserveRatio="true" fitHeight="40" fitWidth="40">
 				<Image url="@../graphics/spinner.gif" />

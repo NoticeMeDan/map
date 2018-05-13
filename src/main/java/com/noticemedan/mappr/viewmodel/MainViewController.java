@@ -68,6 +68,8 @@ public class MainViewController {
 	@FXML Pane searchPane;
 	@FXML Pane mapPane;
 	@FXML MenuBar menuBar;
+	@FXML private AnchorPane loadingMessagePane;
+
 
 	//Component controllers
 	@FXML private PoiBoxViewController poiBoxViewController;
@@ -209,6 +211,14 @@ public class MainViewController {
 			sidePaneOpen = !sidePaneOpen;
 			stage.setWidth(stage.getWidth()+1);
 			stage.setWidth(stage.getWidth()-1);
+		}
+	}
+
+	void toggleLoadingMessage() {
+		if (this.loadingMessagePane.isVisible()) {
+			this.loadingMessagePane.setVisible(false);
+		} else {
+			this.loadingMessagePane.setVisible(true);
 		}
 	}
 }

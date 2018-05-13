@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -26,8 +27,7 @@ import java.nio.file.Path;
 public class MapPaneController {
 	@FXML Pane mapPane;
 	@FXML ListView mapListView;
-	@Getter
-	@FXML Button mapPaneCloseButton;
+	@Getter @FXML Button mapPaneCloseButton;
 	@FXML Button createMapButton;
 	@FXML Button loadMapButton;
 	@FXML Button saveMapButton;
@@ -131,11 +131,13 @@ public class MapPaneController {
 		Option<Path> path = picker.getPath(stage);
 		if (!path.isEmpty()) {
 			new InfoBox("Vi danner kortet i baggrunden - du vil få besked når det er færdigt.").show();
+			this.mainViewController.toggleLoadingMessage();
 			InfoBox onComplete = new InfoBox("Kortet er nu oprettet, og du har muligheden for at tilgå det fra menuen.");
 			InfoBox onFailed = new InfoBox("Der opsted en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
 			domain.buildMapFromOsmPath(path.get(), x -> {
 				onComplete.show();
 				this.readFiles();
+				this.mainViewController.toggleLoadingMessage();
 			}, x -> onFailed.show());
 		}
 	}
@@ -144,7 +146,7 @@ public class MapPaneController {
 		FileInfo map = (FileInfo) mapListView.getSelectionModel().getSelectedItem();
 		this.domain.loadMap(map.getFileName());
 		this.mainViewController.centerViewport();
-		this.mainViewController.getCanvas().repaint();
+		MainViewController.getCanvas().repaint();
 	}
 
 	private void updateMap(ActionEvent event) {
