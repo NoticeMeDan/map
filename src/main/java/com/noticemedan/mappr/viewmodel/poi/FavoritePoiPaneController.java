@@ -1,10 +1,11 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
-import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.viewmodel.MainViewController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.inject.Inject;
 
 public class FavoritePoiPaneController {
 	@FXML Pane favoritePoiPane;
@@ -23,21 +26,38 @@ public class FavoritePoiPaneController {
 	@FXML Button removeFavoritePoiButton;
 	@FXML StackPane noFavoritesYetPane;
 	@Setter
-	ObservableList<Element> favoritePois;
-	@Setter
 	MainViewController mainViewController;
+
+	ObservableList<FavoritePoi> poi;
+	DomainFacade domain;
+
+	@Inject
+	public FavoritePoiPaneController(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+	}
 
 	public void initialize() {
 		closeFavoritePoiPane();
-		favoritePoiListView.setItems(favoritePois);
+		readPoi();
 		showNoFavoritesYetPane();
 		disableActionMenu();
-		favoritePoiListView.setCellFactory(listView -> new FavoritePoiCell()); //Custom cells for list
 		eventListeners();
 	}
 
+	private void readPoi() {
+		this.poi = FXCollections.observableArrayList(this.domain.getAllPoi().toJavaList());
+		this.favoritePoiListView.setItems(this.poi);
+		favoritePoiListView.setCellFactory(listView -> new FavoritePoiCell()); //Custom cells for list
+		if (poi.size() == 0) {
+			disableActionMenu();
+			showNoFavoritesYetPane();
+		} else {
+			hideNoFavoritesYetPane();
+		}
+	}
+
 	private void eventListeners() {
-		ChangeListener<Element> favoritePoiListener = (ObservableValue<? extends Element> observable, Element oldValue, Element newValue) -> {
+		ChangeListener<FavoritePoi> favoritePoiListener = (ObservableValue<? extends FavoritePoi> observable, FavoritePoi oldValue, FavoritePoi newValue) -> {
 			zoomToPoi();
 			enableActionMenu();
 		};
@@ -45,12 +65,9 @@ public class FavoritePoiPaneController {
 		favoritePoiListView.getSelectionModel().selectedItemProperty().addListener(favoritePoiListener);
 
 		removeFavoritePoiButton.setOnAction(event -> {
-			favoritePois.remove(favoritePoiListView.getSelectionModel().getSelectedItem());
-			mainViewController.getCanvas().updateFavoritpoints();
-			if (favoritePois.size() == 0) {
-				disableActionMenu();
-				showNoFavoritesYetPane();
-			}
+			FavoritePoi poi = (FavoritePoi) favoritePoiListView.getSelectionModel().getSelectedItem();
+			this.domain.removePoi(poi);
+			this.readPoi();
 		});
 
 		favoritePoiPaneCloseButton.setOnAction(event -> {
@@ -58,13 +75,16 @@ public class FavoritePoiPaneController {
 			mainViewController.pushCanvas();
 		});
 	}
+
 	private void zoomToPoi() {
-		Element currentSelectedFavoritePoi = (Element) favoritePoiListView.getSelectionModel().getSelectedItem();
-		if (currentSelectedFavoritePoi != null) mainViewController.getCanvas().zoomToCoordinate(currentSelectedFavoritePoi.getAvgPoint(), 30);
+		FavoritePoi currentSelectedFavoritePoi = (FavoritePoi) favoritePoiListView.getSelectionModel().getSelectedItem();
+		if (currentSelectedFavoritePoi != null) {
+			mainViewController.getCanvas().zoomToCoordinate(currentSelectedFavoritePoi.getCoordinate(), 30);
+		}
 	}
 
 	public void openFavoritePane() {
-		refresh();
+		readPoi();
 		favoritePoiPane.setManaged(true);
 		favoritePoiPane.setVisible(true);
 	}
@@ -86,7 +106,7 @@ public class FavoritePoiPaneController {
 	}
 
 	private void showNoFavoritesYetPane() {
-		if (favoritePois == null || favoritePois.size() == 0 ) {
+		if (poi == null || poi.size() == 0 ) {
 			noFavoritesYetPane.setVisible(true);
 			noFavoritesYetPane.setManaged(true);
 			favoritePoiListView.setVisible(false);
@@ -99,10 +119,5 @@ public class FavoritePoiPaneController {
 		noFavoritesYetPane.setManaged(false);
 		favoritePoiListView.setVisible(true);
 		favoritePoiListView.setManaged(true);
-	}
-
-	private void refresh() {
-		favoritePoiListView.setItems(favoritePois);
-		if (favoritePois.size() > 0) hideNoFavoritesYetPane();
 	}
 }

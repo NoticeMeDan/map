@@ -5,10 +5,12 @@ import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
+import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import io.vavr.collection.List;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,12 +40,12 @@ public class CanvasView extends JComponent {
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
 	private Point2D pointerPosition;
+	@Setter
 	private BufferedImage pointer;
 	private BufferedImage favorite;
-	private Vector<Element> favoritpoints;
 
 
-    //Performance test fields
+	//Performance test fields
 	public double timeDraw;
 	public double timeRangeSearch;
 	@Setter @Getter
@@ -72,7 +74,6 @@ public class CanvasView extends JComponent {
 	public CanvasView(DomainFacade domainFacade) {
 		this.domain = domainFacade;
 		this.boundaries = this.domain.getBoundaries();
-		//this.favoritpoints = domain.get
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		OsmElementProperty.standardColor();
 		try {
@@ -107,6 +108,7 @@ public class CanvasView extends JComponent {
         drawCoastlines();
         drawAllElements();
 
+		if (this.zoomLevel > 0.5) drawFavoritePoints();
         if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
@@ -279,13 +281,15 @@ public class CanvasView extends JComponent {
 		});
 	}
 
-	private void drawFavorites() {
-		this.favoritpoints.forEach(e -> drawImage(favorite,e.getAvgPoint(),0.00005,true));
+	private void drawFavoritePoints() {
+		this.domain.getAllPoi().forEach(e -> {
+			Coordinate coordinate = new Coordinate(
+					e.getCoordinate().getX(),
+					Coordinate.latToCanvasLat(e.getCoordinate().getY())
+			);
+			drawImage(this.favorite,coordinate,0.00005,true);
+		});
 	}
-
-	public static void updateFavoritpoints() {
-		//this.favoritpoints = this.domain.magicalnameforgettingFavPoints();
-}
 
 	private void performanceTest() {
 		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());

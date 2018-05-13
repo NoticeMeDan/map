@@ -2,6 +2,7 @@ package com.noticemedan.mappr.dao;
 
 import com.noticemedan.mappr.model.MapData;
 import com.noticemedan.mappr.model.map.Boundaries;
+import io.vavr.collection.List;
 import io.vavr.collection.Vector;
 import org.testng.annotations.Test;
 
@@ -22,7 +23,7 @@ public class OsmDaoTest {
 			.elements(Vector.empty())
 			.coastlineElements(Vector.empty())
 			.addresses(Vector.empty())
-			.poi(null)
+			.poi(List.empty())
 			.build();
 
 	@Test
