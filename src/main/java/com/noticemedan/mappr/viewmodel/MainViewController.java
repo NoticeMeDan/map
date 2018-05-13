@@ -199,6 +199,7 @@ public class MainViewController {
 	public void pushCanvas() {
 		if(!sidePaneOpen) {
 			AnchorPane.setLeftAnchor(osmPaneContainer, 250d);
+			AnchorPane.setLeftAnchor(loadingMessagePane, 290d);
 			sidePaneWidth = 250;
 			sidePaneOpen = !sidePaneOpen;
 			// Annoying hack to make canvas actually resize. Tried to call nodeResize directly here
@@ -207,6 +208,7 @@ public class MainViewController {
 			stage.setWidth(stage.getWidth()-1);
 		} else {
 			AnchorPane.setLeftAnchor(osmPaneContainer,0d);
+			AnchorPane.setLeftAnchor(loadingMessagePane,15d);
 			sidePaneWidth = 0;
 			sidePaneOpen = !sidePaneOpen;
 			stage.setWidth(stage.getWidth()+1);
