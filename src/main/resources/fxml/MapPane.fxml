@@ -8,23 +8,28 @@
 <VBox xmlns="http://javafx.com/javafx"
 	  xmlns:fx="http://javafx.com/fxml"
 	  fx:controller="com.noticemedan.mappr.viewmodel.MapPaneController"
-	  prefWidth="250.0"
+	  prefWidth="275"
 	  fx:id="mapPane">
 	<stylesheets>
 		<URL value="@../css/map-pane.css" />
 	</stylesheets>
-	<HBox prefHeight="55.0" prefWidth="200.0">
-		<Pane prefHeight="100.0" prefWidth="300.0">
-			<Label styleClass="paneTitle" text="Kort" />
-			<Button fx:id="mapPaneCloseButton" styleClass="closeButton" layoutX="215.0" layoutY="20.0" mnemonicParsing="false"/>
+	<HBox prefHeight="55.0" prefWidth="275.0">
+		<Pane prefHeight="100.0" prefWidth="275.0">
+			<Label styleClass="paneTitle" text="Mine kort" />
+			<Button fx:id="mapPaneCloseButton" styleClass="closeButton" layoutX="240.0" layoutY="20.0" mnemonicParsing="false"/>
 		</Pane>
 	</HBox>
-	<HBox fx:id="actionMenu" layoutY="55">
-		<Button fx:id="loadMapButton" styleClass="actionMenuButton" text="Indlæs kort" />
-		<Button fx:id="deleteMapButton" styleClass="actionMenuButton" text="Slet kort" />
+	<HBox id="actionMenu">
+		<Button fx:id="createMapButton" styleClass="actionMenuButton" text="Nyt kort" />
+		<Button fx:id="saveMapButton" styleClass="actionMenuButton" text="Gem favoritsteder" />
 	</HBox>
+	<HBox id="actionMenu">
+		<Button fx:id="deleteMapButton" styleClass="actionMenuButton" text="Slet kort" />
+		<Button fx:id="loadMapButton" styleClass="actionMenuButton" text="Indlæs kort" />
+	</HBox>
+
 	<StackPane fx:id="noMapsYetPane" VBox.vgrow="ALWAYS">
-		<Text id="noMapsText" wrappingWidth="210" textAlignment="CENTER" text="Ingen kort er tilføjet. Tilføj et kort i menubaren." />
+		<Text id="noMapsText" wrappingWidth="210" textAlignment="CENTER" text="Ingen kort er fundet. Tilføj et kort ved at klikke på 'Nyt kort'." />
 	</StackPane>
 	<ListView fx:id="mapListView" VBox.vgrow="ALWAYS" />
 </VBox>
