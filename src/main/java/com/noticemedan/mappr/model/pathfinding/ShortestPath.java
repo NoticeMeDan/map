@@ -18,7 +18,7 @@ public class ShortestPath {
 	}
 
 	public void setTimeToTravel(double timeToTravel) {
-		this.timeToTravel = timeToTravel + " s";
+		this.timeToTravel = TextFormatter.formatTime(timeToTravel);
 	}
 
 	public void setShortestPathShapes(Vector<Shape> shortestPathShapes) {

@@ -2,7 +2,6 @@ package com.noticemedan.mappr.model;
 
 import com.noticemedan.mappr.dao.ImageDao;
 import com.noticemedan.mappr.dao.OsmDao;
-import com.noticemedan.mappr.model.directions.NavigationInstruction;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
@@ -40,7 +39,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/bornholm.osm").toURI());
+			Path path = Paths.get(DomainFacade.class.getResource("/denmark.osm.zip").toURI());
 
 			this.initialize(path);
 		} catch (Exception e) {

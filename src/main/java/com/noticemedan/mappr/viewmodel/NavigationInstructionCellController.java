@@ -2,6 +2,7 @@ package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.directions.NavigationInstruction;
+import com.noticemedan.mappr.model.util.TextFormatter;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,25 +40,25 @@ public class 	NavigationInstructionCellController {
 	}
 
 	private void setDistance() {
-		if(navigationInstruction.getDistance() > 1) distanceToNextNavigationAction.setText(String.valueOf(navigationInstruction.getDistance() + " km"));
-		else										distanceToNextNavigationAction.setText(String.valueOf(navigationInstruction.getDistance() * 1000) + " m");
+		distanceToNextNavigationAction.setText(TextFormatter.formatDistance(navigationInstruction.getDistance(), 2));
 	}
 
 	private void setTextualDescription() {
-		if (navigationInstruction.getType() == NavigationAction.TURN_LEFT)
-			navigationActionDescription.setText("Drej til venstre ved " + navigationInstruction.getRoad());
-		if (navigationInstruction.getType() == NavigationAction.TURN_RIGHT)
-			navigationActionDescription.setText("Drej til højre ved " + navigationInstruction.getRoad());
-		if (navigationInstruction.getType() == NavigationAction.STRAIGHT)
-			navigationActionDescription.setText("Forsæt ligeud ved " + navigationInstruction.getRoad());
-		if (navigationInstruction.getType() == NavigationAction.DESTINATION)
-			navigationActionDescription.setText("Destinationen er længere nede af vejen.");
+		navigationActionDescription.setText(navigationInstruction.getDescription());
 	}
 
 	private void setIcon() {
+		if (navigationInstruction.getType() == NavigationAction.NORTH) navigationActionImageView.getStyleClass().add("north");
+		if (navigationInstruction.getType() == NavigationAction.WEST) navigationActionImageView.getStyleClass().add("west");
+		if (navigationInstruction.getType() == NavigationAction.SOUTH) navigationActionImageView.getStyleClass().add("south");
+		if (navigationInstruction.getType() == NavigationAction.EAST) navigationActionImageView.getStyleClass().add("east");
+		if (navigationInstruction.getType() == NavigationAction.NORTHEAST) navigationActionImageView.getStyleClass().add("northeast");
+		if (navigationInstruction.getType() == NavigationAction.SOUTHEAST) navigationActionImageView.getStyleClass().add("southeast");
+		if (navigationInstruction.getType() == NavigationAction.SOUTHWEST) navigationActionImageView.getStyleClass().add("southwest");
+		if (navigationInstruction.getType() == NavigationAction.NORTHWEST) navigationActionImageView.getStyleClass().add("northwest");
+
 		if (navigationInstruction.getType() == NavigationAction.TURN_LEFT) navigationActionImageView.getStyleClass().add("turnLeft");
 		if (navigationInstruction.getType() == NavigationAction.TURN_RIGHT) navigationActionImageView.getStyleClass().add("turnRight");
-		if (navigationInstruction.getType() == NavigationAction.ROUNDABOUT) navigationActionImageView.getStyleClass().add("roundabout");
 		if (navigationInstruction.getType() == NavigationAction.STRAIGHT) navigationActionImageView.getStyleClass().add("straight");
 		if (navigationInstruction.getType() == NavigationAction.DESTINATION) navigationActionImageView.getStyleClass().add("destination");
 	}

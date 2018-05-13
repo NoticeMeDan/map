@@ -9,6 +9,20 @@
 	-fx-background-repeat: no-repeat;
 }
 
+.straight {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 13 auto;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.destination {
+	-fx-background-image: url("../graphics/check.png");
+	-fx-background-size: 25 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
 .turnLeft {
 	-fx-background-image: url("../graphics/upleft.png");
 	-fx-background-size: 20 20;
@@ -23,16 +37,58 @@
 	-fx-background-repeat: no-repeat;
 }
 
-.straight {
-	-fx-background-image: url("../graphics/straightup.png");
-	-fx-background-size: 13 auto;
+.north {
+	-fx-background-image: url("../graphics/north.png");
+	-fx-background-size: 20 20;
 	-fx-background-position: center;
 	-fx-background-repeat: no-repeat;
 }
 
-.destination {
-	-fx-background-image: url("../graphics/check.png");
-	-fx-background-size: 25 25;
+.west {
+	-fx-background-image: url("../graphics/west.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.south {
+	-fx-background-image: url("../graphics/south.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.east {
+	-fx-background-image: url("../graphics/east.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.northeast {
+	-fx-background-image: url("../graphics/northeast.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.southeast {
+	-fx-background-image: url("../graphics/southeast.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.southwest {
+	-fx-background-image: url("../graphics/southwest.png");
+	-fx-background-size: 20 20;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.northwest {
+	-fx-background-image: url("../graphics/northwest.png");
+	-fx-background-size: 20 20;
 	-fx-background-position: center;
 	-fx-background-repeat: no-repeat;
 }

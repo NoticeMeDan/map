@@ -17,29 +17,40 @@ public class ShortestPathService {
 	private Dijkstra dijkstra;
 	private NetworkParser networkParser;
 	private Network network;
-	private Guide navigationGuide;
+
+	private static final double averageWalkSpeed = 5000;
+	private static final double averageCycleSpeed = 15500;
 
 	public ShortestPathService(Vector<Element> elements) {
 		this.networkParser = new NetworkParser(elements);
 		this.network = networkParser.getNetwork();
-		navigationGuide = new Guide();
 	}
 
 	public ShortestPath getShortestPath(Coordinate from, Coordinate to, TravelType type) {
 		PathNode nodeFrom = this.network.getNodeFromCoords(from);
 		PathNode nodeTo = this.network.getNodeFromCoords(to);
+		Guide navigationGuide = new Guide();
 		Vector<Shape> shapes = Vector.empty();
 		Vector<PathEdge> edgeList = getShortestPath(nodeFrom, nodeTo, type);
 		double distance = 0.0;
+		double averageSpeed = 0.0;
 		for (PathEdge pathEdge : edgeList) {
 			shapes = shapes.append(pathEdge.toShape());
 			distance += pathEdge.getWeight();
+			averageSpeed += pathEdge.getSpeedLimit();
 		}
+		averageSpeed /= edgeList.length();
+		averageSpeed *= 1000;
+
+		double timeToTravel;
+		if (type == TravelType.WALK) timeToTravel = distance / averageWalkSpeed;
+		else if (type == TravelType.BIKE) timeToTravel = distance / averageCycleSpeed;
+		else timeToTravel = distance / averageSpeed;
 
 		ShortestPath shortestPath = new ShortestPath();
 		shortestPath.setDistanceToTravel(distance);
-		shortestPath.setTravelInstructions(navigationGuide.getDirections(edgeList));
-		shortestPath.setTimeToTravel(33);
+		shortestPath.setTravelInstructions(navigationGuide.getDirections(edgeList, type));
+		shortestPath.setTimeToTravel(timeToTravel);
 		shortestPath.setShortestPathShapes(shapes);
 		return shortestPath;
 	}
@@ -59,7 +70,7 @@ public class ShortestPathService {
 		return this.network.getAllEdges();
 	}
 
-	private Vector<PathEdge> getShortestPath(PathNode from, PathNode to, TravelType type) {
+	public Vector<PathEdge> getShortestPath(PathNode from, PathNode to, TravelType type) {
 		dijkstra = new Dijkstra(this.networkParser.getNetwork(), from, type);
 		return dijkstra.derivePath(to);
 	}
