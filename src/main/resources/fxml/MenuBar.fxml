@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-
+<?import javafx.scene.control.*?>
 <MenuBar fx:id="menuBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1"
 		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
 	<Menu mnemonicParsing="false" text="Vindue">
@@ -22,7 +19,7 @@
 		<MenuItem mnemonicParsing="false" text="Vis KDTree linjer"/>
 		<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search"/>
 		<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
-		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis shortest path"/>
+		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis vilkårlig shortest path"/>
 		<MenuItem fx:id="loadFromOsmMenuItem" mnemonicParsing="false" text="Load fra OSM"/>
 	</Menu>
 </MenuBar>

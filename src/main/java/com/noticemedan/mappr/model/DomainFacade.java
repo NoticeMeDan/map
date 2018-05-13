@@ -6,17 +6,17 @@ import com.noticemedan.mappr.dao.OsmDao;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
+import com.noticemedan.mappr.model.map.FileInfo;
 import com.noticemedan.mappr.model.pathfinding.PathEdge;
 import com.noticemedan.mappr.model.pathfinding.PathNode;
 import com.noticemedan.mappr.model.pathfinding.ShortestPath;
-import com.noticemedan.mappr.model.service.MapImportService;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
-import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.ForestService;
+import com.noticemedan.mappr.model.service.MapImportService;
+import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.model.map.FileInfo;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -104,7 +104,7 @@ public class DomainFacade {
 	 * @param to coordinate of the to-destination
 	 * @return ShortestPath
 	 */
-	public ShortestPath deriveShortestPathShapes(Coordinate from, Coordinate to, TravelType type) {
+	public ShortestPath deriveShortestPath(Coordinate from, Coordinate to, TravelType type) {
 		return shortestPathService.getShortestPath(from, to, type);
 	}
 

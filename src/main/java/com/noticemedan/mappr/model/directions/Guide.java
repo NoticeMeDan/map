@@ -13,13 +13,13 @@ public class Guide {
 	private PathEdge edgeBefore;
 
 	public Vector<NavigationInstruction> getDirections(Vector<PathEdge> route, TravelType type) {
+		if (route.length() == 0) return null;
 		this.distance = 0;
-
 		route.forEach(e-> {
 			this.distance += e.getWeight();
 			if (e.getV().degree() > 3) {
-				if (e.getRoadName() == null) return;
 				if (this.distance < 0.01) return;
+				if (e.getRoadName() == null) e.setRoadName("Ukendt vejnavn");
 				this.directions = directions.append(
 								new NavigationInstruction(determineMapDirection(e),
 								this.distance, e.getRoadName(),
@@ -28,8 +28,8 @@ public class Guide {
 				this.distance = 0;
 			}
 			if (e.getW().degree() == 3) {
-				if (e.getRoadName() == null) return;
 				if (this.distance < 0.01) return;
+				if (e.getRoadName() == null) e.setRoadName("Ukendt vejnavn");
 				this.directions = directions.append(
 								new NavigationInstruction(determineLeftRightDirection(e, edgeBefore),
 								this.distance,

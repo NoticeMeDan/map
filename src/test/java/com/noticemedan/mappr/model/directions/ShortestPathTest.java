@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 
 import static org.testng.Assert.assertEquals;
 
@@ -45,7 +46,7 @@ public class ShortestPathTest {
 	private Element createElement(Coordinate c1, Coordinate c2, String name) {
 		Element element = new Element();
 		element.setType(Type.ROAD);
-		element.setShape(new Line2D.Double(c1, c2));
+		element.setShape(new Path2D.Double(new Line2D.Double(c1, c2)));
 		element.setName(name);
 		return element;
 	}
@@ -96,8 +97,8 @@ public class ShortestPathTest {
 	public void directionsTest() {
 		ShortestPath sp = shortestPathService.getShortestPath(new Coordinate(3,8), new Coordinate(14,1), TravelType.ALL);
 		Vector<NavigationInstruction> instructions = sp.getTravelInstructions();
-		assertEquals(instructions.get(0).type, NavigationAction.SOUTHEAST);
-		assertEquals(instructions.get(1).type, NavigationAction.NORTHEAST);
-		assertEquals(instructions.get(2).type, NavigationAction.SOUTH);
+		assertEquals(instructions.get(0).getType(), NavigationAction.STRAIGHT);
+		assertEquals(instructions.get(1).getType(), NavigationAction.NORTHEAST);
+		assertEquals(instructions.get(2).getType(), NavigationAction.DESTINATION);
 	}
 }

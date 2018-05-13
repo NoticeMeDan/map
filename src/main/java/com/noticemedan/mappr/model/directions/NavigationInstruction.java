@@ -8,11 +8,16 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public class NavigationInstruction {
-	@Getter NavigationAction type;
-	@Getter Double distance;
-	@Getter String road;
-	@Getter TravelType travelType;
-	@Getter Coordinate coordinate;
+	@Getter
+	private NavigationAction type;
+	@Getter
+	private Double distance;
+	@Getter
+	private String road;
+	@Getter
+	private TravelType travelType;
+	@Getter
+	private Coordinate coordinate;
 
 	public String getDescription() {
 		String direction = "";

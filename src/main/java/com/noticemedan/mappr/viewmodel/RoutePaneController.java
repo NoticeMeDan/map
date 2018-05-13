@@ -2,8 +2,6 @@ package com.noticemedan.mappr.viewmodel;
 
 import com.google.inject.Inject;
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.NavigationAction;
-import com.noticemedan.mappr.model.directions.Guide;
 import com.noticemedan.mappr.model.directions.NavigationInstruction;
 import com.noticemedan.mappr.model.map.Address;
 import com.noticemedan.mappr.model.map.Element;
@@ -17,17 +15,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class RoutePaneController {
 	@FXML Pane routePane;
@@ -66,7 +59,7 @@ public class RoutePaneController {
 		routePaneCloseButton.setOnAction(event -> {
 			mainViewController.pushCanvas();
 			closeRoutePane();
-			this.mainViewController.getCanvas().hidePath();
+			MainViewController.getCanvas().hidePath();
 		});
 
 		// On Key Press
@@ -125,7 +118,7 @@ public class RoutePaneController {
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
-		ShortestPath shortestPath = this.domain.deriveShortestPathShapes(startCoordinate, endCoordinate, this.chosenTravelType);
+		ShortestPath shortestPath = this.domain.deriveShortestPath(startCoordinate, endCoordinate, this.chosenTravelType);
 
 		Vector<Shape> shortestPathShapes = shortestPath.getShortestPathShapes();
 		MainViewController.getCanvas().showPath(shortestPathShapes);
@@ -167,6 +160,9 @@ public class RoutePaneController {
 		searchEndPointAddressField.clear();
 		routeStartSearchResultsListView.getItems().clear();
 		navigationInstructionsListView.getItems().clear();
+		routeWalkToggleButton.setSelected(false);
+		routeBicycleToggleButton.setSelected(false);
+		routeCarToggleButton.setSelected(false);
 	}
 
 	private void toggleRoute(boolean toggle) {
