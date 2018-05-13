@@ -38,7 +38,7 @@ public class DomainFacade {
 
 	public DomainFacade() {
 		try {
-			Path path = Paths.get(DomainFacade.class.getResource("/copenhagen-large.osm.zip").toURI());
+			Path path = Paths.get("C:\\Users\\ALPHA\\Documents\\Github\\map\\bornholm.osm");
 			this.initialize(path);
 		} catch (Exception e) {
 			log.error("An error occurred", e);
