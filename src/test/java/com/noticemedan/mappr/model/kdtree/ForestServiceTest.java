@@ -24,13 +24,13 @@ public class ForestServiceTest {
 		double[] y = new double[] {10, 3, 8, 6, 1, 7, 2, 9};
 		double[] x2 = new double[] {3, 1, 2, 9, 5, 6, 8, 4};
 		double[] y2 = new double[] {12, 5, 8, 9, 2, 4, 3, 6};
-		Type[] enums = new Type[] {ROAD, WATER, SECONDARY};
+		Type[] enums = new Type[] {ROAD, WATER, SECONDARY, MOTORWAY};
 		Element el;
 		Element coastlineE;
 
 
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 7; j++ ) {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 8; j++ ) {
 				el = new Element();
 				el.setAvgPoint(new Coordinate(x[j], y[j]));
 				el.setType(enums[i]);
@@ -51,8 +51,8 @@ public class ForestServiceTest {
 	public void rangeSearch_smallForest_zoomLevel0_Positive_1() {
 		Rect query = new Rect(0.5,7.5,3.5, 10.5);
 		Vector<Element> results = smallForest.rangeSearch(query, 0.4);
-		assertEquals(results.size(), 4);
-		assertEquals(results.get(0).getType(), ROAD);
+		assertEquals(results.size(), 2);
+		assertEquals(results.get(0).getType(), MOTORWAY);
 		assertEquals(results.get(0).getAvgPoint().getX(), 1.0);
 		assertEquals(results.get(0).getAvgPoint().getY(), 10.0);
 	}
@@ -61,8 +61,8 @@ public class ForestServiceTest {
 	public void rangeSearch_smallForest_zoomLevel1_Positive_2() {
 		Rect query = new Rect(4.5,0.5,10, 10);
 		Vector<Element> results = smallForest.rangeSearch(query, 0.6);
-		assertEquals(results.size(), 8);
-		assertEquals(results.get(results.size()-1).getType(), WATER);
+		assertEquals(results.size(), 4);
+		assertEquals(results.get(results.size()-1).getType(), MOTORWAY);
 		assertEquals(results.get(results.size()-1).getAvgPoint().getX(), 9.0);
 		assertEquals(results.get(results.size()-1).getAvgPoint().getY(), 9.0);
 	}
@@ -71,29 +71,29 @@ public class ForestServiceTest {
 	public void rangeSearch_smallForest_zoomLevel2_Positive_3() {
 		Rect query = new Rect(0.5,5.5,9.5, 10.5);
 		Vector<Element> results = smallForest.rangeSearch(query, 5);
-		assertEquals(results.size(), 15);
-		assertEquals(results.get(2).getType(), ROAD);
-		assertEquals(results.get(2).getAvgPoint().getX(), 1.0);
-		assertEquals(results.get(2).getAvgPoint().getY(), 10.0);
+		assertEquals(results.size(), 10);
+		assertEquals(results.get(2).getType(), SECONDARY);
+		assertEquals(results.get(2).getAvgPoint().getX(), 4.0);
+		assertEquals(results.get(2).getAvgPoint().getY(), 6.0);
 	}
 
 	@Test
 	public void rangeSearch_smallForest_zoomLevel3_Positive_3() {
 		Rect query = new Rect(0.5,5.5,9.5, 10.5);
 		Vector<Element> results = smallForest.rangeSearch(query, 15);
-		assertEquals(results.size(), 15);
+		assertEquals(results.size(), 20);
 		assertEquals(results.get(2).getType(), ROAD);
-		assertEquals(results.get(2).getAvgPoint().getX(), 1.0);
-		assertEquals(results.get(2).getAvgPoint().getY(), 10.0);
+		assertEquals(results.get(2).getAvgPoint().getX(), 4.0);
+		assertEquals(results.get(2).getAvgPoint().getY(), 6.0);
 	}
 
 	@Test
 	public void rangeSearch_smallForest_zoomLevel4_Positive_3() {
-		Rect query = new Rect(0.5,5.5,9.5, 10.5);
+		Rect query = new Rect(4.5,0.5,10, 10);
 		Vector<Element> results = smallForest.rangeSearch(query, 45);
-		assertEquals(results.size(), 15);
+		assertEquals(results.size(), 16);
 		assertEquals(results.get(2).getType(), ROAD);
-		assertEquals(results.get(2).getAvgPoint().getX(), 1.0);
-		assertEquals(results.get(2).getAvgPoint().getY(), 10.0);
+		assertEquals(results.get(2).getAvgPoint().getX(), 7.0);
+		assertEquals(results.get(2).getAvgPoint().getY(), 2.0);
 	}
 }
