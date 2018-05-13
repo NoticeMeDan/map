@@ -46,6 +46,7 @@ public class FavoritePoiPaneController {
 
 		removeFavoritePoiButton.setOnAction(event -> {
 			favoritePois.remove(favoritePoiListView.getSelectionModel().getSelectedItem());
+			mainViewController.getCanvas().updateFavoritpoints();
 			if (favoritePois.size() == 0) {
 				disableActionMenu();
 				showNoFavoritesYetPane();

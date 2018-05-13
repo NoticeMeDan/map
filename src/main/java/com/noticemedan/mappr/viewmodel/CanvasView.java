@@ -39,6 +39,9 @@ public class CanvasView extends JComponent {
 	private boolean showFPS = false;
 	private Point2D pointerPosition;
 	private BufferedImage pointer;
+	private BufferedImage favorite;
+	private Vector<Element> favoritpoints;
+
 
     //Performance test fields
 	public double timeDraw;
@@ -69,7 +72,9 @@ public class CanvasView extends JComponent {
 		try {
 			this.domain = domainFacade;
 			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+			//this.favoritpoints = domain.magicalnameforgettingFavPoints();
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
+			this.favorite = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/point-of-interest.png").toURI())).get();
       		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
       		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
 			OsmElementProperty.standardColor();
@@ -195,7 +200,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null) paintNN();
+		if(currentNN != null && currentNN.getShape() != null) paintNN();
 	}
 
 	private void paintNN() {
@@ -271,6 +276,14 @@ public class CanvasView extends JComponent {
 			this.g.fill(p.toShape());
 		});
 	}
+
+	private void drawFavorites() {
+		this.favoritpoints.forEach(e -> drawImage(favorite,e.getAvgPoint(),0.00005,true));
+	}
+
+	public void updateFavoritpoints() {
+		//this.favoritpoints = this.domain.magicalnameforgettingFavPoints();
+}
 
 	private void performanceTest() {
 		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());
@@ -421,11 +434,11 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPointer() {
-		drawImage(this.pointer,this.pointerPosition,0.00008,false);
+		drawImage(this.pointer,this.pointerPosition,0.00005,false);
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
-		double scaling = (this.zoomLevel < 100) ? this.viewRect.getWidth() * size :	0.01 * size;
+		double scaling = (this.zoomLevel < 100) ? size / this.zoomLevel : size / 90;
 		double width = pointer.getWidth() * scaling;
 		double height = pointer.getHeight() * scaling;
 
