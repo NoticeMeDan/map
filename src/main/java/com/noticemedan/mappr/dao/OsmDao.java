@@ -108,6 +108,7 @@ public class OsmDao implements DataReader<MapData> {
 		private int maxspeed = 50; // default value
 		final String regex = "\\d+";
 		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+		private long index;
 
 
 		@Override
@@ -133,7 +134,8 @@ public class OsmDao implements DataReader<MapData> {
 				case "way":
 					this.osmWay = Vector.empty();
 					type = Type.UNKNOWN;
-					idToWay.put(Long.parseLong(attributes.getValue("id")), osmWay);
+					this.index = Long.parseLong(attributes.getValue("id"));
+					this.idToWay = idToWay.put(Long.parseLong(attributes.getValue("id")), osmWay);
 					break;
 				case "relation":
 					this.osmRelation = Vector.empty();
@@ -233,6 +235,7 @@ public class OsmDao implements DataReader<MapData> {
 					break;
 				case "nd":
 					this.osmWay = osmWay.append(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
+					this.idToWay = idToWay.put(this.index,osmWay);
 					this.path2DSize++;
 					break;
 				default:
@@ -288,10 +291,11 @@ public class OsmDao implements DataReader<MapData> {
 					break;
 				case "relation":
 					for (Vector<Node> way : osmRelation) {
-						node = way.get(0);
+						node = way.head();
 						path.moveTo(node.getLon(), node.getLat());
-						for (int i = 1; i < way.size(); i++) {
-							node = way.get(i);
+						for(Node n : way) {
+							if(n == way.head()) continue;
+							node = n;
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
