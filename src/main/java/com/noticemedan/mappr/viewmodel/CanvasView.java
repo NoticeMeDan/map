@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.Entities;
+import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
-	@Getter
+	@Getter @Setter
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
     private Rectangle2D viewRect;
@@ -56,6 +56,7 @@ public class CanvasView extends JComponent {
 	private Element currentNN;
 
 	private DomainFacade domain;
+	private Boundaries boundaries;
 
 	//ShortestPath
 	private boolean showNetwork;
@@ -66,13 +67,14 @@ public class CanvasView extends JComponent {
 	private Vector<Shape> shortestPath;
 
 	public CanvasView(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+		this.boundaries = this.domain.getBoundaries();
+		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		OsmElementProperty.standardColor();
 		try {
-			this.domain = domainFacade;
-			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
       		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
       		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
-			OsmElementProperty.standardColor();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
@@ -195,7 +197,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null) paintNN();
+		if(currentNN != null && currentNN.getShape() != null ) paintNN();
 	}
 
 	private void paintNN() {
@@ -336,7 +338,7 @@ public class CanvasView extends JComponent {
 		//Go to coordinate at map's original zoomlevel. (The coordinate will be in the upper right corner)
 		transform = new AffineTransform();
 		pan(-coordinate.getX(), -Coordinate.latToCanvasLat(coordinate.getY()));
-		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		zoom(getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
 
 		//Define upper left and lower right viewport corners screen in canvas lat/lon
 		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0, 0), transform);
@@ -349,10 +351,10 @@ public class CanvasView extends JComponent {
 		//Go to coordinate at map's original zoomlevel. (The coordinate will now be centered)
 		transform = new AffineTransform();
 		pan(-lambda, -phi);
-		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		zoom(getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
 
 		//Reset canvas zoom level because we have reset to the map's original zoomlevel
-		this.zoomLevel = (1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		this.zoomLevel = (1 / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()));
 	}
 
 	//Zoom canvas to a given zoom level
