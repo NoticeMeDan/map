@@ -77,12 +77,6 @@ public class OsmDao implements DataReader<MapData> {
 	}
 
 	public void add(Type type, Shape shape, int maxspeed) {
-		Rectangle2D shapeBounds = shape.getBounds2D();
-		double x1 = shapeBounds.getX();
-		double y1 = shapeBounds.getY();
-		double xLength = shapeBounds.getWidth();
-		double yLength = shapeBounds.getHeight();
-		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		Element osmElement = new Element();
 		osmElement.setType(type);
 		osmElement.setAvgPoint(new Coordinate(shape.getBounds2D().getCenterX(), shape.getBounds2D().getCenterY()));
@@ -172,6 +166,7 @@ public class OsmDao implements DataReader<MapData> {
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
 							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
 							if (attributes.getValue("v").equals("footpath")) type = Type.FOOTPATH;
+							if (attributes.getValue("v").equals("pedestrian")) type = Type.PEDESTRIAN;
 							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
 							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
 							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;

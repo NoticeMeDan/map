@@ -66,6 +66,7 @@ public class OsmElementProperty {
 		typeColors.put(Type.FOOTPATH, new Color(238,229,217));
 		typeColors.put(Type.FOOTWAY, new Color(238,229,217));
 		typeColors.put(Type.PATH, new Color(238,229,217));
+		typeColors.put(Type.PEDESTRIAN, new Color(238,229,217));
 		typeColors.put(Type.TRACK, new Color(238, 229, 217));
 		typeColors.put(Type.SERVICE, new Color(212,203,191));
 		typeColors.put(Type.UNCLASSIFIED, new Color(212,203,191));

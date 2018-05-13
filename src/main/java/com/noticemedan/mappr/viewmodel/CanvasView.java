@@ -182,8 +182,10 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.SAND, getLowLevelStroke());
 		paintByType(result, Type.RAIL, new BasicStroke(0.00006f));
 		paintByType(result, Type.SERVICE, new BasicStroke(0.0001f));
+		paintByType(result, Type.UNCLASSIFIED, new BasicStroke(0.0001f));
 		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00007f));
 		paintByType(result, Type.PATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.PEDESTRIAN, new BasicStroke(0.0001f));
 		paintByType(result, Type.TRACK, new BasicStroke(0.00007f));
 		paintByType(result, Type.CYCLEWAY, new BasicStroke(0.00008f));
 		paintByType(result, Type.RUNWAY, new BasicStroke(0.002f));
@@ -280,8 +282,8 @@ public class CanvasView extends JComponent {
     }
 
     public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
-		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL));
+		currentNN = this.domain.doNearestNeighborNewRangeSearch(queryPoint, TravelType.ALL);
 		repaint();
 	}
 

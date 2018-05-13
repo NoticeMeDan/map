@@ -9,6 +9,7 @@ public enum Type {
 	TERTIARY,
 	FOOTWAY,
 	FOOTPATH,
+	PEDESTRIAN,
 	CYCLEWAY,
 	TRACK,
 	SERVICE,

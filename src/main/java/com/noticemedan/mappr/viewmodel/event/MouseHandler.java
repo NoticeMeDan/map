@@ -58,7 +58,6 @@ public class MouseHandler extends MouseAdapter {
 		canvas.logNearestNeighbor(currentHoverCoordinate);
 		mainViewController.updateScalaBar();
 		mainViewController.updateCurrentHoveredRoad(currentHoverCoordinate);
-		log.info("" + Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform()));
 	}
 
     @Override

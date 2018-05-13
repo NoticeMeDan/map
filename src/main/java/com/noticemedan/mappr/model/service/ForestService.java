@@ -10,7 +10,9 @@ import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.awt.geom.PathIterator;
+import java.util.ArrayList;
 
 @Slf4j
 public class ForestService implements ForestInterface {
@@ -18,70 +20,108 @@ public class ForestService implements ForestInterface {
 	@Getter
 	private Vector<Element> coastlines;
 	private Vector<Element> currentRangeSearch;
+	private int N = 5;
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
-		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
 		this.coastlines = coastlineElements;
-		Element[][] elementArray = new Element[5][];
+		sortElementsIntoZoomLevels(elements);
+	}
 
-		Vector<Element> zoom0 = Vector.empty();
-		Vector<Element> zoom1 = Vector.empty();
-		Vector<Element> zoom2 = Vector.empty();
-		Vector<Element> zoom3 = Vector.empty();
-		Vector<Element> zoom4 = Vector.empty();
+	private void sortElementsIntoZoomLevels(Vector<Element> elements) {
+		ArrayList<ArrayList<Element>> kdTreeLevels = new ArrayList<>();
+		for (int i = 0; i < N; i++) kdTreeLevels.add(new ArrayList<>());
 
-		for (Element osmElement : elements) {
-			switch (osmElement.getType()) {
-				case MOTORWAY:
-					zoom0 = zoom0.append(osmElement);
-					break;
-				case PRIMARY:
-				case TRUNK:
-					zoom1 = zoom1.append(osmElement);
-					break;
-				case SECONDARY:
-				case TERTIARY:
-					zoom2 = zoom2.append(osmElement);
-					break;
-				case WATER:
-				case GRASSLAND:
-				case HEATH:
-				case PARK:
-				case ROAD:
-				case FOOTWAY:
-				case FOOTPATH:
-				case PATH:
-				case RAIL:
-				case FOREST:
-				case AERODROME:
-				case TAXIWAY:
-				case RUNWAY:
-				case RESIDENTIAL:
-				case CYCLEWAY:
-				case UNCLASSIFIED:
-				case TRACK:
-					zoom3 = zoom3.append(osmElement);
-					break;
-				case BUILDING:
-				case SERVICE:
-				case PLAYGROUND:
-					zoom4 = zoom4.append(osmElement);
-					break;
-				default:
-					break;
+		for (Element element : elements) {
+			if (element.isRoad()) {
+				ArrayList<Element> identicalRoads = determineRoadMultiplicity(element);
+				int zoomLevel = determineElementZoomLevelPosition(element);
+				if (zoomLevel > -1) for(Element road : identicalRoads) kdTreeLevels.get(zoomLevel).add(road);
+			} else {
+				int zoomLevel = determineElementZoomLevelPosition(element);
+				if (zoomLevel > -1) kdTreeLevels.get(determineElementZoomLevelPosition(element)).add(element);
 			}
 		}
+		constructKdTrees(kdTreeLevels);
+	}
 
-		elementArray[0] = zoom0.toJavaList().toArray(new Element[0]);
-		elementArray[1] = zoom1.toJavaList().toArray(new Element[0]);
-		elementArray[2] = zoom2.toJavaList().toArray(new Element[0]);
-		elementArray[3] = zoom3.toJavaList().toArray(new Element[0]);
-		elementArray[4] = zoom4.toJavaList().toArray(new Element[0]);
+	public int determineElementZoomLevelPosition(Element element) {
+		switch (element.getType()) {
+			case MOTORWAY:
+			case PRIMARY:
+			case TRUNK:
+			case SECONDARY:
+				return 0;
+			case TERTIARY:
+				return 1;
 
-		this.trees = new KdTree[elementArray.length];
-		for (int i = 0; i < trees.length; i++) {
-			this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
+				//return 2;
+			case GRASSLAND:
+			case FOREST:
+			case WATER:
+			case HEATH:
+			case PARK:
+			case ROAD:
+			case RAIL:
+			case AERODROME:
+			case TAXIWAY:
+			case RUNWAY:
+			case RESIDENTIAL:
+			case CYCLEWAY:
+			case UNCLASSIFIED:
+				return 3;
+			case PATH:
+			case TRACK:
+			case BUILDING:
+			case SERVICE:
+			case PLAYGROUND:
+			case FOOTWAY:
+			case FOOTPATH:
+			case PEDESTRIAN:
+				return 4;
+			default:
+				break;
 		}
+
+		return -1; //Don't put element anywhere, since it's not recognized.
+	}
+
+	private ArrayList<Element> determineRoadMultiplicity(Element road) {
+		ArrayList<Element> identicalRoads =  new ArrayList<>();
+
+		Rectangle roadBounds = road.getShape().getBounds();
+		double roadBoundsEuclidianLength =
+				Coordinate.euclidianDistance(
+						new Coordinate(roadBounds.getX(), roadBounds.getY()),
+						new Coordinate(roadBounds.getX() + roadBounds.getWidth(), roadBounds.getY() + roadBounds.getHeight()));
+
+		if (roadBoundsEuclidianLength > 0.03) identicalRoads.addAll(closeElements(road, 20));
+		return identicalRoads;
+	}
+
+	private ArrayList<Element> closeElements(Element element, int j) {
+		ArrayList<Element> clonedElements =  new ArrayList<>();
+		int i = 0;
+		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
+			if (i % j == 0) {
+				double[] currentShapePointCoordinateArray = new double[2];
+				pi.currentSegment(currentShapePointCoordinateArray); // Inserts current coordinates into currentShapePointCoordinateArray;
+				Coordinate currentShapePointCoordinate = new Coordinate(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
+				Element clone = Element.cloneElement(element);
+				clone.setAvgPoint(currentShapePointCoordinate);
+				clone.setShape(element.getShape());
+				clonedElements.add(clone);
+			}
+			i++;
+		}
+		return clonedElements;
+	}
+
+	private void constructKdTrees(ArrayList<ArrayList<Element>> kdTreeLevels) {
+		Element[][] elementArray = new Element[5][];
+		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
+		for (int i = 0; i < N; i++ ) elementArray[i] = kdTreeLevels.get(i).toArray(new Element[0]);
+		this.trees = new KdTree[N];
+		for (int i = 0; i < N; i++) this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
 	}
 
 	@Override

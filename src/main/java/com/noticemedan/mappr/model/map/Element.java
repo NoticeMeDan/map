@@ -53,6 +53,7 @@ public class Element implements Comparable<Element>, Serializable {
 				type == Type.TERTIARY ||
 				type == Type.FOOTWAY ||
 				type == Type.FOOTPATH ||
+				type == Type.PEDESTRIAN ||
 				type == Type.CYCLEWAY ||
 				type == Type.TRACK ||
 				type == Type.SERVICE ||
@@ -91,6 +92,7 @@ public class Element implements Comparable<Element>, Serializable {
 				type == Type.TERTIARY ||
 				type == Type.FOOTWAY ||
 				type == Type.FOOTPATH ||
+				type == Type.PEDESTRIAN ||
 				type == Type.CYCLEWAY ||
 				type == Type.TRACK ||
 				type == Type.SERVICE ||
