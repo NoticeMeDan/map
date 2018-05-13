@@ -27,6 +27,7 @@ public class MenuBarController {
 	@FXML MenuItem showColorBlindModeMenuItem;
 	@FXML MenuItem showStandardColorMenuItem;
 	@FXML MenuItem showMapMenuItem;
+	@FXML MenuItem loadFromOsmMenuItem;
 
 	@Setter
 	MainViewController mainViewController;
@@ -35,6 +36,11 @@ public class MenuBarController {
 	private boolean showReversedBorders = false;
 	private boolean showDijkstra = false;
 	private boolean showMapPane = false;
+
+	private DomainFacade domain;
+
+	@Inject
+	public MenuBarController(DomainFacade domainFacade) { this.domain = domainFacade; }
 
 	public void initialize() {
 		eventListeners();
@@ -48,6 +54,7 @@ public class MenuBarController {
 		showColorBlindModeMenuItem.setOnAction(event -> colorProfile("showColorBlindModeMenuItem"));
 		showStandardColorMenuItem.setOnAction(event -> colorProfile("standard"));
 		showMapMenuItem.setOnAction(event -> toggleMapPane());
+		loadFromOsmMenuItem.setOnAction(event -> loadFromOsm());
 	}
 
 	private void colorProfile(String colorProfile) {
@@ -97,5 +104,18 @@ public class MenuBarController {
 		this.showMapPane = !this.showMapPane;
 		mainViewController.getMapPaneController().openMapPane();
 		mainViewController.pushCanvas();
+	}
+
+	private void loadFromOsm() {
+		Stage stage = (Stage) this.menuBar.getScene().getWindow();
+		FilePicker picker = new FilePicker(new FileChooser
+				.ExtensionFilter("OSM Filer (*.osm or *.zip)", "*.osm", "*.zip"));
+
+		Option<Path> path = picker.getPath(stage);
+		if (!path.isEmpty()) {
+			this.domain.loadMapFromOsm(path.get());
+			this.mainViewController.centerViewport();
+			MainViewController.getCanvas().repaint();
+		}
 	}
 }

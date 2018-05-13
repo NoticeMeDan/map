@@ -210,4 +210,17 @@ public class DomainFacade {
 	}
 
 	/* SECTION END: .map HANDLING */
+	/* SECTION START: LOAD FROM OSM HANDLING */
+
+	public Option<Path> loadMapFromOsm(Path path) {
+		try {
+			this.initialize(new OsmDao().read(path));
+			return Option.of(path);
+		} catch (IOException e) {
+			log.error("An error occurred while loading from Osm: ", e);
+			return Option.none();
+		}
+	}
+
+	/* SECTION END: LOAD FROM OSM HANDLING */
 }

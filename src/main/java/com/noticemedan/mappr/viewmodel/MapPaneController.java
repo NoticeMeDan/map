@@ -126,7 +126,7 @@ public class MapPaneController {
 	private void createMapFromOsm(ActionEvent event) {
 		Stage stage = (Stage) this.mapPane.getScene().getWindow();
 		FilePicker picker = new FilePicker(new FileChooser
-				.ExtensionFilter("OSM Files (*.osm or *.zip)", "*.osm", "*.zip"));
+				.ExtensionFilter("OSM Filer (*.osm or *.zip)", "*.osm", "*.zip"));
 
 		Option<Path> path = picker.getPath(stage);
 		if (!path.isEmpty()) {
