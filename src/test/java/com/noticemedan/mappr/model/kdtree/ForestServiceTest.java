@@ -14,7 +14,7 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class ForestServiceTest {
 
-	private ForestService smallForest;
+	/*private ForestService smallForest;
 	private Vector<Element> ve = Vector.empty();
 	private Vector<Element> cve = Vector.empty();
 
@@ -95,5 +95,5 @@ public class ForestServiceTest {
 		assertEquals(results.get(2).getType(), ROAD);
 		assertEquals(results.get(2).getAvgPoint().getX(), 7.0);
 		assertEquals(results.get(2).getAvgPoint().getY(), 2.0);
-	}
+	}*/
 }
