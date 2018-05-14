@@ -1,5 +1,7 @@
 package com.noticemedan.mappr.view;
 
+import com.noticemedan.mappr.App;
+import javafx.application.Application;
 import javafx.application.Preloader;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
@@ -33,9 +35,8 @@ public class AppPreloader extends Preloader {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		System.out.println("Preloader started");
 		this.stage = primaryStage;
-		System.out.println(Thread.currentThread());
-
 		this.stage.initStyle(StageStyle.TRANSPARENT);
 		stage.setScene(createPreloaderScene());
 		stage.show();

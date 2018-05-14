@@ -23,8 +23,7 @@ public class App extends Application {
 	}
 
     @Override
-    public void start(Stage primaryStage) {
-		System.out.println("Does start call?");
+    public void start(Stage primaryStage) throws Exception {
 		notifyPreloader(new Preloader.StateChangeNotification(Preloader.StateChangeNotification.Type.BEFORE_START));
 		mainViewController.setStage(primaryStage);
 		mainViewController.configureStage();
@@ -33,7 +32,6 @@ public class App extends Application {
     @Override
 	public void init() throws Exception {
 		notifyPreloader(new Preloader.StateChangeNotification(Preloader.StateChangeNotification.Type.BEFORE_LOAD));
-		System.out.println("Does init call?");
 		loader = new FXMLLoader();
 		loader.setLocation(App.class.getResource("/fxml/MainView.fxml"));
 		loader.setControllerFactory(injector::getInstance);
