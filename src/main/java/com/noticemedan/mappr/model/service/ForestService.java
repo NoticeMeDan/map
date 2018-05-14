@@ -112,9 +112,7 @@ public class ForestService implements ForestInterface {
 		int[] maxNumberOfElementsAtLeaf = new int[] {10000, 10000, 10000, 10000, 10000};
 		for (int i = 0; i < N; i++ ) elementArray[i] = kdTreeLevels.get(i).toArray(new Element[0]);
 		this.trees = new KdTree[N];
-		Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i < N; i++) this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
-		System.out.println(stopwatch.elapsedTime());
 	}
 
 	@Override
