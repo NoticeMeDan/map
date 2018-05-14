@@ -28,7 +28,7 @@ public class NetworkParser {
 				PathNode to = createPathNode(pathCoords[1], pathCoords[2],e.getMaxspeed());
 				if (from == null) from = createPathNode(pathCoords[1],pathCoords[2],e.getMaxspeed());
 				else {
-					network.addPath(from, to, this.getTravelType(e));
+					network.addPath(from, to, this.getTravelType(e), e.getName());
 					from = to;
 				}
 			}

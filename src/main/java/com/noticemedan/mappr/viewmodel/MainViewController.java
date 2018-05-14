@@ -185,7 +185,7 @@ public class MainViewController {
 		Point2D scalaBarSecondPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(130,0), canvas.getTransform());
 		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLatToLat(scalaBarFirstPoint.getY()));
 		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLatToLat(scalaBarSecondPoint.getY()));
-		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378.137),2)));
+		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378137),2)));
 	}
 
 	public void updateCurrentHoveredRoad(Coordinate queryPoint) {
