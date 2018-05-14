@@ -1,6 +1,7 @@
 package com.noticemedan.mappr.model.util;
 
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.awt.geom.AffineTransform;
@@ -8,15 +9,10 @@ import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
 public class Coordinate extends Point2D implements Serializable {
 	private double x; // lon
 	private double y; // lat
-
-	// TODO @Magnus why even have this constructor? Can't we just call its parent constructur?
-	public Coordinate(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
 
 	@Override
 	public void setLocation(double x, double y) {
