@@ -7,7 +7,6 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.ElementTransform;
 import com.noticemedan.mappr.model.util.Rect;
-import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 

@@ -133,7 +133,7 @@ public class MapPaneController {
 			new InfoBox("Vi danner kortet i baggrunden. Du vil få besked når det er færdigt.").show();
 			this.mainViewController.toggleLoadingMessage();
 			InfoBox onComplete = new InfoBox("Kortet er nu oprettet, og du har muligheden for at tilgå det fra menuen.");
-			InfoBox onFailed = new InfoBox("Der opstad en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
+			InfoBox onFailed = new InfoBox("Der opstod en fejl under oprettelsen af kortet. Tilkald venligst dine nærmeste chimpanser.");
 			domain.buildMapFromOsmPath(path.get(), x -> {
 				onComplete.show();
 				this.readFiles();
