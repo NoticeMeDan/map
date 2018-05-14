@@ -40,6 +40,7 @@ public class CanvasView extends JComponent {
 	@Setter
 	private Point2D pointerPosition;
 	private BufferedImage pointer;
+	private BufferedImage pointOfinterest;
 
     //Performance test fields
 	public double timeDraw;
@@ -74,6 +75,7 @@ public class CanvasView extends JComponent {
 		OsmElementProperty.standardColor();
 		try {
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
+			this.pointOfinterest = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/point-of-interest.png").toURI())).get();
       		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
       		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
 		} catch (URISyntaxException e) {
@@ -425,6 +427,10 @@ public class CanvasView extends JComponent {
 
 	private void drawPointer() {
 		drawImage(this.pointer,this.pointerPosition,0.00005,false);
+	}
+
+	private void drawFavoritePoints() {
+
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
