@@ -54,7 +54,7 @@ public class DomainFacade {
 	private final Path MAPPR_DIR = Paths.get(System.getProperty("user.home"), "/mappr/");
 
 	public DomainFacade() {
-		Try.of(() -> JarHelper.resourceToPath(DomainFacade.class.getResource("/default.map")))
+		Try.of(() -> JarHelper.resourceToPath(DomainFacade.class.getResource("/default2.map")))
 				.mapTry(new MapDao()::read)
 				.onSuccess(this::initialize)
 				.onFailure(e -> log.error("An error occurred while initializing program: ", e));
