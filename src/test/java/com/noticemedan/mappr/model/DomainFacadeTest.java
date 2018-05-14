@@ -1,14 +1,9 @@
 package com.noticemedan.mappr.model;
 
-import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import static org.testng.AssertJUnit.assertEquals;
 
 public class DomainFacadeTest {
 
@@ -28,11 +23,5 @@ public class DomainFacadeTest {
 		this.travelType = TravelType.ALL;
 		this.zoom = 0;
 	}
-
-	@Test
-	public void nearestNeighBor() {
-		Element e = this.domain.doNearestNeighborSearch(queryPoint, zoom);
-		assertEquals(e.getMaxspeed(), 80);
-		assertEquals(e.getType(), Type.WATER);
-	}
+	
 }
