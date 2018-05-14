@@ -2,6 +2,7 @@ package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.util.IndexMinPQ;
 import io.vavr.collection.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 
@@ -14,6 +15,7 @@ import java.nio.file.Path;
  *
  * @author Simon, Magnus
  */
+@Slf4j
 public class Dijkstra {
 	private double[] distTo;
 	private PathEdge[] edgeTo;
@@ -46,7 +48,7 @@ public class Dijkstra {
 	private void relax(PathEdge e) {
 		int vId = e.getV().getId();
 		int wId = e.getW().getId();
-		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight(); // <- This one seems to cause trouble
+		double weight = (this.travelType.equals(TravelType.CAR)) ? (e.getWeight() / e.getSpeedLimit()) : e.getWeight();
 		if (distTo[wId] > distTo[vId] + weight) {
 			distTo[wId] = distTo[vId] + weight;
 			edgeTo[wId] = e;
@@ -61,17 +63,6 @@ public class Dijkstra {
 
 	private void validatePathNode(int index) {
 		if (index < 0 || index > distTo.length) throw new ArrayIndexOutOfBoundsException("PathNode is out of bound");
-	}
-
-	/**
-	 * Returns the length of the distance between the source node s and node v
-	 *
-	 * @param v destination node
-	 * @return length as double value
-	 */
-	public double pathDistance(PathNode v) {
-		validatePathNode(v.getId());
-		return distTo[v.getId()];
 	}
 
 	/**
@@ -96,7 +87,7 @@ public class Dijkstra {
 		if (!pathExists(v)) return Vector.empty();
 		Vector<PathEdge> path = Vector.empty();
 		for (PathEdge e = edgeTo[v.getId()]; e != null; e = edgeTo[e.getV().getId()]) {
-			path = path.append(e);
+			path = path.prepend(e);
 		}
 		return path;
 	}
