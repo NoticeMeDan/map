@@ -7,10 +7,16 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.ElementTransform;
 import com.noticemedan.mappr.model.util.Rect;
+import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.geom.PathIterator;
+
+/**
+ *	Class holds all map elements in kd trees and accept queries to return map elements
+ *	using different search criteria.
+ */
 
 @Slf4j
 public class ForestService implements ForestInterface {
@@ -62,7 +68,7 @@ public class ForestService implements ForestInterface {
 		constructKdTrees(kdTreeLevels);
 	}
 
-	public int determineElementZoomLevelPosition(Element element) {
+	private int determineElementZoomLevelPosition(Element element) {
 		switch (element.getType()) {
 			case MOTORWAY:
 			case PRIMARY:
@@ -140,12 +146,6 @@ public class ForestService implements ForestInterface {
 		return nearestNeighbor;
 	}
 
-	/**
-	 * Brute force nearest neighbor search
-	 * Is much more accurate but also slower than other nearest neighbor search
-	 * @param queryPoint			The point to search through nearest neighbor.
-	 * @return 						Nearest Element to input point according to travelType.
-	 */
 	public Element nearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) {
 		Element currentNN = new Element();
 		Coordinate currentNNCoordinate = new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);

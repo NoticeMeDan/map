@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.model.util;
 
+import com.noticemedan.mappr.view.util.TextFormatter;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;

@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.util.OsmElementProperty;
+import com.noticemedan.mappr.view.util.OsmElementProperty;
 import com.noticemedan.mappr.view.util.FilePicker;
 import io.vavr.control.Option;
 import javafx.fxml.FXML;

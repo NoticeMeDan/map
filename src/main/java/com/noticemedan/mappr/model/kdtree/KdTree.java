@@ -62,8 +62,7 @@ public class KdTree {
 		// Handle small array cases:
 		if (N == 0) throw new RuntimeException("Zero element array passed as parameter.");
 		if (N == 1) throw new RuntimeException("One element array cannot be split further.");
-		if (N == 2)
-			return Tuple.of(new Element[]{elements[0]}, new Element[]{elements[1]}); //Two 1 element arrays
+		if (N == 2) return Tuple.of(new Element[]{elements[0]}, new Element[]{elements[1]}); //Two 1 element arrays
 
 		//Arrange elements array such that median value is in middle of array.
 		Quick.select(elements, N / 2);
@@ -138,8 +137,7 @@ public class KdTree {
 
 	private Tuple2<Rect, Rect> createRegions(KdNode parent, Rect region) {
 		boolean depthEven = parent.getDepth() % 2 == 0;
-		if (depthEven)
-			return Tuple.of(
+		if (depthEven) return Tuple.of(
 					new Rect( // Define left region (A)
 							region.getX1(),
 							region.getY1(),

@@ -71,12 +71,53 @@ public class DomainFacade {
 
 	/* SECTION START: VIEWPORT DATA */
 
+	/**
+	 * @return 					The boundaries of current loaded map.
+	 */
 	public Boundaries getBoundaries() { return this.mapData.getBoundaries(); }
-	// Viewport Data
+
+	/**
+	 * @param zoomLevel			The zoom level of the map.
+	 * @return 					Coastline elements in a resolution according to the input zoom level.
+	 */
 	public Vector<Element> getCoastLines(double zoomLevel) { return this.forestService.getCoastlines(zoomLevel); }
-	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
+
+	/**
+	 * @param area				The area (defined as a rectangle) used to search for elements in forestService
+	 * @param zoomLevel			The zoom level of the map
+	 * @return					The elements positioned at the zoom level within the area.
+	 */
+	public Vector<Element> doRangeSearch(Rect area, double zoomLevel) { return this.forestService.rangeSearch(area, zoomLevel); }
+
+	/**
+	 * Uses nearest neighbor algorithm as described by the slides provided by Rasmus Pagh (1).
+	 * (1) Pagh R. (2018). Lecture 5: Spatial Data Structures. (Slides found on Learn-IT).
+	 * @param queryPoint		The point of interest to find nearest neighbor
+	 * @param zoomLevel			The zoom level of the map
+	 * @return					The nearest Element (neighbor) to the point of interest.
+	 * 							Can be all types of elements stored in forestService.
+	 */
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
+
+	/**
+	 * A brute-force nearest neighbor algorithm that examines all elements currently in the map,
+	 * by examining each element's nodes.
+	 * @param queryPoint		The point of interest to find nearest neighbor
+	 * @param travelType        The type of road element of interest (e.g. CAR to return elements that a car can drive on)
+	 * @return					The nearest Element (neighbor) to the point of interest.
+	 * 							The element will be a type of road.
+	 */
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
+
+	/**
+	 * A nearest neighbor algorithm that efficiently uses multiple expanding range searches to find
+	 * nearest neighbor of interest.
+	 * @param queryPoint		The point of interest to find nearest neighbor
+	 * @param travelType        The type of road element of interest (e.g. CAR to return elements that a car can drive on)
+	 * @param zoomLevel			The zoom level of the map
+	 * @return					The nearest Element (neighbor) to the point of interest.
+	 * 							The element will be a type of road.
+	 */
 	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, TravelType travelType, double zoomLevel) {return this.forestService.nearestNeighborUsingRangeSearch(queryPoint, travelType, zoomLevel); }
 
 	/* SECTION END: VIEWPORT DATA */
@@ -84,8 +125,8 @@ public class DomainFacade {
 
 	/**
 	 * Query the AddressSearchService for matching addresses
-	 * @param search The Address to query for
-	 * @return List of Address strings matching the query
+	 * @param search 			The Address to query for
+	 * @return 					List of Address strings matching the query
 	 */
 	public List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)

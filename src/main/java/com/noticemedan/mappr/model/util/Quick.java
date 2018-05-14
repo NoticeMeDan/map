@@ -2,8 +2,15 @@ package com.noticemedan.mappr.model.util;
 
 import java.util.Random;
 
-public class Quick {
+/**
+ * A slightly modified version of the Quick class by Sedgewick & Wayne.
+ *
+ * Source:
+ * Sedgewick & Wayne (2011). Quick.java. Retrieved at:
+ * https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Quick.java.html
+ */
 
+public class Quick {
 	private static Random random = new Random();
 
 	private static int partition(Comparable[] a, int lo, int hi) {  // Partition into a[lo..i-1], a[i], a[i+1..hi].
@@ -20,7 +27,7 @@ public class Quick {
 	}
 
 	public static Comparable select(Comparable[] a, int k) {
-		//shuffle(a); //TODO Should we have shuffle? 2x loading time... is it necessary for efficient quickselect?
+		// shuffle(a);
 		int lo = 0, hi = a.length - 1;
 		while (hi > lo) {
 			int j = partition(a, lo, hi);
