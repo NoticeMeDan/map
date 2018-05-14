@@ -2,7 +2,7 @@ package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.NavigationAction;
 import com.noticemedan.mappr.model.directions.NavigationInstruction;
-import com.noticemedan.mappr.model.util.TextFormatter;
+import com.noticemedan.mappr.view.util.TextFormatter;
 import io.vavr.control.Try;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

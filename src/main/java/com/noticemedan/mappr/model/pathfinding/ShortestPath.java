@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.model.pathfinding;
 
 import com.noticemedan.mappr.model.directions.NavigationInstruction;
-import com.noticemedan.mappr.model.util.TextFormatter;
+import com.noticemedan.mappr.view.util.TextFormatter;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 

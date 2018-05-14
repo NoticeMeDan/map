@@ -4,7 +4,7 @@ import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.model.util.OsmElementProperty;
+import com.noticemedan.mappr.view.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import com.noticemedan.mappr.viewmodel.CanvasController;

@@ -1,4 +1,4 @@
-package com.noticemedan.mappr.model.util;
+package com.noticemedan.mappr.view.util;
 
 import com.noticemedan.mappr.model.map.Type;
 import lombok.NoArgsConstructor;

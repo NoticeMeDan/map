@@ -4,9 +4,8 @@ import com.noticemedan.mappr.App;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
-import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.model.util.TextFormatter;
+import com.noticemedan.mappr.view.util.TextFormatter;
 import com.noticemedan.mappr.view.CanvasView;
 import com.noticemedan.mappr.viewmodel.event.ClickDragHandler;
 import com.noticemedan.mappr.viewmodel.event.KeyboardHandler;
@@ -37,7 +36,6 @@ import java.awt.geom.Point2D;
 public class MainViewController {
 	@Getter
 	private static CanvasView canvas;
-	private FavoritePoiManager favoritePoiManager;
 
 	@FXML
 	AnchorPane mainView;

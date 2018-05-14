@@ -4,6 +4,7 @@ import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import io.vavr.Tuple2;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.BeforeTest;
@@ -26,6 +27,20 @@ public class KDTreeTest {
 	KdTree smallKdTree;
 
 	KdTree randomBornHolmTree;
+
+	/* For white box testing: */
+	Element element1;
+	Element element2;
+	Element element3;
+	Element element4;
+	Element element5;
+
+	Element[] elementsA;
+	Element[] elementsB;
+	Element[] elementsC;
+	Element[] elementsD;
+	Element[] elementsE;
+	Element[] elementsF;
 
 	@BeforeTest
 	public void buildSmallKDTree() {
@@ -97,7 +112,7 @@ public class KDTreeTest {
 	@Ignore @Test //Usually takes 25 seconds
 	public void testVeryLargeKDTreeSpeed() { //10E7 OsmElements, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
-		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(10000000), 1000);
+		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(27000000), 1000);
 		log.info(stopwatch.toString());
 		assertTrue(stopwatch.elapsedTime() < 30);
 	}
@@ -250,4 +265,104 @@ public class KDTreeTest {
 		assertEquals(2.0, nearestNeighbor.getAvgPoint().getX());
 		assertEquals(3.0, nearestNeighbor.getAvgPoint().getY());
 	}
+
+	/* To run these test set modifier to public static for splitArrayTestDatasetA() */
+	/* @BeforeTest
+	public void splitArrayDataSets() {
+		// Create elements
+		element1 = new Element();
+		element1.setAvgPoint(new Coordinate(1,1));
+
+		element2 = new Element();
+		element2.setAvgPoint(new Coordinate(2,6));
+
+		element3 = new Element();
+		element3.setAvgPoint(new Coordinate(8,7));
+
+		element4 = new Element();
+		element4.setAvgPoint(new Coordinate(3,4));
+
+		element5 = new Element();
+		element5.setAvgPoint(new Coordinate(9,3));
+
+		elementsA = new Element[0];
+
+		//Insert elements into array
+		elementsB = new Element[1];
+		elementsB[0] = element1;
+
+		elementsC = new Element[2];
+		elementsC[0] = element1;
+		elementsC[1] = element2;
+
+		elementsD = new Element[3];
+		elementsD[0] = element1;
+		elementsD[1] = element2;
+		elementsD[2] = element3;
+
+		elementsE = new Element[4];
+		elementsE[0] = element1;
+		elementsE[1] = element2;
+		elementsE[2] = element3;
+		elementsE[3] = element4;
+
+		elementsF = new Element[5];
+		elementsF[0] = element1;
+		elementsF[1] = element2;
+		elementsF[2] = element3;
+		elementsF[3] = element4;
+		elementsF[4] = element5;
+	}
+
+	@Test(expectedExceptions = RuntimeException.class, groups = {"splitArrayWhitebox"})
+	public void splitArrayTestDatasetA() {
+		KdTree.splitPointArrayByMedian(elementsA);
+	}
+
+	@Test(expectedExceptions = RuntimeException.class)
+	public void splitArrayTestDatasetB() {
+		KdTree.splitPointArrayByMedian(elementsB);
+	}
+
+	@Test
+	public void splitArrayTestDatasetC() {
+		Tuple2<Element[], Element[]> splitElement = KdTree.splitPointArrayByMedian(elementsC);
+		assertEquals(splitElement._1.length, 1);
+		assertEquals(splitElement._2.length, 1);
+		assertEquals(splitElement._1[0].getAvgPoint().getX(), 1.0);
+		assertEquals(splitElement._2[0].getAvgPoint().getX(), 2.0);
+	}
+
+	@Test
+	public void splitArrayTestDatasetD() {
+		Tuple2<Element[], Element[]> splitElement = KdTree.splitPointArrayByMedian(elementsD);
+		assertEquals(splitElement._1.length, 2);
+		assertEquals(splitElement._2.length, 1);
+		assertEquals(splitElement._1[0].getAvgPoint().getX(), 1.0);
+		assertEquals(splitElement._1[1].getAvgPoint().getX(), 2.0);
+		assertEquals(splitElement._2[0].getAvgPoint().getX(), 8.0);
+	}
+
+	@Test
+	public void splitArrayTestDatasetE() {
+		Tuple2<Element[], Element[]> splitElement = KdTree.splitPointArrayByMedian(elementsE);
+		assertEquals(splitElement._1.length, 3);
+		assertEquals(splitElement._2.length, 1);
+		assertEquals(splitElement._1[0].getAvgPoint().getX(), 1.0);
+		assertEquals(splitElement._1[1].getAvgPoint().getX(), 2.0);
+		assertEquals(splitElement._1[2].getAvgPoint().getX(), 3.0);
+		assertEquals(splitElement._2[0].getAvgPoint().getX(), 8.0);
+	}
+
+	@Test
+	public void splitArrayTestDatasetF() {
+		Tuple2<Element[], Element[]> splitElement = KdTree.splitPointArrayByMedian(elementsF);
+		assertEquals(splitElement._1.length, 3);
+		assertEquals(splitElement._2.length, 2);
+		assertEquals(splitElement._1[0].getAvgPoint().getX(), 1.0);
+		assertEquals(splitElement._1[1].getAvgPoint().getX(), 2.0);
+		assertEquals(splitElement._1[2].getAvgPoint().getX(), 3.0);
+		assertEquals(splitElement._2[0].getAvgPoint().getX(), 8.0);
+		assertEquals(splitElement._2[1].getAvgPoint().getX(), 9.0);
+	}*/
 }

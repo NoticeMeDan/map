@@ -6,6 +6,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * A Rectangle class.
+ */
+
 @Data
 @AllArgsConstructor
 public class Rect implements Serializable {
@@ -37,11 +41,5 @@ public class Rect implements Serializable {
 		boolean part3 = rect.getY1() <= osmElement.getAvgPoint().getY();
 		boolean part4 = osmElement.getAvgPoint().getY() <= rect.getY2();
 		return part1 && part2 && part3 && part4;
-	}
-
-	public Coordinate getAveragePoint() {
-		double avgX = (x2 + x1) / 2.0;
-		double avgY = (y2 + y1) / 2.0;
-		return new Coordinate(avgX, avgY);
 	}
 }

@@ -1,4 +1,4 @@
-package com.noticemedan.mappr.model.util;
+package com.noticemedan.mappr.view.util;
 
 public class TextFormatter {
 	public static String formatDistance(Double distance, int decimals) {
