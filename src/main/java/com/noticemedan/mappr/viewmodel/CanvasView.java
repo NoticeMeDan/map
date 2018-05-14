@@ -5,10 +5,12 @@ import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
+import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import io.vavr.collection.List;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,12 +69,14 @@ public class CanvasView extends JComponent {
 
 	private boolean showPath = false;
 	private Vector<Shape> shortestPath;
+	private List<FavoritePoi> favoritePoints;
 
 	public CanvasView(DomainFacade domainFacade) {
 		this.domain = domainFacade;
 		this.boundaries = this.domain.getBoundaries();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		OsmElementProperty.standardColor();
+		this.favoritePoints = domain.getAllPoi();
 		try {
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
 			this.pointOfinterest = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/point-of-interest.png").toURI())).get();
@@ -431,13 +435,17 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawFavoritePoints() {
-		this.domain.getAllPoi().forEach(poi -> {
+		this.favoritePoints.forEach(poi -> {
 			Coordinate c = new Coordinate(
 					poi.getCoordinate().getX(),
 					Coordinate.latToCanvasLat(poi.getCoordinate().getY())
 			);
 			drawImage(this.pointOfinterest, c, 0.00005, true);
 		});
+	}
+
+	public void updateFavorite() {
+		this.favoritePoints = domain.getAllPoi();
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
