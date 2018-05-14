@@ -5,10 +5,6 @@
 		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
 	<Menu mnemonicParsing="false" text="Vindue">
 		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis mine kort"/>
-		<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder"/>
-		<MenuItem fx:id="ShowAddressSearch" mnemonicParsing="false" text="Vis addressesøgning"/>
-		<MenuItem fx:id="ShowRoutePlanning" mnemonicParsing="false" text="Vis navigering"/>
-
 		<Menu mnemonicParsing="false" text="Farvestil">
 			<MenuItem fx:id="showStandardColorMenuItem" mnemonicParsing="false" text="Standard"/>
 			<MenuItem fx:id="showColorBlindModeMenuItem" mnemonicParsing="false" text="Farveblind"/>
@@ -16,10 +12,14 @@
 	</Menu>
 	<Menu mnemonicParsing="false" text="Udvikler">
 		<MenuItem fx:id="showFPSMenuItem" mnemonicParsing="false" text="Vis FPS"/>
-		<MenuItem mnemonicParsing="false" text="Vis KDTree linjer"/>
 		<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search"/>
 		<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
 		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis vilkårlig shortest path"/>
+		<Menu mnemonicParsing="false" text="NearestNeighbour">
+			<MenuItem fx:id="doKDTreeNN" mnemonicParsing="false" text="KDTReeNN"/>
+			<MenuItem fx:id="doBruteForceNN" mnemonicParsing="false" text="BruteForceNN"/>
+			<MenuItem fx:id="doExpandingNN" mnemonicParsing="false" text="ExpandingNN"/>
+		</Menu>
 		<MenuItem fx:id="loadFromOsmMenuItem" mnemonicParsing="false" text="Load fra OSM"/>
 	</Menu>
 </MenuBar>

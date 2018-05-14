@@ -163,10 +163,12 @@ public class OsmDao implements DataReader<MapData> {
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
 							if (attributes.getValue("v").equals("trunk")) type = Type.TRUNK;
+							if (attributes.getValue("v").equals("motorway_link")) type = Type.MOTORWAY_LINK;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
 							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
 							if (attributes.getValue("v").equals("footpath")) type = Type.FOOTPATH;
+							if (attributes.getValue("v").equals("pedestrian")) type = Type.PEDESTRIAN;
 							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
 							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
 							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;
@@ -238,7 +240,7 @@ public class OsmDao implements DataReader<MapData> {
 
 		@Override
 		public void endElement(String uri, String localName, String qName) {
-			Path2D.Double path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+			Path2D.Float path = new Path2D.Float(Path2D.WIND_EVEN_ODD, this.path2DSize);
 			this.path2DSize = 1;
 			Node node;
 			switch (qName) {
@@ -297,7 +299,7 @@ public class OsmDao implements DataReader<MapData> {
 				case "osm":
 					// convert all coastlines found to paths
 					for (Tuple2<Node, Vector<Node>> coastline : coastlines) {
-						path = new Path2D.Double();
+						path = new Path2D.Float();
 						path.setWindingRule(Path2D.WIND_EVEN_ODD);
 						Vector<Node> way = coastline._2;
 						Node key = coastline._1;

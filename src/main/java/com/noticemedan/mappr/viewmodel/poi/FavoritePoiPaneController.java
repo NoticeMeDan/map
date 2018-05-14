@@ -22,7 +22,6 @@ public class FavoritePoiPaneController {
 	@FXML ListView favoritePoiListView;
 	@Getter
 	@FXML Button favoritePoiPaneCloseButton;
-	@FXML Button navigateToFavoritePoiButton;
 	@FXML Button removeFavoritePoiButton;
 	@FXML StackPane noFavoritesYetPane;
 	@Setter
@@ -67,6 +66,8 @@ public class FavoritePoiPaneController {
 		removeFavoritePoiButton.setOnAction(event -> {
 			FavoritePoi poi = (FavoritePoi) favoritePoiListView.getSelectionModel().getSelectedItem();
 			this.domain.removePoi(poi);
+			this.mainViewController.getCanvasController().updateFavoritePoints();
+			MainViewController.getCanvas().repaint();
 			this.readPoi();
 		});
 
@@ -93,13 +94,11 @@ public class FavoritePoiPaneController {
 	}
 
 	private void disableActionMenu() {
-		navigateToFavoritePoiButton.setDisable(true);
 		removeFavoritePoiButton.setDisable(true);
 		favoritePoiListView.refresh();
 	}
 
 	private void enableActionMenu() {
-		navigateToFavoritePoiButton.setDisable(false);
 		removeFavoritePoiButton.setDisable(false);
 	}
 

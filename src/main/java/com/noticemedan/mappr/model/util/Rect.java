@@ -31,8 +31,6 @@ public class Rect implements Serializable {
 		return a <= d && b >= c;
 	}
 
-	//TODO: Not so pretty code with 'part1', 'part2'...
-	//BUG: For all negative coordinates
 	static public boolean pointInRect(Element osmElement, Rect rect) {
 		boolean part1 = rect.getX1() <= osmElement.getAvgPoint().getX();
 		boolean part2 = osmElement.getAvgPoint().getX() <= rect.getX2();

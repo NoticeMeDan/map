@@ -21,8 +21,8 @@ public class PathNode {
 	}
 
 	public Shape toShape() {
-		double size = 0.0002;
-		return new Ellipse2D.Double(this.lon - (size/2), this.lat- (size/2), size,size);
+		float size = 0.0002f;
+		return new Ellipse2D.Float((float) this.lon - (size/2), (float) this.lat- (size/2), size,size);
 	}
 
 	public String toString() {

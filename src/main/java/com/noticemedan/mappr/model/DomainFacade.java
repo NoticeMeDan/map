@@ -34,7 +34,6 @@ import org.apache.commons.io.FilenameUtils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -73,12 +72,12 @@ public class DomainFacade {
 	/* SECTION START: VIEWPORT DATA */
 
 	public Boundaries getBoundaries() { return this.mapData.getBoundaries(); }
-	public Vector<Element> getCoastLines() { return this.forestService.getCoastlines(); }
-	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
+	// Viewport Data
+	public Vector<Element> getCoastLines(double zoomLevel) { return this.forestService.getCoastlines(zoomLevel); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) { return this.forestService.nearestNeighbor(queryPoint, zoomLevel); }
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint, TravelType travelType) { return this.forestService.nearestNeighborInCurrentRangeSearch(queryPoint, travelType); }
-	public Element doNearestNeighborNewRangeSearch(Coordinate queryPoint, TravelType travelType) {return this.forestService.nearestNeighborNewRangeSearch(queryPoint, travelType); }
+	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, TravelType travelType, double zoomLevel) {return this.forestService.nearestNeighborUsingRangeSearch(queryPoint, travelType, zoomLevel); }
 
 	/* SECTION END: VIEWPORT DATA */
 	/* SECTION START: ADDRESS SEARCHING */
@@ -88,7 +87,7 @@ public class DomainFacade {
 	 * @param search The Address to query for
 	 * @return List of Address strings matching the query
 	 */
-	public io.vavr.collection.List<String> doAddressSearch(String search) {
+	public List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
 	}
@@ -218,11 +217,8 @@ public class DomainFacade {
 
 	/* SECTION END: LOAD FROM OSM HANDLING */
 	/* SECTION START: FAVORITE POI */
-
 	public List<FavoritePoi> getAllPoi() {
-		return this.mapData.getPoi() != null
-				? this.mapData.getPoi()
-				: List.empty();
+		return this.mapData.getPoi();
 	}
 
 	public List<FavoritePoi> addPoi(FavoritePoi poi) {
@@ -234,6 +230,5 @@ public class DomainFacade {
 		this.mapData.setPoi(this.mapData.getPoi().remove(poi));
 		return getAllPoi();
 	}
-
 	/* SECTION END: FAVORITE POI */
 }

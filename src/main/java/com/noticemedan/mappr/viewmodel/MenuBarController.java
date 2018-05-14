@@ -26,6 +26,9 @@ public class MenuBarController {
 	@FXML MenuItem showStandardColorMenuItem;
 	@FXML MenuItem showMapMenuItem;
 	@FXML MenuItem loadFromOsmMenuItem;
+	@FXML MenuItem doKDTreeNN;
+	@FXML MenuItem doBruteForceNN;
+	@FXML MenuItem doExpandingNN;
 
 	@Setter
 	MainViewController mainViewController;
@@ -52,6 +55,18 @@ public class MenuBarController {
 		showColorBlindModeMenuItem.setOnAction(event -> colorProfile("showColorBlindModeMenuItem"));
 		showStandardColorMenuItem.setOnAction(event -> colorProfile("standard"));
 		showMapMenuItem.setOnAction(event -> toggleMapPane());
+		doKDTreeNN.setOnAction(event -> {
+			MainViewController.getCanvas().setKdTreeNN(true);
+			MainViewController.getCanvas().setBruteforceNN(false);
+		});
+		doBruteForceNN.setOnAction(event -> {
+			MainViewController.getCanvas().setKdTreeNN(false);
+			MainViewController.getCanvas().setBruteforceNN(true);
+		});
+		doExpandingNN.setOnAction(event -> {
+			MainViewController.getCanvas().setBruteforceNN(false);
+			MainViewController.getCanvas().setKdTreeNN(false);
+		});
 		loadFromOsmMenuItem.setOnAction(event -> loadFromOsm());
 	}
 
