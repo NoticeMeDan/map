@@ -15,6 +15,11 @@
 		<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search"/>
 		<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
 		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis vilkårlig shortest path"/>
+		<Menu mnemonicParsing="false" text="NearestNeighbour">
+			<MenuItem fx:id="doKDTreeNN" mnemonicParsing="false" text="KDTReeNN"/>
+			<MenuItem fx:id="doBruteForceNN" mnemonicParsing="false" text="BruteForceNN"/>
+			<MenuItem fx:id="doExpandingNN" mnemonicParsing="false" text="ExpandingNN"/>
+		</Menu>
 		<MenuItem fx:id="loadFromOsmMenuItem" mnemonicParsing="false" text="Load fra OSM"/>
 	</Menu>
 </MenuBar>
