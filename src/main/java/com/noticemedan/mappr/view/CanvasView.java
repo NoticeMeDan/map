@@ -65,13 +65,13 @@ public class CanvasView extends JComponent {
 
 	private CanvasController canvasController;
 
-	public CanvasView(CanvasController canvasController, Boundaries boundaries, BufferedImage start, BufferedImage goal, BufferedImage pointer) {
-		this.start = start;
-		this.goal = goal;
-		this.pointer = pointer;
-		this.boundaries = boundaries;
+	public CanvasView(CanvasController canvasController) {
+		this.start = canvasController.getStart();
+		this.goal = canvasController.getGoal();
+		this.pointer = canvasController.getPointer();
+		this.boundaries = canvasController.getBoundaries();
 		this.canvasController = canvasController;
-		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		this.viewArea = viewPortCoords(new Point2D.Float(0,0), new Point2D.Float(1100, 650));
 		OsmElementProperty.standardColor();
 
 		repaint();
@@ -84,11 +84,11 @@ public class CanvasView extends JComponent {
 		Stopwatch stopwatchDraw = new Stopwatch();
 		long t1 = System.nanoTime();
 		this.viewArea = viewPortCoords(
-				new Point2D.Double(this.getX(), this.getY()),
-				new Point2D.Double(this.getX() + this.getWidth(), this.getY() + this.getHeight())
+				new Point2D.Float(this.getX(), this.getY()),
+				new Point2D.Float(this.getX() + this.getWidth(), this.getY() + this.getHeight())
 		);
 
-		this.viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+		this.viewRect = new Rectangle2D.Float(0, 0, getWidth(), getHeight());
 
 		//Paint background
 		this.g.setPaint(new Color(179, 227, 245));
@@ -101,6 +101,7 @@ public class CanvasView extends JComponent {
 		if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
+		if (this.zoomLevel > 1.5) drawFavoritePoints();
 
 		performanceTest();
 
@@ -134,7 +135,7 @@ public class CanvasView extends JComponent {
 		boolean first = true;
 		Coordinate startpoint = null;
 		for(Shape s : this.shortestPath) {
-			Line2D.Double line = (Line2D.Double) s;
+			Line2D.Float line = (Line2D.Float) s;
 			if(first) {
 				startpoint = new Coordinate(line.x1,line.y1);
 				path.moveTo(line.x1, line.y1);
@@ -308,8 +309,8 @@ public class CanvasView extends JComponent {
 
 	public Rect viewPortCoords(Point2D p1, Point2D p2) {
 		int borderW = 100;
-		Point2D p1Altered = new Point2D.Double(p1.getX() + borderW, p1.getY() + borderW);
-		Point2D p2Altered = new Point2D.Double(p2.getX() - borderW, p2.getY() - borderW);
+		Point2D p1Altered = new Point2D.Float((float) p1.getX() + borderW, (float) p1.getY() + borderW);
+		Point2D p2Altered = new Point2D.Float((float) p2.getX() - borderW, (float) p2.getY() - borderW);
 
 		double x1 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p1Altered, transform).getX() : Coordinate.viewportPointToCanvasPoint(p1, transform).getX() - 0.02;
 		double y1 = (showReversedBorders) ? Coordinate.viewportPointToCanvasPoint(p1Altered, transform).getY() : Coordinate.viewportPointToCanvasPoint(p1, transform).getY() - 0.02;
@@ -339,8 +340,8 @@ public class CanvasView extends JComponent {
 		zoom(getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
 
 		//Define upper left and lower right viewport corners screen in canvas lat/lon
-		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0, 0), transform);
-		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(0, 0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(getWidth(), getHeight()), transform);
 
 		//Calculate new upper right corner coordinates lambda and phi such that the coordinate will be centered
 		double lambda = upperLeftViewPortCorner.getX()-((lowerRightViewPortCorner.getX()-upperLeftViewPortCorner.getX())/2);
@@ -375,8 +376,8 @@ public class CanvasView extends JComponent {
 
 		centerCoordinateInCanvas(averageCoordinate);
 
-		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), transform);
-		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(0,0), transform);
+		Point2D lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(getWidth(), getHeight()), transform);
 
 		Rect currentViewRect = new Rect(
 				upperLeftViewPortCorner.getX(),
@@ -395,8 +396,8 @@ public class CanvasView extends JComponent {
 		// Zoom continuously in on the route Rectangle. If the route rectange intersects view rectangle stop zooming.
 		while (Rect.rectInRect(routeRect, currentViewRect)) {
 			zoomToCenter(1.1);
-			upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), transform);
-			lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(getWidth(), getHeight()), transform);
+			upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(0,0), transform);
+			lowerRightViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(getWidth(), getHeight()), transform);
 
 			currentViewRect = new Rect(
 					upperLeftViewPortCorner.getX(),
@@ -428,11 +429,21 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPointer() {
-		drawImage(this.pointer, this.pointerPosition,0.00008,false);
+		drawImage(this.pointer,this.pointerPosition,0.00005,false);
+	}
+
+	private void drawFavoritePoints() {
+		this.canvasController.getFavoritePoints().forEach(poi -> {
+			Coordinate c = new Coordinate(
+					poi.getCoordinate().getX(),
+					Coordinate.latToCanvasLat(poi.getCoordinate().getY())
+			);
+			drawImage(canvasController.getPointOfinterest(), c, 0.00005, true);
+		});
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
-		double scaling = (this.zoomLevel < 100) ? this.viewRect.getWidth() * size :	0.01 * size;
+		double scaling = (this.zoomLevel < 100) ? size / this.zoomLevel : size / 90;
 		double width = pointer.getWidth() * scaling;
 		double height = pointer.getHeight() * scaling;
 
