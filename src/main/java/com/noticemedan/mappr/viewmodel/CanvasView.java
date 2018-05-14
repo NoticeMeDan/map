@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel;
 
 import com.noticemedan.mappr.model.DomainFacade;
-import com.noticemedan.mappr.model.Entities;
+import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
 import com.noticemedan.mappr.model.pathfinding.TravelType;

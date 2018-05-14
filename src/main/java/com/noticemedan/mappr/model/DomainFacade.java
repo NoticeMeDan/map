@@ -71,8 +71,6 @@ public class DomainFacade {
 	/* SECTION START: VIEWPORT DATA */
 
 	public Boundaries getBoundaries() { return this.mapData.getBoundaries(); }
-	public Vector<Element> getCoastLines() { return this.forestService.getCoastlines(); }
-	public Vector<Element> doRangeSearch(Rect area) { return this.forestService.rangeSearch(area); }
 	// Viewport Data
 	public Vector<Element> getCoastLines(double zoomLevel) { return this.forestService.getCoastlines(zoomLevel); }
 	public Vector<Element> doRangeSearch(Rect area, double zoom) { return this.forestService.rangeSearch(area, zoom); }
