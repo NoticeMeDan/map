@@ -28,7 +28,7 @@ public class 	NavigationInstructionCellController {
 	}
 
 	private void initialiseCell() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/NavigationInstructionCell.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(NavigationInstructionCellController.class.getResource("/fxml/NavigationInstructionCell.fxml"));
 		fxmlLoader.setController(this);
 		Try.of(fxmlLoader::load);
 	}
