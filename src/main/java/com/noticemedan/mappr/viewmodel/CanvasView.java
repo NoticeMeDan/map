@@ -70,10 +70,12 @@ public class CanvasView extends JComponent {
 
 	private boolean showPath = false;
 	private Vector<Shape> shortestPath;
+	private List<FavoritePoi> favoritePoints;
 
 	public CanvasView(DomainFacade domainFacade) {
 		this.domain = domainFacade;
 		this.boundaries = this.domain.getBoundaries();
+		this.favoritePoints = this.domain.getAllPoi();
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		OsmElementProperty.standardColor();
 		try {
@@ -121,12 +123,12 @@ public class CanvasView extends JComponent {
 			fps = (fps + 1e9 / (t2 - t1)) / 2;
 			g.setTransform(new AffineTransform());
 			g.setColor(Color.WHITE);
-			g.fillRect(getWidth() - 85, 5, 80, 20);
+			g.fillRect(getWidth()/2 - 40, 5, 80, 20);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			g.setColor(Color.BLACK);
-			g.drawRect(getWidth() - 85, 5, 80, 20);
+			g.drawRect(getWidth()/2 - 40, 5, 80, 20);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
+			g.drawString(String.format("FPS: %.1f", fps), getWidth()/2 - 35, 20);
 		}
 		timeDraw = stopwatchDraw.elapsedTime();
     }
@@ -282,13 +284,18 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawFavoritePoints() {
-		this.domain.getAllPoi().forEach(e -> {
+		updateFavoritePoints();
+		this.favoritePoints.forEach(e -> {
 			Coordinate coordinate = new Coordinate(
 					e.getCoordinate().getX(),
 					Coordinate.latToCanvasLat(e.getCoordinate().getY())
 			);
 			drawImage(this.favorite,coordinate,0.00005,true);
 		});
+	}
+
+	public void updateFavoritePoints() {
+		this.favoritePoints = domain.getAllPoi();
 	}
 
 	private void performanceTest() {
