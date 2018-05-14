@@ -15,6 +15,7 @@ public class NavigationInstruction {
 	@Getter private Coordinate coordinate;
 
 	public String getDescription() {
+		String description = "";
 		String direction = "";
 		String move = (travelType == TravelType.WALK) ? "Gå" : "Kør";
 		if (this.type == NavigationAction.STRAIGHT) {
@@ -34,8 +35,10 @@ public class NavigationInstruction {
 		if (this.type == NavigationAction.SOUTHWEST) direction = "sydvest";
 		if (this.type == NavigationAction.UNKNOWN) direction = "?";
 
-		return (this.type == NavigationAction.DESTINATION)
-				? "Destinationen er længere nede af vejen"
-				: move + " " + direction + " ad " + road;
+		if (this.type == NavigationAction.DESTINATION) description = "Destinationen er længere nede af vejen";
+		else if (road == null) description = move + " " + direction;
+		else description = move + " " + direction + " ad " + road;
+
+		return description;
 	}
 }

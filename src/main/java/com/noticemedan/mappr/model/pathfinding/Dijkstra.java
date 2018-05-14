@@ -87,7 +87,7 @@ public class Dijkstra {
 		if (!pathExists(v)) return Vector.empty();
 		Vector<PathEdge> path = Vector.empty();
 		for (PathEdge e = edgeTo[v.getId()]; e != null; e = edgeTo[e.getV().getId()]) {
-			path = path.append(e);
+			path = path.prepend(e);
 		}
 		return path;
 	}

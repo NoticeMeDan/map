@@ -8,6 +8,7 @@ import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.ShortestPath;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.view.util.InfoBox;
 import io.vavr.collection.List;
 import io.vavr.collection.Vector;
 import javafx.beans.value.ChangeListener;
@@ -41,7 +42,7 @@ public class RoutePaneController {
 	private DomainFacade domain;
 	private Address startAddress;
 	private Address endAddress;
-	private TravelType chosenTravelType = TravelType.CAR;
+	private TravelType chosenTravelType = TravelType.ALL;
 
 	@Setter
 	MainViewController mainViewController;
@@ -101,9 +102,7 @@ public class RoutePaneController {
 	}
 
 	private void zoomToAddress() {
-		System.out.println("Do I get called..?");
 		NavigationInstruction currentSelectedInstruction = (NavigationInstruction) navigationInstructionsListView.getSelectionModel().getSelectedItem();
-		System.out.println(currentSelectedInstruction.getCoordinate());
 		if (currentSelectedInstruction != null) {
 			mainViewController.getCanvas().zoomToCoordinate(
 					new Coordinate(currentSelectedInstruction.getCoordinate().getX(),
@@ -138,6 +137,10 @@ public class RoutePaneController {
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
 		ShortestPath shortestPath = this.domain.deriveShortestPath(startCoordinate, endCoordinate, this.chosenTravelType);
+
+		if (shortestPath.getShortestPathShapes().length() == 0) {
+			showInfoMessage("Der kunne desværre ikke findes en rute.\nPrøv en anden transport form.");
+		}
 
 		Vector<Shape> shortestPathShapes = shortestPath.getShortestPathShapes();
 		MainViewController.getCanvas().showPath(shortestPathShapes);
@@ -208,5 +211,10 @@ public class RoutePaneController {
 	private void toggleAddressEndSearchResults(boolean toggle) {
 		routeEndSearchResultsListView.setVisible(toggle);
 		routeEndSearchResultsListView.setManaged(toggle);
+	}
+
+	private void showInfoMessage(String message) {
+		InfoBox infoBox = new InfoBox(message);
+		infoBox.show();
 	}
 }

@@ -6,36 +6,41 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.collection.Vector;
 
-public class Guide {
+public class NavigationGuideCreator {
 
 	private double distance;
 	private Vector<NavigationInstruction> directions = Vector.empty();
 	private PathEdge edgeBefore;
+	private NavigationAction actionBefore;
 
 	public Vector<NavigationInstruction> getDirections(Vector<PathEdge> route, TravelType type) {
 		if (route.length() == 0) return null;
+		edgeBefore = route.get(0);
 		this.distance = 0;
 		route.forEach(e-> {
 			this.distance += e.getWeight();
 			if (e.getV().degree() > 3) {
 				if (this.distance < 0.01) return;
-				if (e.getRoadName() == null) e.setRoadName("Ukendt vejnavn");
+				if (actionBefore == determineMapDirection(e)) return;
 				this.directions = directions.append(
 								new NavigationInstruction(determineMapDirection(e),
 								this.distance, e.getRoadName(),
 								type,
 								new Coordinate(e.getV().getLon(), e.getV().getLat())));
+				actionBefore = determineMapDirection(e);
 				this.distance = 0;
 			}
 			if (e.getW().degree() == 3) {
 				if (this.distance < 0.01) return;
-				if (e.getRoadName() == null) e.setRoadName("Ukendt vejnavn");
+				if (actionBefore == determineLeftRightDirection(e, edgeBefore)) return;
 				this.directions = directions.append(
 								new NavigationInstruction(determineLeftRightDirection(e, edgeBefore),
 								this.distance,
 								e.getRoadName(),
 								type,
 								new Coordinate(e.getV().getLon(), e.getV().getLat())));
+				actionBefore = determineLeftRightDirection(e, edgeBefore);
+				this.distance = 0;
 			}
 			edgeBefore = e;
 		});

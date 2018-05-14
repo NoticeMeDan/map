@@ -1,6 +1,6 @@
 package com.noticemedan.mappr.model.service;
 
-import com.noticemedan.mappr.model.directions.Guide;
+import com.noticemedan.mappr.model.directions.NavigationGuideCreator;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.*;
 import com.noticemedan.mappr.model.util.Coordinate;
@@ -29,7 +29,7 @@ public class ShortestPathService {
 	public ShortestPath getShortestPath(Coordinate from, Coordinate to, TravelType type) {
 		PathNode nodeFrom = this.network.getNodeFromCoords(from);
 		PathNode nodeTo = this.network.getNodeFromCoords(to);
-		Guide navigationGuide = new Guide();
+		NavigationGuideCreator navigationGuide = new NavigationGuideCreator();
 		Vector<Shape> shapes = Vector.empty();
 		Vector<PathEdge> edgeList = getShortestPath(nodeFrom, nodeTo, type);
 		double distance = 0.0;
