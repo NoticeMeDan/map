@@ -67,6 +67,8 @@ public class FavoritePoiPaneController {
 		removeFavoritePoiButton.setOnAction(event -> {
 			FavoritePoi poi = (FavoritePoi) favoritePoiListView.getSelectionModel().getSelectedItem();
 			this.domain.removePoi(poi);
+			this.mainViewController.getCanvasController().updateFavoritePoints();
+			MainViewController.getCanvas().repaint();
 			this.readPoi();
 		});
 

@@ -83,6 +83,8 @@ public class MainViewController {
 	@FXML private MenuBarController menuBarController;
 
 	//Canvas controllers
+	@Getter
+	private CanvasController canvasController;
 	private MouseHandler mouseHandler;
 
 	// Model Facade
@@ -92,6 +94,7 @@ public class MainViewController {
 	@Inject
 	public MainViewController(DomainFacade domainFacade) {
 		this.domain = domainFacade;
+		this.canvasController = new CanvasController(this.domain);
 	}
 
 	public void initialize() {
@@ -101,6 +104,7 @@ public class MainViewController {
 		searchPaneController.setMainViewController(this);
 		menuBarController.setMainViewController(this);
 		mapPaneController.setMainViewController(this);
+		poiBoxViewController.setMainViewController(this);
 
 		eventListeners();
 	}
@@ -136,7 +140,7 @@ public class MainViewController {
 
 	private void insertOSMPane() {
 		swingNode = new SwingNode();
-		canvas = new CanvasController(this.domain).getCanvasView();
+		canvas = this.canvasController.getCanvasView();
 		this.centerViewport();
 		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
