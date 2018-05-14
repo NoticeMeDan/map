@@ -37,6 +37,7 @@ public class CanvasView extends JComponent {
 	private boolean isShapeOpen;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	@Setter
 	private Point2D pointerPosition;
 	private BufferedImage pointer;
 
@@ -437,10 +438,6 @@ public class CanvasView extends JComponent {
 		at.scale(scaling,scaling);
 
 		this.g.drawImage(img,at,null);
-	}
-
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
 	}
 
 	public void toggleDijkstraNetwork() {
