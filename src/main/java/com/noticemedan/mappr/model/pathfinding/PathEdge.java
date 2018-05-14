@@ -44,9 +44,11 @@ public class PathEdge {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("--\n");
+		sb.append("name: ").append(this.getRoadName()).append("\n");
 		sb.append("v: {").append(v.getLon()).append(", ").append(v.getLat()).append("}\n");
 		sb.append("w: {").append(w.getLon()).append(", ").append(w.getLat()).append("}\n");
 		sb.append("weight: ").append(this.weight).append("\n");
+		sb.append("max speed: ").append(this.speedLimit).append("\n");
 		sb.append("--\n");
 		return sb.toString();
 	}
