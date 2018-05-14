@@ -9,6 +9,20 @@
 	-fx-background-repeat: no-repeat;
 }
 
+.straight {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 13 auto;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
+.destination {
+	-fx-background-image: url("../graphics/check.png");
+	-fx-background-size: 25 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+}
+
 .turnLeft {
 	-fx-background-image: url("../graphics/upleft.png");
 	-fx-background-size: 20 20;
@@ -23,18 +37,67 @@
 	-fx-background-repeat: no-repeat;
 }
 
-.straight {
+.north {
 	-fx-background-image: url("../graphics/straightup.png");
-	-fx-background-size: 13 auto;
+	-fx-background-size: 15 25;
 	-fx-background-position: center;
 	-fx-background-repeat: no-repeat;
 }
 
-.destination {
-	-fx-background-image: url("../graphics/check.png");
-	-fx-background-size: 25 25;
+.west {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
 	-fx-background-position: center;
 	-fx-background-repeat: no-repeat;
+	-fx-rotate: -90;
+}
+
+.south {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: 180;
+}
+
+.east {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: 90;
+}
+
+.northeast {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: 45;
+}
+
+.southeast {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: 135;
+}
+
+.southwest {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: -135;
+}
+
+.northwest {
+	-fx-background-image: url("../graphics/straightup.png");
+	-fx-background-size: 15 25;
+	-fx-background-position: center;
+	-fx-background-repeat: no-repeat;
+	-fx-rotate: -45;
 }
 /*-------------------------------------------- */
 /* NAVIGATION ACTION

@@ -3,16 +3,14 @@ package com.noticemedan.mappr.viewmodel;
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.view.util.FilePicker;
-import com.noticemedan.mappr.view.util.InfoBox;
 import io.vavr.control.Option;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -97,7 +95,6 @@ public class MenuBarController {
 	private void toggleShortestPath() {
 		MainViewController.getCanvas().toggleRandomShortestPath();
 		MainViewController.getCanvas().repaint();
-		showShortestPathMenuItem.setText("Toggle shortest path");
 	}
 
 	private void toggleMapPane() {

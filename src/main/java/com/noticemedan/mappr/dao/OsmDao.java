@@ -5,14 +5,11 @@ import com.noticemedan.mappr.model.map.*;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
-import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
-import javafx.concurrent.Task;
-import lombok.Cleanup;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -23,7 +20,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -79,12 +75,6 @@ public class OsmDao implements DataReader<MapData> {
 	}
 
 	private void add(Type type, Path2D shape, int maxspeed) {
-		Rectangle2D shapeBounds = shape.getBounds2D();
-		double x1 = shapeBounds.getX();
-		double y1 = shapeBounds.getY();
-		double xLength = shapeBounds.getWidth();
-		double yLength = shapeBounds.getHeight();
-		Rect rect = new Rect(x1, y1, (x1 + xLength), (y1 + yLength));
 		Element osmElement = new Element();
 		osmElement.setType(type);
 		osmElement.setAvgPoint(new Coordinate(shape.getBounds2D().getCenterX(), shape.getBounds2D().getCenterY()));
@@ -114,7 +104,7 @@ public class OsmDao implements DataReader<MapData> {
 
 
 		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		public void startElement(String uri, String localName, String qName, Attributes attributes) {
 			switch (qName) {
 				case "bounds":
 					double minLat = Double.parseDouble(attributes.getValue("minlat"));
@@ -246,7 +236,7 @@ public class OsmDao implements DataReader<MapData> {
 		}
 
 		@Override
-		public void endElement(String uri, String localName, String qName) throws SAXException {
+		public void endElement(String uri, String localName, String qName) {
 			Path2D.Double path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
 			this.path2DSize = 1;
 			Node node;

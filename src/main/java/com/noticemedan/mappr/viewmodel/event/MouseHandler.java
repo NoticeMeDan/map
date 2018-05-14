@@ -70,7 +70,7 @@ public class MouseHandler extends MouseAdapter {
     @Override
 	public void mouseClicked(MouseEvent e) {
     	Point2D mousePosition = (e.getButton() == 1) ? e.getPoint() : null;
-		this.canvas.setPointerPosition(mousePosition);
+		this.canvas.setPointerPosition(Coordinate.viewportPointToCanvasPoint(mousePosition, canvas.getTransform()));
 		this.canvas.repaint();
 	}
 }
