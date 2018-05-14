@@ -71,15 +71,15 @@ public class CanvasController {
 
 	public Element doNearestNeighborSearch(Coordinate queryPoint, double zoomLevel) {
 		return this.domain.doNearestNeighborSearch(queryPoint, zoomLevel);
-	}
+	} //søg kun kdtree -fastest
 
 	public Element doNearestNeighborInCurrentRangeSearch(Coordinate queryPoint) {
 		return this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint,  TravelType.ALL);
-	}
+	} //bruteforce, -alle elemeter tjek tætteste
 
 	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, double zoomLevel) {
 		return this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
-	}
+	} //expanding
 
   public void updateFavoritePoints() {
 		this.favoritePoints = domain.getAllPoi();
