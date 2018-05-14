@@ -77,10 +77,10 @@ public class ShortestPathTest {
 	@Test
 	public void shortestPathTest() {
 		Vector<PathEdge> pathEdges = shortestPathService.getShortestPath(shortestPathService.getAllNodes().get(0), shortestPathService.getAllNodes().get(8), TravelType.ALL);
-		assertEquals(pathEdges.get(0).getRoadName(), "n");
-		assertEquals(pathEdges.get(1).getRoadName(), "q");
-		assertEquals(pathEdges.get(2).getRoadName(), "k");
-		assertEquals(pathEdges.get(3).getRoadName(), "i");
+		assertEquals(pathEdges.get(0).getRoadName(), "i");
+		assertEquals(pathEdges.get(1).getRoadName(), "k");
+		assertEquals(pathEdges.get(2).getRoadName(), "q");
+		assertEquals(pathEdges.get(3).getRoadName(), "n");
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class ShortestPathTest {
 	public void directionsTest() {
 		ShortestPath sp = shortestPathService.getShortestPath(new Coordinate(3,8), new Coordinate(14,1), TravelType.ALL);
 		Vector<NavigationInstruction> instructions = sp.getTravelInstructions();
-		assertEquals(instructions.get(0).getType(), NavigationAction.STRAIGHT);
-		assertEquals(instructions.get(1).getType(), NavigationAction.NORTHEAST);
+		assertEquals(instructions.get(0).getType(), NavigationAction.NORTHEAST);
+		assertEquals(instructions.get(1).getType(), NavigationAction.TURN_LEFT);
 		assertEquals(instructions.get(2).getType(), NavigationAction.DESTINATION);
 	}
 }

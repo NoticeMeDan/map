@@ -22,7 +22,7 @@ public class NavigationGuideCreator {
 			if (e.getV().degree() > 3) {
 				if (this.distance < 0.01) return;
 				if (actionBefore == determineMapDirection(e)) return;
-				this.directions = directions.prepend(
+				this.directions = directions.append(
 								new NavigationInstruction(determineMapDirection(e),
 								this.distance, e.getRoadName(),
 								type,
@@ -33,7 +33,7 @@ public class NavigationGuideCreator {
 			if (e.getW().degree() == 3) {
 				if (this.distance < 0.01) return;
 				if (actionBefore == determineLeftRightDirection(e, edgeBefore)) return;
-				this.directions = directions.prepend(
+				this.directions = directions.append(
 								new NavigationInstruction(determineLeftRightDirection(e, edgeBefore),
 								this.distance,
 								e.getRoadName(),
