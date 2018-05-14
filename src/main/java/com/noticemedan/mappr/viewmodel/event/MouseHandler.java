@@ -1,7 +1,7 @@
 package com.noticemedan.mappr.viewmodel.event;
 
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.viewmodel.CanvasView;
+import com.noticemedan.mappr.view.CanvasView;
 import com.noticemedan.mappr.viewmodel.MainViewController;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
