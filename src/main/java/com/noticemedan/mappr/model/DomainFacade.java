@@ -17,6 +17,7 @@ import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.service.TextSearchService;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.JarHelper;
 import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
@@ -33,6 +34,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -52,7 +54,7 @@ public class DomainFacade {
 	private final Path MAPPR_DIR = Paths.get(System.getProperty("user.home"), "/mappr/");
 
 	public DomainFacade() {
-		Try.of(() -> Paths.get(DomainFacade.class.getResource("/default.map").toURI()))
+		Try.of(() -> JarHelper.resourceToPath(DomainFacade.class.getResource("/default.map")))
 				.mapTry(new MapDao()::read)
 				.onSuccess(this::initialize)
 				.onFailure(e -> log.error("An error occurred while initializing program: ", e));

@@ -19,7 +19,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(App.class.getResource("/fxml/MainView.fxml"));
 		loader.setControllerFactory(injector::getInstance);
 		AnchorPane mainView = loader.load();
 		MainViewController mainViewController = loader.getController();
