@@ -1,15 +1,13 @@
 package com.noticemedan.mappr.view;
 
-import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Boundaries;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.map.Type;
-import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
-import com.noticemedan.mappr.viewmodel.CanvasViewController;
+import com.noticemedan.mappr.viewmodel.CanvasController;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +17,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 
 @Slf4j
 public class CanvasView extends JComponent {
@@ -56,7 +52,6 @@ public class CanvasView extends JComponent {
 	@Setter
 	private Element currentNN;
 
-	private DomainFacade domain;
 	private Boundaries boundaries;
 
 	//ShortestPath
@@ -67,18 +62,17 @@ public class CanvasView extends JComponent {
 	private boolean showPath = false;
 	private Vector<Shape> shortestPath;
 
-	public CanvasView(DomainFacade domainFacade) {
-		this.domain = domainFacade;
-		this.boundaries = this.domain.getBoundaries();
+	private CanvasController canvasController;
+
+	public CanvasView(CanvasController canvasController, Boundaries boundaries, BufferedImage start, BufferedImage goal, BufferedImage pointer) {
+		this.start = start;
+		this.goal = goal;
+		this.pointer = pointer;
+		this.boundaries = boundaries;
+		this.canvasController = canvasController;
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		OsmElementProperty.standardColor();
-		try {
-			this.pointer = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/pointer.png").toURI())).get();
-			this.start = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/start.png").toURI())).get();
-			this.goal = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/goal.png").toURI())).get();
-		} catch (URISyntaxException e) {
-			log.error("An error occurred", e);
-		}
+
 		repaint();
 	}
 
@@ -166,7 +160,7 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawCoastlines() {
-		this.domain.getCoastLines().forEach(c -> {
+		this.canvasController.getCoastLines().forEach(c -> {
 			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
@@ -174,7 +168,7 @@ public class CanvasView extends JComponent {
 
 	private void drawAllElements() {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
-		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
+		Vector<Element> result = this.canvasController.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
 		paintClosedElements(result, new BasicStroke(Float.MIN_VALUE));
 		//All open elements
@@ -260,7 +254,7 @@ public class CanvasView extends JComponent {
 
 	private void drawNetwork() {
 		// Paint all edges
-		this.domain.deriveAllDijkstraEdges().forEach(e -> {
+		this.canvasController.deriveAllDijkstraEdges().forEach(e -> {
 			this.g.setPaint(Color.decode("#03ff79"));
 			if (e.getSpeedLimit() < 80) this.g.setPaint(Color.decode("#ffea00"));
 			if (e.getSpeedLimit() <= 20) this.g.setPaint(Color.decode("#ff4400"));
@@ -268,21 +262,21 @@ public class CanvasView extends JComponent {
 			this.g.draw(e.toShape());
 		});
 		// Paint all nodes
-		this.domain.deriveAllDijkstraNodes().forEach(p -> {
+		this.canvasController.deriveAllDijkstraNodes().forEach(p -> {
 			this.g.setPaint(Color.decode("#ff00e6"));
 			this.g.fill(p.toShape());
 		});
 	}
 
 	private void performanceTest() {
-		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());
+		if (logRangeSearchSize) log.info("Range search size: " + this.canvasController.doRangeSearch(viewArea, zoomLevel).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
 	}
 
 	public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
-		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
+		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.canvasController.doNearestNeighborSearch(queryPoint, zoomLevel));
+		currentNN = this.canvasController.doNearestNeighborInCurrentRangeSearch(queryPoint);
 		repaint();
 	}
 
@@ -433,7 +427,7 @@ public class CanvasView extends JComponent {
 	public void toggleRandomShortestPath() {
 		this.showPath = !this.showPath;
 
-		if (this.showPath) this.shortestPath = domain.deriveRandomShortestPathShapes();
+		if (this.showPath) this.shortestPath = this.canvasController.deriveRandomShortestPathShapes();
 	}
 
 	private void drawPointer() {

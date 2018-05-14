@@ -136,7 +136,7 @@ public class MainViewController {
 
 	private void insertOSMPane() {
 		swingNode = new SwingNode();
-		canvas = new CanvasViewController(this.domain).getCanvasView();
+		canvas = new CanvasController(this.domain).getCanvasView();
 		this.centerViewport();
 		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
