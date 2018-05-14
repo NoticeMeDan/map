@@ -11,56 +11,53 @@ import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
-import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.util.ArrayList;
 
 @Slf4j
 public class ForestService implements ForestInterface {
 	private KdTree trees[];
-	private ArrayList<ArrayList<Element>> coastlines;
+	private Vector<Vector<Element>> coastlines;
 	private Vector<Element> currentRangeSearch;
 	private int N = 5; // Zoom-levels of elements in map
 	private int C = 4; // Number of coastline resolutions
 
 	public ForestService(Vector<Element> elements, Vector<Element> coastlineElements) {
-		coastlines = new ArrayList<>();
-		for (int i = 0; i < C; i++) coastlines.add(new ArrayList<>());
-		coastlines.get(0).addAll(coastlineElements.toJavaList());
+		coastlines = Vector.empty();
+		for (int i = 0; i < C; i++) coastlines = coastlines.append(Vector.empty());
+		coastlines = coastlines.replace(coastlines.get(0), coastlines.get(0).appendAll(coastlineElements));
 		sortElementsIntoZoomLevels(elements);
 		createCoastlineResolutions(coastlineElements);
 	}
 
 	public Vector<Element> getCoastlines(double zoomLevel) {
 		Vector<Element> coastlinesAtZoomLevel = Vector.empty();
-		if 		(0.2 > zoomLevel && zoomLevel >= 0.0) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-1));
-		else if (0.45 > zoomLevel && zoomLevel >= 0.2) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-2));
-		else if (3 > zoomLevel && zoomLevel >= 0.45) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-3));
-		return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(0));
+		if 		(0.2 > zoomLevel && zoomLevel >= 0.0) return coastlinesAtZoomLevel.appendAll(coastlines.get(C-1));
+		else if (0.45 > zoomLevel && zoomLevel >= 0.2) return coastlinesAtZoomLevel.appendAll(coastlines.get(C-2));
+		else if (3 > zoomLevel && zoomLevel >= 0.45) return coastlinesAtZoomLevel.appendAll(coastlines.get(C-3));
+		return coastlinesAtZoomLevel.appendAll(coastlines.get(0));
 	}
 
 	private void createCoastlineResolutions(Vector<Element> coastlineElements) {
 		for (Element coastline : coastlineElements) {
-			coastlines.get(1).add(ElementMutator.elementToLowerResolution(coastline, 10));
-			coastlines.get(2).add(ElementMutator.elementToLowerResolution(coastline, 50));
-			coastlines.get(3).add(ElementMutator.elementToLowerResolution(coastline, 75));
+			this.coastlines = coastlines.replace(coastlines.get(1), coastlines.get(1).append(ElementMutator.elementToLowerResolution(coastline, 10)));
+			this.coastlines = coastlines.replace(coastlines.get(2), coastlines.get(2).append(ElementMutator.elementToLowerResolution(coastline, 50)));
+			this.coastlines = coastlines.replace(coastlines.get(3), coastlines.get(3).append(ElementMutator.elementToLowerResolution(coastline, 75)));
 		}
 	}
 
 	private void sortElementsIntoZoomLevels(Vector<Element> elements) {
-		ArrayList<ArrayList<Element>> kdTreeLevels = new ArrayList<>();
-		for (int i = 0; i < N; i++) kdTreeLevels.add(new ArrayList<>());
+		Vector<Vector<Element>> kdTreeLevels = Vector.empty();
+		for (int i = 0; i < N; i++) kdTreeLevels = kdTreeLevels.append(Vector.empty());
 
 		for (Element element : elements) {
 			if (element.isRoad()) {
-				ArrayList<Element> identicalRoads = ElementMutator.determineRoadMultiplicity(element);
+				Vector<Element> identicalRoads = ElementMutator.determineRoadMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
-				if (zoomLevel > -1) for(Element road : identicalRoads) kdTreeLevels.get(zoomLevel).add(road);
+				if (zoomLevel > -1) for(Element road : identicalRoads) kdTreeLevels = kdTreeLevels.replace(kdTreeLevels.get(zoomLevel), kdTreeLevels.get(zoomLevel).append(road));
 			} else {
-				ArrayList<Element> identicalElements = ElementMutator.determineELementMultiplicity(element);
+				Vector<Element> identicalElements = ElementMutator.determineELementMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
-				if (zoomLevel > -1) for(Element identicalElement : identicalElements) kdTreeLevels.get(zoomLevel).add(identicalElement);
+				if (zoomLevel > -1) for(Element identicalElement : identicalElements) kdTreeLevels = kdTreeLevels.replace(kdTreeLevels.get(zoomLevel), kdTreeLevels.get(zoomLevel).append(identicalElement));
 			}
 		}
 		constructKdTrees(kdTreeLevels);
@@ -107,10 +104,10 @@ public class ForestService implements ForestInterface {
 		return -1; //Don't put element anywhere, since it's not recognized.
 	}
 
-	private void constructKdTrees(ArrayList<ArrayList<Element>> kdTreeLevels) {
+	private void constructKdTrees(Vector<Vector<Element>> kdTreeLevels) {
 		Element[][] elementArray = new Element[5][];
 		int[] maxNumberOfElementsAtLeaf = new int[] {10000, 10000, 10000, 10000, 10000};
-		for (int i = 0; i < N; i++ ) elementArray[i] = kdTreeLevels.get(i).toArray(new Element[0]);
+		for (int i = 0; i < N; i++ ) elementArray[i] = kdTreeLevels.get(i).toJavaArray(Element.class);
 		this.trees = new KdTree[N];
 		Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i < N; i++) this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);

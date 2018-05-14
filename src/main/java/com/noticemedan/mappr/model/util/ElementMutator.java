@@ -1,15 +1,15 @@
 package com.noticemedan.mappr.model.util;
 
 import com.noticemedan.mappr.model.map.Element;
+import io.vavr.collection.Vector;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.util.ArrayList;
 
 public class ElementMutator {
-	public static ArrayList<Element> determineRoadMultiplicity(Element road) {
-		ArrayList<Element> identicalRoads =  new ArrayList<>();
+	public static Vector<Element> determineRoadMultiplicity(Element road) {
+		Vector<Element> identicalRoads =  Vector.empty();
 
 		Rectangle roadBounds = road.getShape().getBounds();
 		double roadBoundsEuclidianLength =
@@ -17,21 +17,21 @@ public class ElementMutator {
 						new Coordinate(roadBounds.getX(), roadBounds.getY()),
 						new Coordinate(roadBounds.getX() + roadBounds.getWidth(), roadBounds.getY() + roadBounds.getHeight()));
 
-		if (roadBoundsEuclidianLength > 0.03) identicalRoads.addAll(cloneElementWithDifferentRepresentativePoint(road, 20));
+		if (roadBoundsEuclidianLength > 0.03) identicalRoads = identicalRoads.appendAll(cloneElementWithDifferentRepresentativePoint(road, 20));
 		return identicalRoads;
 	}
 
-	public static ArrayList<Element> determineELementMultiplicity(Element element) {
-		ArrayList<Element> identicalElements =  new ArrayList<>();
+	public static Vector<Element> determineELementMultiplicity(Element element) {
+		Vector<Element> identicalElements =  Vector.empty();
 
 		Rectangle elementBounds = element.getShape().getBounds();
 		double elementBoundsArea = elementBounds.getHeight() * elementBounds.getWidth();
-		if (elementBoundsArea > 0.04) identicalElements.addAll(cloneElementWithDifferentRepresentativePoint(element, 20));
+		if (elementBoundsArea > 0.04) identicalElements = identicalElements.appendAll(cloneElementWithDifferentRepresentativePoint(element, 20));
 		return identicalElements;
 	}
 
-	public static ArrayList<Element> cloneElementWithDifferentRepresentativePoint(Element element, int j) {
-		ArrayList<Element> clonedElements =  new ArrayList<>();
+	public static Vector<Element> cloneElementWithDifferentRepresentativePoint(Element element, int j) {
+		Vector<Element> clonedElements =  Vector.empty();
 		int i = 0;
 		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
 			if (i % j == 0) {
@@ -41,7 +41,7 @@ public class ElementMutator {
 				Element clone = Element.cloneElement(element);
 				clone.setAvgPoint(currentShapePointCoordinate);
 				clone.setShape(element.getShape());
-				clonedElements.add(clone);
+				clonedElements = clonedElements.append(clone);
 			}
 			i++;
 		}
