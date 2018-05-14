@@ -186,8 +186,8 @@ public class MainViewController {
 	}
 
 	public void updateScalaBar() {
-		Point2D scalaBarFirstPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0,0), canvas.getTransform());
-		Point2D scalaBarSecondPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(130,0), canvas.getTransform());
+		Point2D scalaBarFirstPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(0,0), canvas.getTransform());
+		Point2D scalaBarSecondPoint = Coordinate.viewportPointToCanvasPoint(new Point2D.Float(130,0), canvas.getTransform());
 		Coordinate scalaBarFirstCoordinate = new Coordinate(scalaBarFirstPoint.getX(), Coordinate.canvasLatToLat(scalaBarFirstPoint.getY()));
 		Coordinate scalaBarSecondCoordinate = new Coordinate(scalaBarSecondPoint.getX(), Coordinate.canvasLatToLat(scalaBarSecondPoint.getY()));
 		scalaBarDistanceText.setText(String.valueOf(TextFormatter.formatDistance(Coordinate.haversineDistance(scalaBarFirstCoordinate, scalaBarSecondCoordinate, 6378137),2)));

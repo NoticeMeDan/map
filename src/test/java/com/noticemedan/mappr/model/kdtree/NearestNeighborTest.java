@@ -20,7 +20,7 @@ public class NearestNeighborTest {
 	@BeforeTest
 	public void setUpForestService() {
 		Element motorway = new Element();
-		Path2D motorwayShape = new Path2D.Double();
+		Path2D motorwayShape = new Path2D.Float();
 		motorwayShape.moveTo(1,1);
 		motorwayShape.lineTo(2,3);
 		motorwayShape.lineTo(3,5);
@@ -29,7 +29,7 @@ public class NearestNeighborTest {
 		motorway.setType(Type.MOTORWAY);
 
 		Element footway = new Element();
-		Path2D footwayShape = new Path2D.Double();
+		Path2D footwayShape = new Path2D.Float();
 		footwayShape.moveTo(4,4);
 		footwayShape.lineTo(5,4);
 		footway.setShape(footwayShape);
@@ -37,7 +37,7 @@ public class NearestNeighborTest {
 		footway.setType(Type.FOOTWAY);
 
 		Element cycleway = new Element();
-		Path2D cyclewayShape = new Path2D.Double();
+		Path2D cyclewayShape = new Path2D.Float();
 		cyclewayShape.moveTo(5,2);
 		cyclewayShape.lineTo(6,2);
 		cyclewayShape.lineTo(7,2);
@@ -46,7 +46,7 @@ public class NearestNeighborTest {
 		cycleway.setType(Type.CYCLEWAY);
 
 		Element roadway = new Element();
-		Path2D roadwayShape = new Path2D.Double();
+		Path2D roadwayShape = new Path2D.Float();
 		roadwayShape.moveTo(6,6);
 		roadwayShape.lineTo(7,5);
 		roadwayShape.lineTo(8,4);
