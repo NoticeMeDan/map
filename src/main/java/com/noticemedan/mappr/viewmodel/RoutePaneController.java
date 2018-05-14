@@ -10,6 +10,8 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
 import io.vavr.collection.List;
 import io.vavr.collection.Vector;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -60,6 +62,9 @@ public class RoutePaneController {
 			mainViewController.pushCanvas();
 			closeRoutePane();
 			MainViewController.getCanvas().hidePath();
+			ChangeListener<NavigationInstruction> navigationInstructionListener =
+					(ObservableValue<? extends NavigationInstruction> observable, NavigationInstruction oldValue, NavigationInstruction newValue) -> zoomToAddress();
+			navigationInstructionsListView.getSelectionModel().selectedItemProperty().addListener(navigationInstructionListener);
 		});
 
 		// On Key Press
@@ -92,6 +97,19 @@ public class RoutePaneController {
 					searchEndPointAddressField.setText(newVal.toString());
 					this.endAddress = this.domain.getAddress(newVal.toString());
 				});
+	}
+
+	private void zoomToAddress() {
+		System.out.println("Do I get called..?");
+		NavigationInstruction currentSelectedInstruction = (NavigationInstruction) navigationInstructionsListView.getSelectionModel().getSelectedItem();
+		System.out.println(currentSelectedInstruction.getCoordinate());
+		if (currentSelectedInstruction != null) {
+			mainViewController.getCanvas().zoomToCoordinate(
+					new Coordinate(currentSelectedInstruction.getCoordinate().getX(),
+							Coordinate.canvasLatToLat(currentSelectedInstruction.getCoordinate().getY())), 30);
+			mainViewController.getCanvas().setPointerPosition(currentSelectedInstruction.getCoordinate());
+			mainViewController.getCanvas().repaint();
+		}
 	}
 
 	private void setTravelType(TravelType type) {

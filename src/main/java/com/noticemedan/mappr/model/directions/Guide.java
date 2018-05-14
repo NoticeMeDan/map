@@ -55,7 +55,7 @@ public class Guide {
 	}
 
 	private NavigationAction determineLeftRightDirection(PathEdge before, PathEdge next) {
-		if (before == null || next == null) return NavigationAction.STRAIGHT;
+		if (before == null || next == null) return NavigationAction.UNKNOWN;
 		double[] vectorBefore = {before.getV().getLon() - before.getW().getLon(), before.getV().getLat() - before.getW().getLat()};
 		double[] vectorNext = {next.getV().getLon() - next.getW().getLon(), next.getV().getLat() - next.getW().getLat()};
 
