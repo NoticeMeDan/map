@@ -418,10 +418,6 @@ public class CanvasView extends JComponent {
 		this.showReversedBorders = !this.showReversedBorders;
 	}
 
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
-	}
-
 	public void toggleDijkstraNetwork() {
 		this.showNetwork = !this.showNetwork;
 	}
