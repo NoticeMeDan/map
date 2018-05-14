@@ -31,7 +31,7 @@ public class FavoritePoiCellController {
 	}
 
 	private void initialiseCell() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/FavoritePoiCell.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(FavoritePoiCellController.class.getResource("/fxml/FavoritePoiCell.fxml"));
 		fxmlLoader.setController(this);
 		Try.of(fxmlLoader::load);
 	}
