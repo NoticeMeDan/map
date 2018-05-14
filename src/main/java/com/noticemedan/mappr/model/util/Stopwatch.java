@@ -1,7 +1,11 @@
 package com.noticemedan.mappr.model.util;
 
+/**
+ * Source:
+ * Sedgewick & Wayne (2011). Stopwatch.java. Retrieved at:
+ * https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Stopwatch.java.html
+ */
 public class Stopwatch {
-
 	private final long start;
 
 	/**

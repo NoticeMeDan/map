@@ -4,7 +4,7 @@ import com.noticemedan.mappr.model.MapData;
 import com.noticemedan.mappr.model.map.*;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
-import com.noticemedan.mappr.model.util.OsmElementProperty;
+import com.noticemedan.mappr.view.util.OsmElementProperty;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
