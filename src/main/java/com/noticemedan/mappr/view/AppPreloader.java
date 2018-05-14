@@ -26,6 +26,7 @@ public class AppPreloader extends Preloader {
 		BorderPane p = new BorderPane(bar);
 		p.setBackground(background);
 		bar.setStyle("-fx-padding: 340px 0 0 -120px");
+		bar.setProgress(-1);
 		Scene scene = new Scene(p, 800, 500);
 		scene.setFill(Color.TRANSPARENT);
 		return scene;
@@ -40,24 +41,9 @@ public class AppPreloader extends Preloader {
 	}
 
 	@Override
-	public void handleProgressNotification(ProgressNotification pn) {
-		bar.setProgress(pn.getProgress());
-	}
-
-	@Override
 	public void handleStateChangeNotification(StateChangeNotification evt) {
 		if (evt.getType() == StateChangeNotification.Type.BEFORE_START) {
-			try {
-				Thread.sleep(5000);
-				stage.hide();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+			stage.hide();
 		}
-	}
-
-	private void hide() throws Exception {
-
 	}
 }
