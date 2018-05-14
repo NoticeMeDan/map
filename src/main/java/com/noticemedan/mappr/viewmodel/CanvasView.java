@@ -39,6 +39,7 @@ public class CanvasView extends JComponent {
 	private boolean isShapeOpen;
 	private boolean showReversedBorders = false;
 	private boolean showFPS = false;
+	@Setter
 	private Point2D pointerPosition;
 	@Setter
 	private BufferedImage pointer;
@@ -161,8 +162,8 @@ public class CanvasView extends JComponent {
 		this.g.setStroke(getMediumLevelStroke());
 		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
-		drawImage(this.start, startpoint,0.00003,true);
-		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
+		drawImage(this.goal, startpoint,0.00005,true);
+		drawImage(this.start,path.getCurrentPoint(),0.00003,false);
 	}
 
 	private void transformViewRect() {
@@ -461,10 +462,6 @@ public class CanvasView extends JComponent {
 		at.scale(scaling,scaling);
 
 		this.g.drawImage(img,at,null);
-	}
-
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
 	}
 
 	public void toggleDijkstraNetwork() {

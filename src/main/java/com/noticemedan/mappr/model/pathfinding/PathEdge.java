@@ -14,11 +14,13 @@ public class PathEdge {
 	private Set<TravelType> travelTypesAllowed;
 	private PathNode v;
 	private PathNode w;
+	private String roadName;
 
 	PathEdge(PathNode v, PathNode w) {
 		this.v = v;
 		this.w = w;
 		this.weight = computeWeight(v, w);
+		this.speedLimit = v.getMaxspeed();
 	}
 
 	private double computeWeight(PathNode v, PathNode w) {
@@ -28,7 +30,7 @@ public class PathEdge {
 		double y2 = Coordinate.canvasLatToLat(w.getLat());
 		Coordinate a = new Coordinate(x1,y1);
 		Coordinate b = new Coordinate(x2,y2);
-		return Coordinate.haversineDistance(a,b,6378.137);
+		return Coordinate.haversineDistance(a,b,6731137);
 	}
 
 	public Shape toShape() {
