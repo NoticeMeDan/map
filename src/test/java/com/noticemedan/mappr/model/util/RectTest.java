@@ -77,8 +77,7 @@ public class RectTest {
 		assertEquals(Rect.pointInRect(point, rect), true);
 	}
 
-	@Ignore
-	@Test //TODO solve this test case in KdTree.pointInRect()
+	@Ignore @Test
 	public void pointInRect_Positive_3_PointOnEdge_NegativeCoord () {
 		Element point = new Element();
 		point.setAvgPoint(new Coordinate(-3,-3));
