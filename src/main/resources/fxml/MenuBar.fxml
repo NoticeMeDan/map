@@ -16,7 +16,6 @@
 	</Menu>
 	<Menu mnemonicParsing="false" text="Udvikler">
 		<MenuItem fx:id="showFPSMenuItem" mnemonicParsing="false" text="Vis FPS"/>
-		<MenuItem mnemonicParsing="false" text="Vis KDTree linjer"/>
 		<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search"/>
 		<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
 		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis vilkårlig shortest path"/>
