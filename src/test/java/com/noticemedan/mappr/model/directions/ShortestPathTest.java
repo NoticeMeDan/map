@@ -8,6 +8,7 @@ import com.noticemedan.mappr.model.pathfinding.ShortestPath;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.service.ShortestPathService;
 import com.noticemedan.mappr.model.util.Coordinate;
+import io.vavr.collection.Set;
 import io.vavr.collection.Vector;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -19,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 
 /**
  * A picture of the test-network can be seen here:
- * https://drive.google.com/open?id=1KDfRC9EY_YWrHFAnHF7Gh045vMCkorBb
+ * https://drive.google.com/open?id=1xq906-f1p80HTDRqyPXTvzIi40Sg9SzV
  */
 public class ShortestPathTest {
 	ShortestPathService shortestPathService;
@@ -27,27 +28,28 @@ public class ShortestPathTest {
 	@BeforeTest
 	void prepareNetwork() {
 		Vector<Element> elements = Vector.empty();
-		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(4, 3), "f"));
-		elements = elements.append(createElement(new Coordinate(4, 3), new Coordinate(7, 7), "l"));
-		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(7, 7), "i"));
-		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(5, 6), "g"));
-		elements = elements.append(createElement(new Coordinate(5, 6), new Coordinate(7, 7), "h"));
-		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(9, 8), "k"));
-		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(12, 4), "j"));
-		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(8, 1), "m"));
-		elements = elements.append(createElement(new Coordinate(8, 1), new Coordinate(14, 2), "p"));
-		elements = elements.append(createElement(new Coordinate(9, 8), new Coordinate(14, 2), "q"));
-		elements = elements.append(createElement(new Coordinate(14, 2), new Coordinate(14, 1), "n"));
+		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(4, 3), "f", 100));
+		elements = elements.append(createElement(new Coordinate(4, 3), new Coordinate(7, 7), "l", 50));
+		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(7, 7), "i", 100));
+		elements = elements.append(createElement(new Coordinate(3, 8), new Coordinate(5, 6), "g", 100));
+		elements = elements.append(createElement(new Coordinate(5, 6), new Coordinate(7, 7), "h", 50));
+		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(9, 8), "k", 20));
+		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(12, 4), "j", 20));
+		elements = elements.append(createElement(new Coordinate(7, 7), new Coordinate(8, 1), "m", 20));
+		elements = elements.append(createElement(new Coordinate(8, 1), new Coordinate(14, 2), "p", 50));
+		elements = elements.append(createElement(new Coordinate(9, 8), new Coordinate(14, 2), "q", 50));
+		elements = elements.append(createElement(new Coordinate(14, 2), new Coordinate(14, 1), "n", 20));
 		shortestPathService = new ShortestPathService(elements);
 		printAllNodes();
 		printAllEdges();
 	}
 
-	private Element createElement(Coordinate c1, Coordinate c2, String name) {
+	private Element createElement(Coordinate c1, Coordinate c2, String name, int speed) {
 		Element element = new Element();
 		element.setType(Type.ROAD);
 		element.setShape(new Path2D.Double(new Line2D.Double(c1, c2)));
 		element.setName(name);
+		element.setMaxspeed(speed);
 		return element;
 	}
 
@@ -75,11 +77,22 @@ public class ShortestPathTest {
 	}
 
 	@Test
-	public void shortestPathTest() {
-		Vector<PathEdge> pathEdges = shortestPathService.getShortestPath(shortestPathService.getAllNodes().get(0), shortestPathService.getAllNodes().get(8), TravelType.ALL);
+	public void shortestPathWalkTest() {
+		Vector<PathEdge> pathEdges = shortestPathService.getShortestPath(shortestPathService.getAllNodes().get(0), shortestPathService.getAllNodes().get(8), TravelType.WALK);
 		assertEquals(pathEdges.get(0).getRoadName(), "i");
 		assertEquals(pathEdges.get(1).getRoadName(), "k");
 		assertEquals(pathEdges.get(2).getRoadName(), "q");
+		assertEquals(pathEdges.get(3).getRoadName(), "n");
+	}
+
+	@Test
+	public void shortestPathCarTest() {
+		Vector<PathEdge> pathEdges = shortestPathService.getShortestPath(shortestPathService.getAllNodes().get(0), shortestPathService.getAllNodes().get(8), TravelType.CAR);
+		pathEdges.forEach(e -> System.out.println(e.getRoadName()));
+
+		assertEquals(pathEdges.get(0).getRoadName(), "i");
+		assertEquals(pathEdges.get(1).getRoadName(), "m");
+		assertEquals(pathEdges.get(2).getRoadName(), "p");
 		assertEquals(pathEdges.get(3).getRoadName(), "n");
 	}
 
