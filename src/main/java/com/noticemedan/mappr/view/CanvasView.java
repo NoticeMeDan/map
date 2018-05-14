@@ -102,6 +102,7 @@ public class CanvasView extends JComponent {
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 		if (this.zoomLevel > 1.5) drawFavoritePoints();
+		if(currentNN != null && currentNN.getShape() != null ) paintNN();
 
 		performanceTest();
 
@@ -148,8 +149,8 @@ public class CanvasView extends JComponent {
 		this.g.setStroke(getMediumLevelStroke());
 		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
-		drawImage(this.goal, startpoint,0.00005,true);
-		drawImage(this.start,path.getCurrentPoint(),0.00003,false);
+		drawImage(this.start, startpoint,0.00003,true);
+		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
 	}
 
 	private void transformViewRect() {
@@ -196,7 +197,6 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null && currentNN.getShape() != null) paintNN();
 	}
 
 	private void paintNN() {

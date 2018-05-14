@@ -258,7 +258,6 @@ public class DomainFacade {
 
 	/* SECTION END: LOAD FROM OSM HANDLING */
 	/* SECTION START: FAVORITE POI */
-
 	public List<FavoritePoi> getAllPoi() {
 		return this.mapData.getPoi();
 	}
@@ -272,6 +271,5 @@ public class DomainFacade {
 		this.mapData.setPoi(this.mapData.getPoi().remove(poi));
 		return getAllPoi();
 	}
-
 	/* SECTION END: FAVORITE POI */
 }
