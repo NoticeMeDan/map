@@ -88,7 +88,7 @@ public class DomainFacade {
 	 * @param search The Address to query for
 	 * @return List of Address strings matching the query
 	 */
-	public io.vavr.collection.List<String> doAddressSearch(String search) {
+	public List<String> doAddressSearch(String search) {
 		return this.addressSearch.search(search)
 				.map(Tuple2::_1);
 	}
@@ -220,9 +220,7 @@ public class DomainFacade {
 	/* SECTION START: FAVORITE POI */
 
 	public List<FavoritePoi> getAllPoi() {
-		return this.mapData.getPoi() != null
-				? this.mapData.getPoi()
-				: List.empty();
+		return this.mapData.getPoi();
 	}
 
 	public List<FavoritePoi> addPoi(FavoritePoi poi) {
