@@ -65,11 +65,11 @@ public class CanvasView extends JComponent {
 
 	private CanvasController canvasController;
 
-	public CanvasView(CanvasController canvasController, Boundaries boundaries, BufferedImage start, BufferedImage goal, BufferedImage pointer) {
-		this.start = start;
-		this.goal = goal;
-		this.pointer = pointer;
-		this.boundaries = boundaries;
+	public CanvasView(CanvasController canvasController) {
+		this.start = canvasController.getStart();
+		this.goal = canvasController.getGoal();
+		this.pointer = canvasController.getPointer();
+		this.boundaries = canvasController.getBoundaries();
 		this.canvasController = canvasController;
 		this.viewArea = viewPortCoords(new Point2D.Float(0,0), new Point2D.Float(1100, 650));
 		OsmElementProperty.standardColor();
@@ -101,6 +101,7 @@ public class CanvasView extends JComponent {
 		if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
+		if (this.zoomLevel > 1.5) drawFavoritePoints();
 
 		performanceTest();
 
@@ -417,10 +418,6 @@ public class CanvasView extends JComponent {
 		this.showReversedBorders = !this.showReversedBorders;
 	}
 
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
-	}
-
 	public void toggleDijkstraNetwork() {
 		this.showNetwork = !this.showNetwork;
 	}
@@ -432,11 +429,21 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPointer() {
-		drawImage(this.pointer,this.pointerPosition,0.00008,false);
+		drawImage(this.pointer,this.pointerPosition,0.00005,false);
+	}
+
+	private void drawFavoritePoints() {
+		this.canvasController.getFavoritePoints().forEach(poi -> {
+			Coordinate c = new Coordinate(
+					poi.getCoordinate().getX(),
+					Coordinate.latToCanvasLat(poi.getCoordinate().getY())
+			);
+			drawImage(canvasController.getPointOfinterest(), c, 0.00005, true);
+		});
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
-		double scaling = (this.zoomLevel < 100) ? this.viewRect.getWidth() * size :	0.01 * size;
+		double scaling = (this.zoomLevel < 100) ? size / this.zoomLevel : size / 90;
 		double width = pointer.getWidth() * scaling;
 		double height = pointer.getHeight() * scaling;
 
