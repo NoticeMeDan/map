@@ -1,4 +1,4 @@
-package com.noticemedan.mappr.viewmodel;
+package com.noticemedan.mappr.view;
 
 import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Boundaries;
@@ -9,6 +9,7 @@ import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
+import com.noticemedan.mappr.viewmodel.CanvasViewController;
 import io.vavr.collection.Vector;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,18 +22,18 @@ import java.awt.image.BufferedImage;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-// TODO: Split up - right now it does the job of both the V and VM layer
 @Slf4j
 public class CanvasView extends JComponent {
-    @Setter @Getter
+	@Setter
+	@Getter
 	private boolean antiAliasing = false;
 	@Getter @Setter
-    private AffineTransform transform = new AffineTransform();
-    private double fps = 0.0;
-    private Rectangle2D viewRect;
-    private Graphics2D g;
-    private Rect viewArea;
-    @Setter
+	private AffineTransform transform = new AffineTransform();
+	private double fps = 0.0;
+	private Rectangle2D viewRect;
+	private Graphics2D g;
+	private Rect viewArea;
+	@Setter
 	private double zoomLevel;
 	private boolean isShapeOpen;
 	private boolean showReversedBorders = false;
@@ -40,7 +41,7 @@ public class CanvasView extends JComponent {
 	private Point2D pointerPosition;
 	private BufferedImage pointer;
 
-    //Performance test fields
+	//Performance test fields
 	public double timeDraw;
 	public double timeRangeSearch;
 	@Setter @Getter
@@ -72,17 +73,17 @@ public class CanvasView extends JComponent {
 		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 		OsmElementProperty.standardColor();
 		try {
-			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
-      		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
-      		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
+			this.pointer = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/pointer.png").toURI())).get();
+			this.start = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/start.png").toURI())).get();
+			this.goal = domain.getImageFromFS(Paths.get(CanvasViewController.class.getResource("/graphics/goal.png").toURI())).get();
 		} catch (URISyntaxException e) {
 			log.error("An error occurred", e);
 		}
 		repaint();
 	}
 
-    @Override
-    public void paint(Graphics _g) {
+	@Override
+	public void paint(Graphics _g) {
 		this.g = (Graphics2D) _g;
 
 		Stopwatch stopwatchDraw = new Stopwatch();
@@ -95,20 +96,19 @@ public class CanvasView extends JComponent {
 		this.viewRect = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
 
 		//Paint background
-        this.g.setPaint(new Color(179, 227, 245));
-        this.g.fill(this.viewRect);
+		this.g.setPaint(new Color(179, 227, 245));
+		this.g.fill(this.viewRect);
 
 		transformViewRect();
-        drawCoastlines();
-        drawAllElements();
+		drawCoastlines();
+		drawAllElements();
 
-        if (showPath) drawShortestPath();
+		if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 
 		performanceTest();
 
-		//TODO MOVE FPS COUNTER TO FXML
 		if (showFPS) {
 			long t2 = System.nanoTime();
 			fps = (fps + 1e9 / (t2 - t1)) / 2;
@@ -122,7 +122,7 @@ public class CanvasView extends JComponent {
 			g.drawString(String.format("FPS: %.1f", fps), getWidth() - 75, 20);
 		}
 		timeDraw = stopwatchDraw.elapsedTime();
-    }
+	}
 
 	public void showPath(Vector<Shape> shortestPath) {
 		this.showPath = true;
@@ -172,7 +172,7 @@ public class CanvasView extends JComponent {
 		});
 	}
 
-    private void drawAllElements() {
+	private void drawAllElements() {
 		Stopwatch stopwatchRangeSearch = new Stopwatch();
 		Vector<Element> result = this.domain.doRangeSearch(viewArea, zoomLevel);
 		timeRangeSearch = stopwatchRangeSearch.elapsedTime();
@@ -241,7 +241,7 @@ public class CanvasView extends JComponent {
 		else return new BasicStroke(0.0007f);
 	}
 
-    private void paintByType(Vector<Element> elements, Type type, BasicStroke stroke) {
+	private void paintByType(Vector<Element> elements, Type type, BasicStroke stroke) {
 		elements.filter(e -> e.getType() == type)
 				.forEach(e -> paintOsmElement(stroke, e));
 	}
@@ -278,29 +278,29 @@ public class CanvasView extends JComponent {
 		if (logRangeSearchSize) log.info("Range search size: " + this.domain.doRangeSearch(viewArea, zoomLevel).size());
 		if (logZoomLevel) log.info("ZoomLevel: " + zoomLevel);
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
-    }
+	}
 
-    public void logNearestNeighbor(Coordinate queryPoint) {
+	public void logNearestNeighbor(Coordinate queryPoint) {
 		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborSearch(queryPoint, zoomLevel));
 		currentNN = this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL);
 		repaint();
 	}
 
-    public void toggleAntiAliasing() {
-        antiAliasing = !antiAliasing;
-        repaint();
-    }
+	public void toggleAntiAliasing() {
+		antiAliasing = !antiAliasing;
+		repaint();
+	}
 
-    public void pan(double dx, double dy) {
-        transform.preConcatenate(AffineTransform.getTranslateInstance(dx, dy));
-        repaint();
-    }
+	public void pan(double dx, double dy) {
+		transform.preConcatenate(AffineTransform.getTranslateInstance(dx, dy));
+		repaint();
+	}
 
-    public void zoom(double factor, double x, double y) {
-        pan(x, y);
-        transform.preConcatenate(AffineTransform.getScaleInstance(factor, factor));
-        pan(-x, -y);
-        repaint();
+	public void zoom(double factor, double x, double y) {
+		pan(x, y);
+		transform.preConcatenate(AffineTransform.getScaleInstance(factor, factor));
+		pan(-x, -y);
+		repaint();
 		zoomLevel = zoomLevel*factor;
 	}
 
@@ -422,6 +422,20 @@ public class CanvasView extends JComponent {
 		this.showReversedBorders = !this.showReversedBorders;
 	}
 
+	public void setPointerPosition(Point2D p) {
+		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
+	}
+
+	public void toggleDijkstraNetwork() {
+		this.showNetwork = !this.showNetwork;
+	}
+
+	public void toggleRandomShortestPath() {
+		this.showPath = !this.showPath;
+
+		if (this.showPath) this.shortestPath = domain.deriveRandomShortestPathShapes();
+	}
+
 	private void drawPointer() {
 		drawImage(this.pointer,this.pointerPosition,0.00008,false);
 	}
@@ -437,19 +451,5 @@ public class CanvasView extends JComponent {
 		at.scale(scaling,scaling);
 
 		this.g.drawImage(img,at,null);
-	}
-
-	public void setPointerPosition(Point2D p) {
-		this.pointerPosition = Coordinate.viewportPointToCanvasPoint(p, transform);
-	}
-
-	public void toggleDijkstraNetwork() {
-		this.showNetwork = !this.showNetwork;
-	}
-
-	public void toggleRandomShortestPath() {
-		this.showPath = !this.showPath;
-
-		if (this.showPath) this.shortestPath = domain.deriveRandomShortestPathShapes();
 	}
 }

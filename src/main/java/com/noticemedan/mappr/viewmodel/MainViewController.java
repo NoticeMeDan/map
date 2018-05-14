@@ -7,6 +7,7 @@ import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.user.FavoritePoiManager;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.TextFormatter;
+import com.noticemedan.mappr.view.CanvasView;
 import com.noticemedan.mappr.viewmodel.event.ClickDragHandler;
 import com.noticemedan.mappr.viewmodel.event.KeyboardHandler;
 import com.noticemedan.mappr.viewmodel.event.MouseHandler;
@@ -28,10 +29,10 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Dimension;
+import javax.inject.Inject;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import javax.inject.Inject;
 
 public class MainViewController {
 	@Getter
@@ -135,7 +136,7 @@ public class MainViewController {
 
 	private void insertOSMPane() {
 		swingNode = new SwingNode();
-		canvas = new CanvasView(this.domain);
+		canvas = new CanvasViewController(this.domain).getCanvasView();
 		this.centerViewport();
 		canvas.setPreferredSize(new Dimension(width, height));
 		swingNode.setContent(canvas);
