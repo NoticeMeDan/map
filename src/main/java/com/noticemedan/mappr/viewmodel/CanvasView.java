@@ -153,8 +153,8 @@ public class CanvasView extends JComponent {
 		this.g.setStroke(getMediumLevelStroke());
 		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
-		drawImage(this.start, startpoint,0.00003,true);
-		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
+		drawImage(this.goal, startpoint,0.00005,true);
+		drawImage(this.start,path.getCurrentPoint(),0.00003,false);
 	}
 
 	private void transformViewRect() {
