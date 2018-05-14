@@ -102,6 +102,7 @@ public class CanvasView extends JComponent {
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
 		if (this.zoomLevel > 1.5) drawFavoritePoints();
+		if(currentNN != null && currentNN.getShape() != null ) paintNN();
 
 		performanceTest();
 
@@ -193,7 +194,6 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
-		if(currentNN != null && currentNN.getShape() != null ) paintNN();
 	}
 
 	private void paintNN() {
