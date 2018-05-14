@@ -79,7 +79,8 @@ public class CanvasController {
 
 	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, double zoomLevel) {
 		return this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
-	
+	}
+
   public void updateFavoritePoints() {
 		this.favoritePoints = domain.getAllPoi();
 	}
