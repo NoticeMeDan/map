@@ -1,42 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.*?>
+<MenuBar fx:id="menuBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1"
+		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
+	<Menu mnemonicParsing="false" text="Vindue">
+		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis mine kort"/>
+		<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder"/>
+		<MenuItem fx:id="ShowAddressSearch" mnemonicParsing="false" text="Vis addressesøgning"/>
+		<MenuItem fx:id="ShowRoutePlanning" mnemonicParsing="false" text="Vis navigering"/>
 
-<MenuBar fx:id="menubar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
-	<menus>
-		<Menu mnemonicParsing="false" text="Fil">
-			<items>
-				<MenuItem mnemonicParsing="false" text="Indlæs nyt kort fra fil" />
-				<MenuItem mnemonicParsing="false" text="Indlæs kort" />
-				<MenuItem mnemonicParsing="false" text="Slet kort" />
-				<MenuItem mnemonicParsing="false" disable="true" text="Current map: Bornholm" />
-			</items>
+		<Menu mnemonicParsing="false" text="Farvestil">
+			<MenuItem fx:id="showStandardColorMenuItem" mnemonicParsing="false" text="Standard"/>
+			<MenuItem fx:id="showColorBlindModeMenuItem" mnemonicParsing="false" text="Farveblind"/>
 		</Menu>
-		<Menu mnemonicParsing="false" text="Vindue">
-			<items>
-				<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis kort" />
-				<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder" />
-				<MenuItem fx:id="ShowAddressSearch" mnemonicParsing="false" text="Vis addressesøgning" />
-				<MenuItem fx:id="ShowRoutePlanning" mnemonicParsing="false" text="Vis navigering" />
-
-				<Menu mnemonicParsing="false" text="Farvestil">
-					<items>
-						<MenuItem fx:id="showStandardColorMenuItem" mnemonicParsing="false" text="Standard" />
-						<MenuItem fx:id="showColorBlindModeMenuItem" mnemonicParsing="false" text="Farveblind" />
-					</items>
-				</Menu>
-			</items>
-		</Menu>
-		<Menu mnemonicParsing="false" text="Udvikler">
-			<items>
-				<MenuItem fx:id="showFPSMenuItem" mnemonicParsing="false" text="Vis FPS" />
-				<MenuItem mnemonicParsing="false" text="Vis KDTree linjer" />
-				<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search" />
-				<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
-				<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis shortest path"/>
-			</items>
-		</Menu>
-	</menus>
+	</Menu>
+	<Menu mnemonicParsing="false" text="Udvikler">
+		<MenuItem fx:id="showFPSMenuItem" mnemonicParsing="false" text="Vis FPS"/>
+		<MenuItem mnemonicParsing="false" text="Vis KDTree linjer"/>
+		<MenuItem fx:id="showReversedBordersMenuItem" mnemonicParsing="false" text="Vis range-search"/>
+		<MenuItem fx:id="showDijkstraNetworkMenuItem" mnemonicParsing="false" text="Vis dijkstra-netværk"/>
+		<MenuItem fx:id="showShortestPathMenuItem" mnemonicParsing="false" text="Vis vilkårlig shortest path"/>
+		<MenuItem fx:id="loadFromOsmMenuItem" mnemonicParsing="false" text="Load fra OSM"/>
+	</Menu>
 </MenuBar>

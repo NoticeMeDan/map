@@ -1,5 +1,6 @@
 package com.noticemedan.mappr.viewmodel.poi;
 
+import com.noticemedan.mappr.model.DomainFacade;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.user.FavoritePoi;
 import com.noticemedan.mappr.model.util.Coordinate;
@@ -12,16 +13,22 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import lombok.Setter;
 
+import javax.inject.Inject;
+
 public class PoiBoxViewController {
 	@FXML Button closePoiBoxButton;
 	@FXML Button savePoiButton;
 	@FXML Pane poiBoxContainer;
 	@FXML Label poiCoordinatesLabel;
 	@FXML TextField namePoiTextfield;
-	@Setter
-	ObservableList<Element> favoritePois;
 
 	private Coordinate coordinate;
+	private DomainFacade domain;
+
+	@Inject
+	public PoiBoxViewController(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+	}
 
 	public void initialize() {
 		closePoiBox();
@@ -41,10 +48,8 @@ public class PoiBoxViewController {
 	}
 
 	private void savePoi() {
-		Element newFavoritePoi = new Element();
-		newFavoritePoi.setName(namePoiTextfield.getText());
-		newFavoritePoi.setAvgPoint(this.coordinate);
-		favoritePois.add(newFavoritePoi);
+		FavoritePoi newFavoritePoi = new FavoritePoi(this.coordinate, namePoiTextfield.getText());
+		this.domain.addPoi(newFavoritePoi);
 		closePoiBox();
 	}
 

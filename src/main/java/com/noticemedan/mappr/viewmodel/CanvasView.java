@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class CanvasView extends JComponent {
     @Setter @Getter
 	private boolean antiAliasing = false;
-	@Getter
+	@Getter @Setter
     private AffineTransform transform = new AffineTransform();
     private double fps = 0.0;
     private Rectangle2D viewRect;
@@ -57,6 +57,7 @@ public class CanvasView extends JComponent {
 	private Element currentNN;
 
 	private DomainFacade domain;
+	private Boundaries boundaries;
 
 	//ShortestPath
 	private boolean showNetwork;
@@ -67,9 +68,11 @@ public class CanvasView extends JComponent {
 	private Vector<Shape> shortestPath;
 
 	public CanvasView(DomainFacade domainFacade) {
+		this.domain = domainFacade;
+		this.boundaries = this.domain.getBoundaries();
+		this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
+		OsmElementProperty.standardColor();
 		try {
-			this.domain = domainFacade;
-			this.viewArea = viewPortCoords(new Point2D.Double(0,0), new Point2D.Double(1100, 650));
 			this.pointer = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/pointer.png").toURI())).get();
       		this.start = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/start.png").toURI())).get();
       		this.goal = domain.getImageFromFS(Paths.get(CanvasView.class.getResource("/graphics/goal.png").toURI())).get();
@@ -151,8 +154,8 @@ public class CanvasView extends JComponent {
 		this.g.setStroke(getMediumLevelStroke());
 		if (this.zoomLevel < 1)this.g.setStroke(new BasicStroke(Float.MIN_VALUE));
 		this.g.draw(path);
-		drawImage(this.start, startpoint,0.00003,true);
-		drawImage(this.goal,path.getCurrentPoint(),0.00005,false);
+		drawImage(this.goal, startpoint,0.00005,true);
+		drawImage(this.start,path.getCurrentPoint(),0.00003,false);
 	}
 
 	private void transformViewRect() {
@@ -340,7 +343,7 @@ public class CanvasView extends JComponent {
 		//Go to coordinate at map's original zoomlevel. (The coordinate will be in the upper right corner)
 		transform = new AffineTransform();
 		pan(-coordinate.getX(), -Coordinate.latToCanvasLat(coordinate.getY()));
-		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		zoom(getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
 
 		//Define upper left and lower right viewport corners screen in canvas lat/lon
 		Point2D upperLeftViewPortCorner = Coordinate.viewportPointToCanvasPoint(new Point2D.Double(0, 0), transform);
@@ -353,10 +356,10 @@ public class CanvasView extends JComponent {
 		//Go to coordinate at map's original zoomlevel. (The coordinate will now be centered)
 		transform = new AffineTransform();
 		pan(-lambda, -phi);
-		zoom(getWidth() / (Entities.getMaxLon() - Entities.getMinLon()), 0, 0);
+		zoom(getWidth() / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()), 0, 0);
 
 		//Reset canvas zoom level because we have reset to the map's original zoomlevel
-		this.zoomLevel = (1 / (Entities.getMaxLon() - Entities.getMinLon()));
+		this.zoomLevel = (1 / (this.boundaries.getMaxLon() - this.boundaries.getMinLon()));
 	}
 
 	//Zoom canvas to a given zoom level
@@ -416,6 +419,7 @@ public class CanvasView extends JComponent {
 	public void toggleFPS() {
 		this.showFPS = !this.showFPS;
 	}
+
 	public void toggleReversedBorders() {
 		this.showReversedBorders = !this.showReversedBorders;
 	}

@@ -13,7 +13,8 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
-public class KDTreeTest {
+public class
+KDTreeTest {
 
 	Element[] pointsOneElementKDTree;
 	Element[] pointsForSmallKDTree;

@@ -1,17 +1,13 @@
 package com.noticemedan.mappr.dao;
 
-import com.noticemedan.mappr.model.Entities;
 import com.noticemedan.mappr.model.MapData;
-import com.noticemedan.mappr.model.map.Address;
-import com.noticemedan.mappr.model.map.Element;
-import com.noticemedan.mappr.model.map.Node;
-import com.noticemedan.mappr.model.map.Type;
+import com.noticemedan.mappr.model.map.*;
 import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.LongToOSMNodeMap;
 import com.noticemedan.mappr.model.util.OsmElementProperty;
-import com.noticemedan.mappr.model.util.Rect;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
 import lombok.NoArgsConstructor;
@@ -23,9 +19,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.awt.*;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +33,7 @@ public class OsmDao implements DataReader<MapData> {
 	private Vector<Element> elements = Vector.empty();
 	private Vector<Element> coastlineElements = Vector.empty();
 	private Vector<Address> addresses = Vector.empty();
+	private Boundaries boundaries = new Boundaries();
 	private String currentName;
 
 	@Override
@@ -50,9 +45,10 @@ public class OsmDao implements DataReader<MapData> {
 		if (type.equals("osm")) {
 			readFromOSM(new InputSource(Files.newBufferedReader(input)));
 		} else if (type.equals("zip")) {
-			ZipInputStream zip = new ZipInputStream(Files.newInputStream(input));
-			zip.getNextEntry();
-			readFromOSM(new InputSource(zip));
+			try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(input))) {
+				zip.getNextEntry();
+				readFromOSM(new InputSource(zip));
+			}
 		}
 
 		log.info("End reading from OSM");
@@ -60,9 +56,11 @@ public class OsmDao implements DataReader<MapData> {
 		log.info("Coastlines: " + coastlineElements.length());
 
 		return MapData.builder()
-				.elements(this.elements)
+				.boundaries(this.boundaries)
+				.elements(this.elements.filter(x -> x.getType() != Type.UNKNOWN))
 				.coastlineElements(this.coastlineElements)
 				.addresses(this.addresses)
+				.poi(List.empty())
 				.build();
 	}
 
@@ -76,7 +74,7 @@ public class OsmDao implements DataReader<MapData> {
 		}
 	}
 
-	public void add(Type type, Shape shape, int maxspeed) {
+	private void add(Type type, Path2D shape, int maxspeed) {
 		Element osmElement = new Element();
 		osmElement.setType(type);
 		osmElement.setAvgPoint(new Coordinate(shape.getBounds2D().getCenterX(), shape.getBounds2D().getCenterY()));
@@ -102,20 +100,21 @@ public class OsmDao implements DataReader<MapData> {
 		private int maxspeed = 50; // default value
 		final String regex = "\\d+";
 		final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+		private long index;
 
 
 		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		public void startElement(String uri, String localName, String qName, Attributes attributes) {
 			switch (qName) {
 				case "bounds":
 					double minLat = Double.parseDouble(attributes.getValue("minlat"));
 					double minLon = Double.parseDouble(attributes.getValue("minlon"));
 					double maxLat = Double.parseDouble(attributes.getValue("maxlat"));
 					double maxLon = Double.parseDouble(attributes.getValue("maxlon"));
-					Entities.setMinLon(minLon);
-					Entities.setMaxLon(maxLon);
-					Entities.setMinLat(Coordinate.latToCanvasLat(minLat));
-					Entities.setMaxLat(Coordinate.latToCanvasLat(maxLat));
+					boundaries.setMinLon(minLon);
+					boundaries.setMaxLon(maxLon);
+					boundaries.setMinLat(Coordinate.latToCanvasLat(minLat));
+					boundaries.setMaxLat(Coordinate.latToCanvasLat(maxLat));
 					break;
 				case "node":
 					double lon = Double.parseDouble(attributes.getValue("lon"));
@@ -127,7 +126,8 @@ public class OsmDao implements DataReader<MapData> {
 				case "way":
 					this.osmWay = Vector.empty();
 					type = Type.UNKNOWN;
-					idToWay.put(Long.parseLong(attributes.getValue("id")), osmWay);
+					this.index = Long.parseLong(attributes.getValue("id"));
+					this.idToWay = idToWay.put(Long.parseLong(attributes.getValue("id")), osmWay);
 					break;
 				case "relation":
 					this.osmRelation = Vector.empty();
@@ -229,6 +229,7 @@ public class OsmDao implements DataReader<MapData> {
 					break;
 				case "nd":
 					this.osmWay = osmWay.append(idToNode.get(Long.parseLong(attributes.getValue("ref"))));
+					this.idToWay = idToWay.put(this.index,osmWay);
 					this.path2DSize++;
 					break;
 				default:
@@ -237,8 +238,8 @@ public class OsmDao implements DataReader<MapData> {
 		}
 
 		@Override
-		public void endElement(String uri, String localName, String qName) throws SAXException {
-			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+		public void endElement(String uri, String localName, String qName) {
+			Path2D.Double path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
 			this.path2DSize = 1;
 			Node node;
 			switch (qName) {
@@ -284,10 +285,11 @@ public class OsmDao implements DataReader<MapData> {
 					break;
 				case "relation":
 					for (Vector<Node> way : osmRelation) {
-						node = way.get(0);
+						node = way.head();
 						path.moveTo(node.getLon(), node.getLat());
-						for (int i = 1; i < way.size(); i++) {
-							node = way.get(i);
+						for(Node n : way) {
+							if(n == way.head()) continue;
+							node = n;
 							path.lineTo(node.getLon(), node.getLat());
 						}
 					}
