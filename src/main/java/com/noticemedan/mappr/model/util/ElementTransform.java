@@ -7,7 +7,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
-public class ElementMutator {
+public class ElementTransform {
 	public static ArrayList<Element> determineRoadMultiplicity(Element road) {
 		ArrayList<Element> identicalRoads =  new ArrayList<>();
 

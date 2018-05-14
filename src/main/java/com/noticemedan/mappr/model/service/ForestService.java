@@ -5,14 +5,11 @@ import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
-import com.noticemedan.mappr.model.util.ElementMutator;
+import com.noticemedan.mappr.model.util.ElementTransform;
 import com.noticemedan.mappr.model.util.Rect;
-import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
-import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
@@ -42,9 +39,9 @@ public class ForestService implements ForestInterface {
 
 	private void createCoastlineResolutions(Vector<Element> coastlineElements) {
 		for (Element coastline : coastlineElements) {
-			coastlines.get(1).add(ElementMutator.elementToLowerResolution(coastline, 10));
-			coastlines.get(2).add(ElementMutator.elementToLowerResolution(coastline, 50));
-			coastlines.get(3).add(ElementMutator.elementToLowerResolution(coastline, 75));
+			coastlines.get(1).add(ElementTransform.elementToLowerResolution(coastline, 10));
+			coastlines.get(2).add(ElementTransform.elementToLowerResolution(coastline, 50));
+			coastlines.get(3).add(ElementTransform.elementToLowerResolution(coastline, 75));
 		}
 	}
 
@@ -54,11 +51,11 @@ public class ForestService implements ForestInterface {
 
 		for (Element element : elements) {
 			if (element.isRoad()) {
-				ArrayList<Element> identicalRoads = ElementMutator.determineRoadMultiplicity(element);
+				ArrayList<Element> identicalRoads = ElementTransform.determineRoadMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
 				if (zoomLevel > -1) for(Element road : identicalRoads) kdTreeLevels.get(zoomLevel).add(road);
 			} else {
-				ArrayList<Element> identicalElements = ElementMutator.determineELementMultiplicity(element);
+				ArrayList<Element> identicalElements = ElementTransform.determineELementMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
 				if (zoomLevel > -1) for(Element identicalElement : identicalElements) kdTreeLevels.get(zoomLevel).add(identicalElement);
 			}
