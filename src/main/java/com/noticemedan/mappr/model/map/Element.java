@@ -49,6 +49,7 @@ public class Element implements Comparable<Element>, Serializable {
 		return type == Type.MOTORWAY ||
 				type == Type.PRIMARY ||
 				type == Type.TRUNK ||
+				type == Type.MOTORWAY_LINK ||
 				type == Type.SECONDARY ||
 				type == Type.TERTIARY ||
 				type == Type.FOOTWAY ||
@@ -67,6 +68,7 @@ public class Element implements Comparable<Element>, Serializable {
 		return type == Type.MOTORWAY ||
 				type == Type.PRIMARY ||
 				type == Type.TRUNK ||
+				type == Type.MOTORWAY_LINK ||
 				type == Type.SECONDARY ||
 				type == Type.TERTIARY ||
 				type == Type.SERVICE ||

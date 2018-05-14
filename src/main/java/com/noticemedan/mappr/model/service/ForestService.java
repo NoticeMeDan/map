@@ -5,7 +5,9 @@ import com.noticemedan.mappr.model.kdtree.KdTree;
 import com.noticemedan.mappr.model.map.Element;
 import com.noticemedan.mappr.model.pathfinding.TravelType;
 import com.noticemedan.mappr.model.util.Coordinate;
+import com.noticemedan.mappr.model.util.ElementMutator;
 import com.noticemedan.mappr.model.util.Rect;
+import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,33 +36,16 @@ public class ForestService implements ForestInterface {
 		Vector<Element> coastlinesAtZoomLevel = Vector.empty();
 		if 		(0.2 > zoomLevel && zoomLevel >= 0.0) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-1));
 		else if (0.45 > zoomLevel && zoomLevel >= 0.2) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-2));
-		else if (2 > zoomLevel && zoomLevel >= 0.45) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-3));
+		else if (3 > zoomLevel && zoomLevel >= 0.45) return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(C-3));
 		return coastlinesAtZoomLevel = coastlinesAtZoomLevel.appendAll(coastlines.get(0));
 	}
 
 	private void createCoastlineResolutions(Vector<Element> coastlineElements) {
 		for (Element coastline : coastlineElements) {
-			coastlines.get(1).add(elementToLowerResolution(coastline, 25));
-			coastlines.get(2).add(elementToLowerResolution(coastline, 50));
-			coastlines.get(3).add(elementToLowerResolution(coastline, 75));
+			coastlines.get(1).add(ElementMutator.elementToLowerResolution(coastline, 10));
+			coastlines.get(2).add(ElementMutator.elementToLowerResolution(coastline, 50));
+			coastlines.get(3).add(ElementMutator.elementToLowerResolution(coastline, 75));
 		}
-	}
-
-	private Element elementToLowerResolution(Element element, int j) {
-		Element elementLowerResolution = Element.cloneElement(element);
-		Path2D elementPath = new Path2D.Double(Path2D.WIND_EVEN_ODD);
-		int i = 0;
-		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
-			double[] currentShapePointCoordinateArray = new double[2];
-			pi.currentSegment(currentShapePointCoordinateArray);
-			if (i == 0) elementPath.moveTo(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
-			if (i % j == 0 && i != 0) {
-				elementPath.lineTo(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
-			}
-			i++;
-		}
-		elementLowerResolution.setShape(elementPath);
-		return elementLowerResolution;
 	}
 
 	private void sortElementsIntoZoomLevels(Vector<Element> elements) {
@@ -69,12 +54,13 @@ public class ForestService implements ForestInterface {
 
 		for (Element element : elements) {
 			if (element.isRoad()) {
-				ArrayList<Element> identicalRoads = determineRoadMultiplicity(element);
+				ArrayList<Element> identicalRoads = ElementMutator.determineRoadMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
 				if (zoomLevel > -1) for(Element road : identicalRoads) kdTreeLevels.get(zoomLevel).add(road);
 			} else {
+				ArrayList<Element> identicalElements = ElementMutator.determineELementMultiplicity(element);
 				int zoomLevel = determineElementZoomLevelPosition(element);
-				if (zoomLevel > -1) kdTreeLevels.get(determineElementZoomLevelPosition(element)).add(element);
+				if (zoomLevel > -1) for(Element identicalElement : identicalElements) kdTreeLevels.get(zoomLevel).add(identicalElement);
 			}
 		}
 		constructKdTrees(kdTreeLevels);
@@ -89,17 +75,18 @@ public class ForestService implements ForestInterface {
 			case SECONDARY:
 			case TERTIARY:
 				return 1;
-				//return 2;
 			case GRASSLAND:
 			case FOREST:
 			case WATER:
 			case HEATH:
 			case PARK:
+			case MOTORWAY_LINK:
+			case AERODROME:
+			case RUNWAY:
+				return 2;
+			case TAXIWAY:
 			case ROAD:
 			case RAIL:
-			case AERODROME:
-			case TAXIWAY:
-			case RUNWAY:
 			case RESIDENTIAL:
 			case CYCLEWAY:
 			case UNCLASSIFIED:
@@ -120,62 +107,27 @@ public class ForestService implements ForestInterface {
 		return -1; //Don't put element anywhere, since it's not recognized.
 	}
 
-	private ArrayList<Element> determineRoadMultiplicity(Element road) {
-		ArrayList<Element> identicalRoads =  new ArrayList<>();
-
-		Rectangle roadBounds = road.getShape().getBounds();
-		double roadBoundsEuclidianLength =
-				Coordinate.euclidianDistance(
-						new Coordinate(roadBounds.getX(), roadBounds.getY()),
-						new Coordinate(roadBounds.getX() + roadBounds.getWidth(), roadBounds.getY() + roadBounds.getHeight()));
-
-		if (roadBoundsEuclidianLength > 0.03) identicalRoads.addAll(cloneElementWithDifferentRepresentativePoint(road, 20));
-		return identicalRoads;
-	}
-
-	private ArrayList<Element> cloneElementWithDifferentRepresentativePoint(Element element, int j) {
-		ArrayList<Element> clonedElements =  new ArrayList<>();
-		int i = 0;
-		for (PathIterator pi = element.getShape().getPathIterator(null); !pi.isDone(); pi.next()) {
-			if (i % j == 0) {
-				double[] currentShapePointCoordinateArray = new double[2];
-				pi.currentSegment(currentShapePointCoordinateArray); // Inserts current coordinates into currentShapePointCoordinateArray;
-				Coordinate currentShapePointCoordinate = new Coordinate(currentShapePointCoordinateArray[0], currentShapePointCoordinateArray[1]);
-				Element clone = Element.cloneElement(element);
-				clone.setAvgPoint(currentShapePointCoordinate);
-				clone.setShape(element.getShape());
-				clonedElements.add(clone);
-			}
-			i++;
-		}
-		return clonedElements;
-	}
-
 	private void constructKdTrees(ArrayList<ArrayList<Element>> kdTreeLevels) {
 		Element[][] elementArray = new Element[5][];
-		int[] maxNumberOfElementsAtLeaf = new int[] {100, 100, 100, 100, 100};
+		int[] maxNumberOfElementsAtLeaf = new int[] {10000, 10000, 10000, 10000, 10000};
 		for (int i = 0; i < N; i++ ) elementArray[i] = kdTreeLevels.get(i).toArray(new Element[0]);
 		this.trees = new KdTree[N];
+		Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i < N; i++) this.trees[i] = new KdTree(elementArray[i], maxNumberOfElementsAtLeaf[i]);
+		System.out.println(stopwatch.elapsedTime());
 	}
 
 	@Override
 	public Vector<Element> rangeSearch(Rect searchQuery, double zoomLevel) {
-		Vector<Element> searchResults = Vector.empty();
+		currentRangeSearch = Vector.empty();
 
-		if (zoomLevel > 40) searchResults = searchResults.appendAll(trees[4].rangeSearch(searchQuery));
-		if (zoomLevel > 6) searchResults = searchResults.appendAll(trees[3].rangeSearch(searchQuery));
-		if (zoomLevel > 1) searchResults = searchResults.appendAll(trees[2].rangeSearch(searchQuery));
-		if (zoomLevel > 0.5) searchResults = searchResults.appendAll(trees[1].rangeSearch(searchQuery));
-		if (zoomLevel > 0) searchResults = searchResults.appendAll(trees[0].rangeSearch(searchQuery));
+		if (zoomLevel > 20) currentRangeSearch = currentRangeSearch.appendAll(trees[4].rangeSearch(searchQuery));
+		if (zoomLevel > 6) currentRangeSearch = currentRangeSearch.appendAll(trees[3].rangeSearch(searchQuery));
+		if (zoomLevel > 2) currentRangeSearch = currentRangeSearch.appendAll(trees[2].rangeSearch(searchQuery));
+		if (zoomLevel > 1) currentRangeSearch = currentRangeSearch.appendAll(trees[1].rangeSearch(searchQuery));
+		if (zoomLevel > 0) currentRangeSearch = currentRangeSearch.appendAll(trees[0].rangeSearch(searchQuery));
 
-		currentRangeSearch = searchResults;
-		return searchResults;
-	}
-
-	//Range search as if only having one zoom level.
-	public Vector<Element> rangeSearch(Rect searchQuery) {
-		return rangeSearch(searchQuery, Double.POSITIVE_INFINITY);
+		return currentRangeSearch;
 	}
 
 	public Element nearestNeighborUsingRangeSearch(Coordinate queryPoint, TravelType travelType, double zoomLevel) {
@@ -238,10 +190,10 @@ public class ForestService implements ForestInterface {
 		int excludeTrees = 0;
 
 		if (zoomLevel > 0) excludeTrees = 4;
-		if (zoomLevel > 0.5) excludeTrees = 3;
-		if (zoomLevel > 1) excludeTrees = 2;
+		if (zoomLevel > 1) excludeTrees = 3;
+		if (zoomLevel > 2) excludeTrees = 2;
 		if (zoomLevel > 6) excludeTrees = 1;
-		if (zoomLevel > 40) excludeTrees = 0;
+		if (zoomLevel > 20) excludeTrees = 0;
 
 		Element currentNN = new Element();
 		currentNN.setAvgPoint(new Coordinate(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));

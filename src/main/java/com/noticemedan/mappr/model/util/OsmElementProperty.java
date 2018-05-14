@@ -57,6 +57,7 @@ public class OsmElementProperty {
 		typeColors.put(Type.RAIL, new Color(208, 208, 208));
 
 		typeColors.put(Type.MOTORWAY, new Color(255, 207, 22));
+		typeColors.put(Type.MOTORWAY_LINK, new Color(255, 207, 22));
 		typeColors.put(Type.PRIMARY, new Color(255,228,141));
 		typeColors.put(Type.TRUNK, new Color(255, 226, 104));
 		typeColors.put(Type.SECONDARY, new Color(201,201,201));

@@ -195,6 +195,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.RESIDENTIAL, new BasicStroke(0.0001f));
 		paintByType(result, Type.TERTIARY, getHighLevelStroke());
 		paintByType(result, Type.SECONDARY, getHighLevelStroke());
+		paintByType(result, Type.MOTORWAY_LINK, getLowLevelStroke());
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
@@ -281,10 +282,9 @@ public class CanvasView extends JComponent {
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
     }
 
-    public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint, TravelType.ALL));
-
-		currentNN = this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
+    public void updateNearestNeighbor(Coordinate queryPoint) {
+		this.currentNN = this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
+		if (logNearestNeighbor) log.info("NN-object: " + currentNN);
 		repaint();
 	}
 
