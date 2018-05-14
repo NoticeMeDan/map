@@ -108,6 +108,7 @@ public class CanvasView extends JComponent {
         if (showPath) drawShortestPath();
 		if (this.showNetwork) drawNetwork();
 		if (pointerPosition != null) drawPointer();
+		if (this.zoomLevel > 2) drawFavoritePoints();
 
 		performanceTest();
 
@@ -430,7 +431,13 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawFavoritePoints() {
-
+		this.domain.getAllPoi().forEach(poi -> {
+			Coordinate c = new Coordinate(
+					poi.getCoordinate().getX(),
+					Coordinate.latToCanvasLat(poi.getCoordinate().getY())
+			);
+			drawImage(this.pointOfinterest, c, 0.00005, true);
+		});
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
