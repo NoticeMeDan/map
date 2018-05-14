@@ -5,6 +5,7 @@ import com.noticemedan.mappr.model.util.Coordinate;
 import com.noticemedan.mappr.model.util.Rect;
 import com.noticemedan.mappr.model.util.Stopwatch;
 import io.vavr.collection.Vector;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -13,6 +14,7 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
+@Slf4j
 public class KDTreeTest {
 
 	Element[] pointsOneElementKDTree;
@@ -96,7 +98,7 @@ public class KDTreeTest {
 	public void testVeryLargeKDTreeSpeed() { //10E7 OsmElements, endpoints 1000
 		Stopwatch stopwatch = new Stopwatch();
 		KdTree veryLargeKdTree = new KdTree(buildRandomPoints(10000000), 1000);
-		System.out.println(stopwatch.elapsedTime()); //TODO convert to log
+		log.info(stopwatch.toString());
 		assertTrue(stopwatch.elapsedTime() < 30);
 	}
 
