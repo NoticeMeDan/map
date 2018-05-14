@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.noticemedan.mappr.model.map.Type.*;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class ForestServiceTest {
+/*public class ForestServiceTest {
 
 	private ForestService smallForest;
 	private Vector<Element> ve = Vector.empty();
@@ -96,4 +96,4 @@ public class ForestServiceTest {
 		assertEquals(results.get(2).getAvgPoint().getX(), 7.0);
 		assertEquals(results.get(2).getAvgPoint().getY(), 2.0);
 	}
-}
+}*/

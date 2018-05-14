@@ -131,8 +131,8 @@ public class RoutePaneController {
 
 	public void search() {
 		if (startAddress == null || endAddress == null) return;
-		Element startElement = this.domain.doNearestNeighborNewRangeSearch(this.startAddress.getCoordinate(), this.chosenTravelType);
-		Element endElement = this.domain.doNearestNeighborNewRangeSearch(this.endAddress.getCoordinate(), this.chosenTravelType);
+		Element startElement = this.domain.doNearestNeighborUsingRangeSearch(this.startAddress.getCoordinate(), this.chosenTravelType, Double.POSITIVE_INFINITY);
+		Element endElement = this.domain.doNearestNeighborUsingRangeSearch(this.endAddress.getCoordinate(), this.chosenTravelType, Double.POSITIVE_INFINITY);
 		Coordinate startCoordinate = startElement.getAvgPoint();
 		Coordinate endCoordinate = endElement.getAvgPoint();
 
@@ -141,6 +141,15 @@ public class RoutePaneController {
 		if (shortestPath.getShortestPathShapes().length() == 0) {
 			showInfoMessage("Der kunne desværre ikke findes en rute.\nPrøv en anden transport form.");
 		}
+
+		mainViewController.getCanvas().zoomToRoute(
+				new Coordinate(
+						endCoordinate.getX(),
+						Coordinate.canvasLatToLat(endCoordinate.getY())),
+				new Coordinate(
+						startCoordinate.getX(),
+						Coordinate.canvasLatToLat(startCoordinate.getY()))
+		);
 
 		Vector<Shape> shortestPathShapes = shortestPath.getShortestPathShapes();
 		MainViewController.getCanvas().showPath(shortestPathShapes);

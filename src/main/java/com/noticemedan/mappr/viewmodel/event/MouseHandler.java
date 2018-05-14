@@ -55,10 +55,9 @@ public class MouseHandler extends MouseAdapter {
     public void mouseMoved(MouseEvent e) {
 		Point2D currentHoverPoint = Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform());
 		Coordinate currentHoverCoordinate = new Coordinate(currentHoverPoint.getX(), currentHoverPoint.getY());
-		canvas.logNearestNeighbor(currentHoverCoordinate);
+		canvas.updateNearestNeighbor(currentHoverCoordinate);
 		mainViewController.updateScalaBar();
 		mainViewController.updateCurrentHoveredRoad(currentHoverCoordinate);
-		//log.info("" + Coordinate.viewportPointToCanvasPoint(e.getPoint(), canvas.getTransform()));
 	}
 
     @Override
@@ -70,7 +69,7 @@ public class MouseHandler extends MouseAdapter {
     @Override
 	public void mouseClicked(MouseEvent e) {
     	Point2D mousePosition = (e.getButton() == 1) ? e.getPoint() : null;
-		this.canvas.setPointerPosition(Coordinate.viewportPointToCanvasPoint(mousePosition, canvas.getTransform()));
+    	this.canvas.setPointerPosition(Coordinate.viewportPointToCanvasPoint(mousePosition, canvas.getTransform()));
 		this.canvas.repaint();
 	}
 }

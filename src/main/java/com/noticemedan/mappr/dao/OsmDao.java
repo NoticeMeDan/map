@@ -162,10 +162,12 @@ public class OsmDao implements DataReader<MapData> {
 							if (attributes.getValue("v").equals("motorway")) type = Type.MOTORWAY;
 							if (attributes.getValue("v").equals("primary")) type = Type.PRIMARY;
 							if (attributes.getValue("v").equals("trunk")) type = Type.TRUNK;
+							if (attributes.getValue("v").equals("motorway_link")) type = Type.MOTORWAY_LINK;
 							if (attributes.getValue("v").equals("secondary")) type = Type.SECONDARY;
 							if (attributes.getValue("v").equals("tertiary")) type = Type.TERTIARY;
 							if (attributes.getValue("v").equals("footway")) type = Type.FOOTWAY;
 							if (attributes.getValue("v").equals("footpath")) type = Type.FOOTPATH;
+							if (attributes.getValue("v").equals("pedestrian")) type = Type.PEDESTRIAN;
 							if (attributes.getValue("v").equals("cycleway")) type = Type.CYCLEWAY;
 							if (attributes.getValue("v").equals("track")) type = Type.TRACK;
 							if (attributes.getValue("v").equals("service")) type = Type.SERVICE;

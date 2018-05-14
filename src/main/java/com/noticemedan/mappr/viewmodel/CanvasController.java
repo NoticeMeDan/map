@@ -49,8 +49,8 @@ public class CanvasController {
 		this.canvasView = new CanvasView(this);
 	}
 
-	public Vector<Element> getCoastLines() {
-		return this.domain.getCoastLines();
+	public Vector<Element> getCoastLines(double zoomLevel) {
+		return this.domain.getCoastLines(zoomLevel);
 	}
 
 	public Vector<Element> doRangeSearch(Rect viewArea, double zoomLevel){
@@ -77,7 +77,11 @@ public class CanvasController {
 		return this.domain.doNearestNeighborInCurrentRangeSearch(queryPoint,  TravelType.ALL);
 	}
 
-	public void updateFavoritePoints() {
+	public Element doNearestNeighborUsingRangeSearch(Coordinate queryPoint, double zoomLevel) {
+		return this.domain.doNearestNeighborUsingRangeSearch(queryPoint, TravelType.ALL, zoomLevel);
+	}
+
+  public void updateFavoritePoints() {
 		this.favoritePoints = domain.getAllPoi();
 	}
 
