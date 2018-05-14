@@ -36,7 +36,7 @@ class MapCellController {
 	}
 
 	private void initialiseCell() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MapCell.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(MapCellController.class.getResource("/fxml/MapCell.fxml"));
 		fxmlLoader.setController(this);
 		Try.of(fxmlLoader::load);
 	}

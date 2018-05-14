@@ -30,6 +30,7 @@ hs_err_pid*
 # Build
 target/
 META_INF
+/dependency-reduced-pom.xml
 
 # Latex build files
 *.aux
