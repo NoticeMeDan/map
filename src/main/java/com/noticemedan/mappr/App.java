@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.noticemedan.mappr.model.DomainFacade;
+import com.noticemedan.mappr.view.AppPreloader;
 import com.noticemedan.mappr.viewmodel.MainViewController;
 import javafx.application.Application;
 import javafx.application.Preloader;
@@ -19,7 +20,8 @@ public class App extends Application {
 	private MainViewController mainViewController;
 
 	public static void main(String[] args) {
-		launch(args);
+		System.setProperty("javafx.preloader", "com.noticemedan.mappr.view.AppPreloader");
+		Application.launch(args);
 	}
 
     @Override
