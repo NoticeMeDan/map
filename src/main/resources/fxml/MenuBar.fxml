@@ -5,10 +5,6 @@
 		 fx:controller="com.noticemedan.mappr.viewmodel.MenuBarController">
 	<Menu mnemonicParsing="false" text="Vindue">
 		<MenuItem fx:id="showMapMenuItem" mnemonicParsing="false" text="Vis mine kort"/>
-		<MenuItem fx:id="showFavoritePlacesMenuItem" mnemonicParsing="false" text="Vis favoritsteder"/>
-		<MenuItem fx:id="ShowAddressSearch" mnemonicParsing="false" text="Vis addressesøgning"/>
-		<MenuItem fx:id="ShowRoutePlanning" mnemonicParsing="false" text="Vis navigering"/>
-
 		<Menu mnemonicParsing="false" text="Farvestil">
 			<MenuItem fx:id="showStandardColorMenuItem" mnemonicParsing="false" text="Standard"/>
 			<MenuItem fx:id="showColorBlindModeMenuItem" mnemonicParsing="false" text="Farveblind"/>
