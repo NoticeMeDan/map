@@ -47,7 +47,7 @@ public class ShortestPathTest {
 	private Element createElement(Coordinate c1, Coordinate c2, String name, int speed) {
 		Element element = new Element();
 		element.setType(Type.ROAD);
-		element.setShape(new Path2D.Double(new Line2D.Double(c1, c2)));
+		element.setShape(new Path2D.Float(new Line2D.Float(c1, c2)));
 		element.setName(name);
 		element.setMaxspeed(speed);
 		return element;

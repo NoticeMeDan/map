@@ -237,7 +237,7 @@ public class OsmDao implements DataReader<MapData> {
 
 		@Override
 		public void endElement(String uri, String localName, String qName) {
-			Path2D.Double path = new Path2D.Double(Path2D.WIND_EVEN_ODD, this.path2DSize);
+			Path2D.Float path = new Path2D.Float(Path2D.WIND_EVEN_ODD, this.path2DSize);
 			this.path2DSize = 1;
 			Node node;
 			switch (qName) {
@@ -296,7 +296,7 @@ public class OsmDao implements DataReader<MapData> {
 				case "osm":
 					// convert all coastlines found to paths
 					for (Tuple2<Node, Vector<Node>> coastline : coastlines) {
-						path = new Path2D.Double();
+						path = new Path2D.Float();
 						path.setWindingRule(Path2D.WIND_EVEN_ODD);
 						Vector<Node> way = coastline._2;
 						Node key = coastline._1;
