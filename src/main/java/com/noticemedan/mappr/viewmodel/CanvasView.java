@@ -424,11 +424,11 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawPointer() {
-		drawImage(this.pointer,this.pointerPosition,0.00008,false);
+		drawImage(this.pointer,this.pointerPosition,0.00005,false);
 	}
 
 	private void drawImage(BufferedImage img, Point2D coordinate, double size, boolean center) {
-		double scaling = (this.zoomLevel < 100) ? this.viewRect.getWidth() * size :	0.01 * size;
+		double scaling = (this.zoomLevel < 100) ? size / this.zoomLevel : size / 90;
 		double width = pointer.getWidth() * scaling;
 		double height = pointer.getHeight() * scaling;
 
