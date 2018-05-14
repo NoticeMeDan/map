@@ -62,10 +62,11 @@ public class RoutePaneController {
 			mainViewController.pushCanvas();
 			closeRoutePane();
 			MainViewController.getCanvas().hidePath();
-			ChangeListener<NavigationInstruction> navigationInstructionListener =
-					(ObservableValue<? extends NavigationInstruction> observable, NavigationInstruction oldValue, NavigationInstruction newValue) -> zoomToAddress();
-			navigationInstructionsListView.getSelectionModel().selectedItemProperty().addListener(navigationInstructionListener);
 		});
+
+		ChangeListener<NavigationInstruction> navigationInstructionListener =
+				(ObservableValue<? extends NavigationInstruction> observable, NavigationInstruction oldValue, NavigationInstruction newValue) -> zoomToAddress();
+		navigationInstructionsListView.getSelectionModel().selectedItemProperty().addListener(navigationInstructionListener);
 
 		// On Key Press
 		searchStartPointAddressField.setOnKeyTyped(event -> handleAddressSearch(searchStartPointAddressField, routeStartSearchResultsListView));
