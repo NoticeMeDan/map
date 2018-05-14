@@ -163,8 +163,8 @@ public class CanvasView extends JComponent {
 	}
 
 	private void drawCoastlines() {
-		this.canvasController.getCoastLines().forEach(c -> {
-			this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
+		this.canvasController.getCoastLines(this.zoomLevel).forEach(c -> {
+				this.g.setPaint(OsmElementProperty.deriveColorFromType(c.getType()));
 			this.g.fill(c.getShape());
 		});
 	}
@@ -180,8 +180,10 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.SAND, getLowLevelStroke());
 		paintByType(result, Type.RAIL, new BasicStroke(0.00006f));
 		paintByType(result, Type.SERVICE, new BasicStroke(0.0001f));
+		paintByType(result, Type.UNCLASSIFIED, new BasicStroke(0.0001f));
 		paintByType(result, Type.FOOTWAY, new BasicStroke(0.00007f));
 		paintByType(result, Type.PATH, new BasicStroke(0.00007f));
+		paintByType(result, Type.PEDESTRIAN, new BasicStroke(0.0001f));
 		paintByType(result, Type.TRACK, new BasicStroke(0.00007f));
 		paintByType(result, Type.CYCLEWAY, new BasicStroke(0.00008f));
 		paintByType(result, Type.RUNWAY, new BasicStroke(0.002f));
@@ -191,6 +193,7 @@ public class CanvasView extends JComponent {
 		paintByType(result, Type.RESIDENTIAL, new BasicStroke(0.0001f));
 		paintByType(result, Type.TERTIARY, getHighLevelStroke());
 		paintByType(result, Type.SECONDARY, getHighLevelStroke());
+		paintByType(result, Type.MOTORWAY_LINK, getLowLevelStroke());
 		paintByType(result, Type.TRUNK, getLowLevelStroke());
 		paintByType(result, Type.PRIMARY, getLowLevelStroke());
 		paintByType(result, Type.MOTORWAY, getLowLevelStroke());
@@ -276,9 +279,9 @@ public class CanvasView extends JComponent {
 		if (logPerformanceTimeDrawVSRangeSearch) log.info("TimeDraw: " + timeDraw + " --- TimeRangeSearch: " + timeRangeSearch + " --- Relative " + (timeDraw-timeRangeSearch)/timeDraw*100 );
 	}
 
-	public void logNearestNeighbor(Coordinate queryPoint) {
-		if (logNearestNeighbor) log.info("Nearest Neighbor: " + this.canvasController.doNearestNeighborSearch(queryPoint, zoomLevel));
-		currentNN = this.canvasController.doNearestNeighborInCurrentRangeSearch(queryPoint);
+    public void updateNearestNeighbor(Coordinate queryPoint) {
+		this.currentNN = this.canvasController.doNearestNeighborUsingRangeSearch(queryPoint, zoomLevel);
+		if (logNearestNeighbor) log.info("NN-object: " + currentNN);
 		repaint();
 	}
 
@@ -366,9 +369,6 @@ public class CanvasView extends JComponent {
 	 * @param coordinateB		In WGS-84 format
 	 */
 	public void zoomToRoute(Coordinate coordinateA, Coordinate coordinateB) {
-		//Transform coordinates into canvas coordinates
-		coordinateA = new Coordinate(coordinateA.getX(), Coordinate.latToCanvasLat(coordinateA.getY()));
-		coordinateB = new Coordinate(coordinateB.getX(), Coordinate.latToCanvasLat(coordinateB.getY()));
 
 		Coordinate averageCoordinate = new Coordinate(
 				(coordinateA.getX() + coordinateB.getX())/2,
@@ -450,8 +450,8 @@ public class CanvasView extends JComponent {
 		AffineTransform at = new AffineTransform();
 		if (center) at.translate(coordinate.getX() - width/2,coordinate.getY()-height/2);
 		else at.translate(coordinate.getX() - width/2,coordinate.getY()-height);
-		at.scale(scaling,scaling);
+		at.scale(scaling, scaling);
 
-		this.g.drawImage(img,at,null);
+		this.g.drawImage(img, at,null);
 	}
 }

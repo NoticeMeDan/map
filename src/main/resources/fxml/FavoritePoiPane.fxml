@@ -20,7 +20,6 @@
 		</Pane>
 	</HBox>
 	<HBox fx:id="actionMenu" layoutY="55">
-		<Button fx:id="navigateToFavoritePoiButton" styleClass="actionMenuButton" text="Find vej" />
 		<Button fx:id="removeFavoritePoiButton" styleClass="actionMenuButton" text="Slet favoritsted" />
 	</HBox>
 	<StackPane fx:id="noFavoritesYetPane" VBox.vgrow="ALWAYS">
