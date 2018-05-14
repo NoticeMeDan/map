@@ -52,7 +52,10 @@ public class CanvasView extends JComponent {
 
 	@Setter
 	private Element currentNN;
-
+	@Setter
+	private boolean kdTreeNN = false;
+	@Setter
+	private boolean bruteforceNN = false;
 	private Boundaries boundaries;
 
 	//ShortestPath
@@ -201,7 +204,9 @@ public class CanvasView extends JComponent {
 
 	private void paintNN() {
 		g.setStroke(getLowLevelStroke());
-		g.setPaint(Color.RED);
+		if (kdTreeNN) this.g.setPaint(Color.MAGENTA);
+		else if (bruteforceNN) this.g.setPaint(Color.decode("#ed0020"));
+				else this.g.setPaint(Color.decode("#4c8dc2"));
 		g.draw(currentNN.getShape());
 	}
 
@@ -280,7 +285,9 @@ public class CanvasView extends JComponent {
 	}
 
     public void updateNearestNeighbor(Coordinate queryPoint) {
-		this.currentNN = this.canvasController.doNearestNeighborUsingRangeSearch(queryPoint, zoomLevel);
+		if (kdTreeNN) this.currentNN = this.canvasController.doNearestNeighborSearch(queryPoint, zoomLevel);
+		else if (bruteforceNN) this.currentNN = this.canvasController.doNearestNeighborInCurrentRangeSearch(queryPoint);
+		else this.currentNN = this.canvasController.doNearestNeighborUsingRangeSearch(queryPoint, zoomLevel);
 		if (logNearestNeighbor) log.info("NN-object: " + currentNN);
 		repaint();
 	}
