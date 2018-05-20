@@ -1,0 +1,24 @@
+\section{Tekniske Overvejelser}
+Something something
+
+\subsection{Binært Format}
+Mappr's binære format benytter Java's inbyggede objekt serialisering.(KILDE)
+Som datagrundlag for vores serialiserede fil, bruger vi vores MapData klasse som ses på Figur \ref{fig:mapdata}. Indholdet af MapData klassen var op til debat flere gange under projektforløbet, men vi endte med kun at gemme Points of Interest - udover resultatet af vores OSM parsing.
+En anden mulighed ville have været også at gemme KD-Træet og Dijkstra grafen på disken, hvilket muligvis ville have formindsket time-to-load, men da Danmark i forvejen fyldte lidt over 500MB på disken, valgte vi at lave det tradeoff.
+
+
+\begin{figure}[t!]
+    \begin{lstlisting}
+	@Data
+	@Builder
+	public class MapData implements Serializable {
+		private Boundaries boundaries;
+		private Vector<Element> elements;
+		private Vector<Element> coastlineElements;
+		private Vector<Address> addresses;
+		private List<FavoritePoi> poi;
+	}
+    \end{lstlisting}
+    \caption{Mappr's Datagrundlag.}
+    \label{fig:mapdata}
+\end{figure}
